@@ -210,20 +210,20 @@
                         <span id="ai-plan-btn-text">View AI Analysis</span> &#x27A1;
                     </button>
                 </div>
-                <p style="font-size: 14px; color: #666; margin-bottom: -8px; font-weight: 600;">Your Daily Wellness Routine</p>
+                <p id="home-routine-heading" style="font-size: 14px; color: #666; margin-bottom: -8px; font-weight: 600;">Your Daily Wellness Routine</p>
                 <div class="quest-card" onclick="showScreen('game-menu-screen')" style="border-left: 6px solid #00796B;">
                     <div class="quest-icon" style="background: #E0F2F1; color: #00796B;"><span class="material-symbols-rounded">extension</span></div>
-                    <div class="quest-text"><h2 id="btn-game" style="color:#37474F;">Cognitive Exercise</h2><p style="color:#666;">Targeted Therapy</p></div>
+                    <div class="quest-text"><h2 id="btn-game" style="color:#37474F;">Cognitive Exercise</h2><p id="sub-btn-game" style="color:#666;">Targeted Therapy</p></div>
                     <span class="material-symbols-rounded" style="color: #ccc;">chevron_right</span>
                 </div>
                 <div class="quest-card" onclick="showScreen('family-screen')" style="border-left: 6px solid #FF8A65;">
                     <div class="quest-icon" style="background: #FBE9E7; color: #FF8A65;"><span class="material-symbols-rounded">diversity_1</span></div>
-                    <div class="quest-text"><h2 id="btn-family" style="color:#37474F;">Visual Therapy</h2><p style="color:#666;">Targeted Therapy</p></div>
+                    <div class="quest-text"><h2 id="btn-family" style="color:#37474F;">Visual Therapy</h2><p id="sub-btn-family" style="color:#666;">Targeted Therapy</p></div>
                     <span class="material-symbols-rounded" style="color: #ccc;">chevron_right</span>
                 </div>
                 <div class="quest-card" onclick="showScreen('routine-screen')" style="border-left: 6px solid #FFC107;">
                     <div class="quest-icon" style="background: #FFF8E1; color: #FFC107;"><span class="material-symbols-rounded">event_available</span></div>
-                    <div class="quest-text"><h2 id="btn-routine" style="color:#37474F;">Audio Therapy</h2><p style="color:#666;">Targeted Therapy</p></div>
+                    <div class="quest-text"><h2 id="btn-routine" style="color:#37474F;">Audio Therapy</h2><p id="sub-btn-routine" style="color:#666;">Targeted Therapy</p></div>
                     <span class="material-symbols-rounded" style="color: #ccc;">chevron_right</span>
                 </div>
                 <button class="sos-btn pulse-animation" onclick="showScreen('sos-screen')" style="margin-top: 20px;">
@@ -374,21 +374,21 @@
             <header class="dash-header" style="border-radius: 0 0 24px 24px; padding: 45px 24px 20px; background: linear-gradient(135deg, #00796B, #004D40); color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.12); position: relative;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                     <button onclick="showScreen('home-screen')" style="background: rgba(255,255,255,0.2); border: none; padding: 7px 14px; border-radius: 20px; color: white; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-weight: 600; font-size: 14px; backdrop-filter: blur(4px);">
-                        <span class="material-symbols-rounded" style="font-size: 18px;">arrow_back</span> Home
+                        <span class="material-symbols-rounded" style="font-size: 18px;">arrow_back</span> <span id="routine-back-text">Home</span>
                     </button>
-                    <span style="font-size: 13px; background: rgba(255,255,255,0.18); padding: 5px 12px; border-radius: 12px; font-weight: 600;">Daily Wellness</span>
+                    <span id="routine-wellness-badge" style="font-size: 13px; background: rgba(255,255,255,0.18); padding: 5px 12px; border-radius: 12px; font-weight: 600;">Daily Wellness</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                    <h1 style="font-size: 24px; margin: 0; font-weight: 800;">Today's Routine</h1>
-                    <span style="background: rgba(255,255,255,0.22); color: #FFF9C4; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
-                        <span class="material-symbols-rounded" style="font-size: 14px;">psychology</span> Scaffolding Mode
+                    <h1 id="routine-header-title" style="font-size: 24px; margin: 0; font-weight: 800;">Today's Routine</h1>
+                    <span id="routine-scaffolding-badge" style="background: rgba(255,255,255,0.22); color: #FFF9C4; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
+                        <span class="material-symbols-rounded" style="font-size: 14px;">psychology</span> <span id="routine-scaffolding-text">Scaffolding Mode</span>
                     </span>
                 </div>
-                <p style="opacity: 0.92; font-size: 13px; margin: 0 0 14px 0;">Daily habits that actively exercise, not replace, your memory.</p>
+                <p id="routine-header-desc" style="opacity: 0.92; font-size: 13px; margin: 0 0 14px 0;">Daily habits that actively exercise, not replace, your memory.</p>
                 
                 <div style="background: rgba(255,255,255,0.18); border-radius: 14px; padding: 14px 16px; backdrop-filter: blur(4px);">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <span style="font-weight: 700; font-size: 14px;">Daily Progress</span>
+                        <span id="routine-progress-label" style="font-weight: 700; font-size: 14px;">Daily Progress</span>
                         <span id="routine-progress-text" style="font-weight: 700; font-size: 14px; color: #FFF9C4;">0 / 5 Completed</span>
                     </div>
                     <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.25); border-radius: 4px; overflow: hidden;">
@@ -399,30 +399,30 @@
 
             <main class="content-pad" style="padding-bottom: 90px; padding-top: 20px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                    <h3 style="color: #00796B; margin: 0; font-size: 16px; font-weight: 700;">&#x1F305; Morning</h3>
-                    <span style="font-size: 12px; color: #78909C;">Start of Day</span>
+                    <h3 id="routine-morning-title" style="color: #00796B; margin: 0; font-size: 16px; font-weight: 700;">&#x1F305; Morning</h3>
+                    <span id="routine-morning-sub" style="font-size: 12px; color: #78909C;">Start of Day</span>
                 </div>
                 
                 <!-- Task 1: Morning Brain Warmup -->
                 <div id="routine-task-morning" class="quest-card routine-task" onclick="handleRoutineClick('morning_brain')" style="cursor: pointer; transition: 0.2s;">
                     <div class="quest-icon" style="background: #E8F5E9; color: #4CAF50;"><span class="material-symbols-rounded">psychology</span></div>
                     <div style="flex: 1;">
-                        <h2 style="font-size: 16px; color: #37474F; margin: 0 0 2px 0;">Morning Brain Exercise</h2>
-                        <p style="font-size: 13px; color: #666; margin: 0;">9:00 AM &bull; Gentle memory warmup</p>
+                        <h2 id="routine-task-morning-title" style="font-size: 16px; color: #37474F; margin: 0 0 2px 0;">Morning Brain Exercise</h2>
+                        <p id="routine-task-morning-desc" style="font-size: 13px; color: #666; margin: 0;">9:00 AM &bull; Gentle memory warmup</p>
                     </div>
                     <div class="check-circle"></div>
                 </div>
                 
                 <div style="display: flex; justify-content: space-between; align-items: center; margin: 24px 0 12px;">
-                    <h3 style="color: #00796B; margin: 0; font-size: 16px; font-weight: 700;">&#x2600;&#xFE0F; Afternoon</h3>
-                    <span style="font-size: 12px; color: #78909C;">Mid-Day Energy</span>
+                    <h3 id="routine-afternoon-title" style="color: #00796B; margin: 0; font-size: 16px; font-weight: 700;">&#x2600;&#xFE0F; Afternoon</h3>
+                    <span id="routine-afternoon-sub" style="font-size: 12px; color: #78909C;">Mid-Day Energy</span>
                 </div>
                 
                 <!-- Task 2: Hydration Break -->
                 <div id="routine-task-water" class="quest-card routine-task" onclick="handleRoutineClick('hydration')" style="cursor: pointer; transition: 0.2s;">
                     <div class="quest-icon" style="background: #E3F2FD; color: #2196F3;"><span class="material-symbols-rounded">water_drop</span></div>
                     <div style="flex: 1;">
-                        <h2 style="font-size: 16px; color: #37474F; margin: 0 0 2px 0;">Hydration Break</h2>
+                        <h2 id="routine-task-water-title" style="font-size: 16px; color: #37474F; margin: 0 0 2px 0;">Hydration Break</h2>
                         <p id="routine-water-desc" style="font-size: 13px; color: #666; margin: 0;">11:00 AM &bull; Fresh glass of water</p>
                     </div>
                     <div class="check-circle"></div>
@@ -432,8 +432,8 @@
                 <div id="routine-task-walk" class="quest-card routine-task" onclick="handleRoutineClick('walk')" style="cursor: pointer; transition: 0.2s; margin-top: 12px;">
                     <div class="quest-icon" style="background: #FFF3E0; color: #FF9800;"><span class="material-symbols-rounded">directions_walk</span></div>
                     <div style="flex: 1;">
-                        <h2 style="font-size: 16px; color: #37474F; margin: 0 0 2px 0;">Gentle Movement & Walk</h2>
-                        <p style="font-size: 13px; color: #666; margin: 0;">2:00 PM &bull; 10-Min light walk</p>
+                        <h2 id="routine-task-walk-title" style="font-size: 16px; color: #37474F; margin: 0 0 2px 0;">Gentle Movement & Walk</h2>
+                        <p id="routine-task-walk-desc" style="font-size: 13px; color: #666; margin: 0;">2:00 PM &bull; 10-Min light walk</p>
                     </div>
                     <div class="check-circle"></div>
                 </div>
@@ -442,23 +442,23 @@
                 <div id="routine-task-puzzle" class="quest-card routine-task" onclick="handleRoutineClick('afternoon_puzzle')" style="cursor: pointer; transition: 0.2s; margin-top: 12px;">
                     <div class="quest-icon" style="background: #F3E5F5; color: #9C27B0;"><span class="material-symbols-rounded">extension</span></div>
                     <div style="flex: 1;">
-                        <h2 style="font-size: 16px; color: #37474F; margin: 0 0 2px 0;">Afternoon Mind Refresh</h2>
-                        <p style="font-size: 13px; color: #666; margin: 0;">4:00 PM &bull; Visual matching game</p>
+                        <h2 id="routine-task-puzzle-title" style="font-size: 16px; color: #37474F; margin: 0 0 2px 0;">Afternoon Mind Refresh</h2>
+                        <p id="routine-task-puzzle-desc" style="font-size: 13px; color: #666; margin: 0;">4:00 PM &bull; Visual matching game</p>
                     </div>
                     <div class="check-circle"></div>
                 </div>
 
                 <div style="display: flex; justify-content: space-between; align-items: center; margin: 24px 0 12px;">
-                    <h3 style="color: #00796B; margin: 0; font-size: 16px; font-weight: 700;">&#x1F319; Evening</h3>
-                    <span style="font-size: 12px; color: #78909C;">Rest & Relaxation</span>
+                    <h3 id="routine-evening-title" style="color: #00796B; margin: 0; font-size: 16px; font-weight: 700;">&#x1F319; Evening</h3>
+                    <span id="routine-evening-sub" style="font-size: 12px; color: #78909C;">Rest & Relaxation</span>
                 </div>
                 
                 <!-- Task 5: Evening Audio Therapy -->
                 <div id="routine-task-audio" class="quest-card routine-task" onclick="handleRoutineClick('evening_audio')" style="cursor: pointer; transition: 0.2s;">
                     <div class="quest-icon" style="background: #EFEBE9; color: #795548;"><span class="material-symbols-rounded">headphones</span></div>
                     <div style="flex: 1;">
-                        <h2 style="font-size: 16px; color: #37474F; margin: 0 0 2px 0;">Evening Calming Soundscape</h2>
-                        <p style="font-size: 13px; color: #666; margin: 0;">8:00 PM &bull; Audio therapy & breathing</p>
+                        <h2 id="routine-task-audio-title" style="font-size: 16px; color: #37474F; margin: 0 0 2px 0;">Evening Calming Soundscape</h2>
+                        <p id="routine-task-audio-desc" style="font-size: 13px; color: #666; margin: 0;">8:00 PM &bull; Audio therapy & breathing</p>
                     </div>
                     <div class="check-circle"></div>
                 </div>
@@ -466,7 +466,7 @@
                 <!-- Reset button for testing/next day -->
                 <div style="text-align: center; margin-top: 32px;">
                     <button onclick="resetRoutineTasks()" style="background: transparent; border: 1px dashed #B0BEC5; color: #78909C; padding: 8px 18px; border-radius: 20px; font-size: 13px; cursor: pointer;">
-                        &#x21BA; Reset Today's Checklist
+                        &#x21BA; <span id="routine-reset-btn-text">Reset Today's Checklist</span>
                     </button>
                 </div>
             </main>
@@ -547,7 +547,7 @@
         <!-- --- Progress Screen --- -->
         <section id="progress-screen" class="screen" style="background: #FDFCF0;">
             <header class="inner-header" style="padding: 40px 24px 20px; background: white; border-bottom: 1px solid #eee; text-align: center; display: block;">
-                <h1 style="font-size: 24px; color: #00796B; margin: 0;">Daily Wellness Progress</h1>
+                <h1 id="progress-title" style="font-size: 24px; color: #00796B; margin: 0;">Daily Wellness Progress</h1>
             </header>
             <main class="content-pad" style="padding-bottom: 120px;">
                 
@@ -559,18 +559,18 @@
                         </svg>
                         <div class="progress-ring-text">
                             <h2 id="overall-percentage">0%</h2>
-                            <p>Adherence</p>
+                            <p id="progress-adherence-label">Adherence</p>
                         </div>
                     </div>
                 </div>
 
-                <h3 class="section-title">Physical & Routine</h3>
+                <h3 id="progress-physical-title" class="section-title">Physical & Routine</h3>
                 <div class="progress-card">
-                    <div class="progress-header"><span>Hydration</span><span id="hyd-text">0/0</span></div>
+                    <div class="progress-header"><span id="progress-hyd-label">Hydration</span><span id="hyd-text">0/0</span></div>
                     <div class="bar-bg"><div class="bar-fill" id="hyd-bar"></div></div>
                 </div>
                 <div class="progress-card">
-                    <div class="progress-header"><span>Mobility</span><span id="mob-text">0/0</span></div>
+                    <div class="progress-header"><span id="progress-mob-label">Mobility</span><span id="mob-text">0/0</span></div>
                     <div class="bar-bg"><div class="bar-fill" id="mob-bar"></div></div>
                 </div>
 
@@ -579,22 +579,22 @@
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <div style="display: flex; align-items: center; gap: 6px;">
                             <span class="material-symbols-rounded" style="color: #00796B;">neurology</span>
-                            <h3 style="margin: 0; font-size: 16px; color: #00796B; font-weight: 800;">AI Focus Comparison</h3>
+                            <h3 id="ai-comparison-title" style="margin: 0; font-size: 16px; color: #00796B; font-weight: 800;">AI Focus Comparison</h3>
                         </div>
-                        <span style="font-size: 11px; background: #E0F2F1; color: #004D40; padding: 3px 8px; border-radius: 10px; font-weight: 700;">AI Model</span>
+                        <span id="ai-model-badge" style="font-size: 11px; background: #E0F2F1; color: #004D40; padding: 3px 8px; border-radius: 10px; font-weight: 700;">AI Model</span>
                     </div>
-                    <p style="color: #666; font-size: 12px; margin: 0 0 14px 0; line-height: 1.4;">
+                    <p id="ai-comparison-desc" style="color: #666; font-size: 12px; margin: 0 0 14px 0; line-height: 1.4;">
                         How your recent activity compares to the typical range for your age group.
                     </p>
                     <div id="ai-baseline-bars-container" style="display: flex; flex-direction: column; gap: 10px;">
                         <!-- Dynamically Injected AI Domain Vectors -->
                     </div>
                     <div id="ai-caregiver-summary-box" style="margin-top: 14px; background: #F9FBE7; border: 1px solid #DCE775; border-radius: 12px; padding: 10px 12px; font-size: 12.5px; color: #33691E; line-height: 1.4;">
-                        <strong>&#x1F916; AI Summary:</strong> <span id="ai-summary-text">AI insights will appear here after your next assessment or game session.</span>
+                        <strong id="ai-summary-label">&#x1F916; AI Summary:</strong> <span id="ai-summary-text">AI insights will appear here after your next assessment or game session.</span>
                     </div>
                 </div>
 
-                <h3 class="section-title" style="margin-top: 20px;">Cognitive Wellness</h3>
+                <h3 id="progress-cognitive-title" class="section-title" style="margin-top: 20px;">Cognitive Wellness</h3>
                 <div id="cognitive-progress-list">
                     <!-- Injected by JS -->
                 </div>
@@ -607,10 +607,10 @@
         <section id="game-menu-screen" class="screen">
             <header class="inner-header">
                 <button class="back-btn" onclick="showScreen('home-screen')">&#x2190;</button>
-                <h2>Targeted Therapy</h2>
+                <h2 id="game-menu-title">Targeted Therapy</h2>
             </header>
             <main class="content-pad" style="background: #FDFCF0; min-height: 100vh;">
-                <p style="color: #78909C; margin-bottom: 20px; font-size: 14px;">Play specific games to improve your cognitive skills. Games are recommended based on your recent assessment.</p>
+                <p id="game-menu-desc" style="color: #78909C; margin-bottom: 20px; font-size: 14px;">Play specific games to improve your cognitive skills. Games are recommended based on your recent assessment.</p>
                 <div id="games-list-container" style="display: flex; flex-direction: column; gap: 15px; padding-bottom: 40px;">
                     <!-- Games injected here -->
                 </div>
@@ -622,10 +622,10 @@
         <section id="family-screen" class="screen">
             <header class="inner-header" style="position: relative;">
                 <button class="back-btn" onclick="showScreen('home-screen')" style="position: absolute; left: 15px; top: 20px; font-size: 24px; background: none; border: none; cursor: pointer; color: #37474F;">&#x2190;</button>
-                <h2>Family Connect</h2>
+                <h2 id="family-menu-title">Family Connect</h2>
             </header>
             <main class="content-pad" style="background: #FDFCF0; min-height: 100vh; text-align: center;">
-                <p style="color: #78909C; margin-bottom: 20px; font-size: 14px;">Recognize your loved ones to strengthen your memory.</p>
+                <p id="family-menu-desc" style="color: #78909C; margin-bottom: 20px; font-size: 14px;">Recognize your loved ones to strengthen your memory.</p>
                 <div id="family-game-area" style="display: flex; flex-direction: column; gap: 20px; align-items: center;">
                     <!-- Game content injected here -->
                 </div>
@@ -635,12 +635,12 @@
         <nav class="bottom-nav" style="position: absolute; bottom: 0; width: 100%; z-index: 50;">
             <div class="nav-item active" id="nav-home" onclick="switchNav('home-screen')">
                 <span class="material-symbols-rounded">home</span>
-                <span>Home</span>
+                <span id="nav-label-home">Home</span>
             </div>
 
             <div class="nav-item" id="nav-progress" onclick="switchNav('progress-screen')">
                 <span class="material-symbols-rounded">bar_chart</span>
-                <span>Progress</span>
+                <span id="nav-label-progress">Progress</span>
             </div>
         </nav>
 

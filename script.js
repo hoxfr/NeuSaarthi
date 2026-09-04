@@ -193,6 +193,265 @@ const langData = {
 
 let currentLang = 'en';
 
+
+const PAGE_SEGMENTS_I18N = {
+    en: {
+        progress: {
+            title: "Daily Wellness Progress",
+            adherence: "Adherence",
+            physicalTitle: "Physical & Routine",
+            hydLabel: "Hydration",
+            mobLabel: "Mobility",
+            glasses: "Glasses",
+            session: "Session",
+            aiCompTitle: "AI Focus Comparison",
+            aiModelBadge: "AI Model",
+            aiCompDesc: "How your recent activity compares to the typical range for your age group.",
+            aiSummaryLabel: "AI Summary:",
+            aiSummaryDefault: "AI insights will appear here after your next assessment or game session.",
+            cognitiveTitle: "Cognitive Wellness",
+            typical: "typical"
+        },
+        nav: {
+            home: "Home",
+            progress: "Progress"
+        },
+        home: {
+            routineHeading: "Your Daily Wellness Routine",
+            subGame: "Targeted Therapy",
+            subFamily: "Targeted Therapy",
+            subRoutine: "Targeted Therapy",
+            subSos: "Emergency Alert"
+        },
+        routine: {
+            back: "Home",
+            badge: "Daily Wellness",
+            title: "Today's Routine",
+            scaffolding: "Scaffolding Mode",
+            desc: "Daily habits that actively exercise, not replace, your memory.",
+            progressLabel: "Daily Progress",
+            completed: "Completed",
+            morningTitle: "\u{1F305} Morning",
+            morningSub: "Start of Day",
+            taskMorningTitle: "Morning Brain Exercise",
+            taskMorningDesc: "9:00 AM \u2022 Gentle memory warmup",
+            afternoonTitle: "\u{2600}\u{FE0F} Afternoon",
+            afternoonSub: "Mid-Day Energy",
+            taskWaterTitle: "Hydration Break",
+            taskWaterDesc: "11:00 AM \u2022 Fresh glass of water",
+            taskWalkTitle: "Gentle Movement & Walk",
+            taskWalkDesc: "2:00 PM \u2022 10-Min light walk",
+            taskPuzzleTitle: "Afternoon Mind Refresh",
+            taskPuzzleDesc: "4:00 PM \u2022 Visual matching game",
+            eveningTitle: "\u{1F319} Evening",
+            eveningSub: "Rest & Relaxation",
+            taskAudioTitle: "Evening Calming Soundscape",
+            taskAudioDesc: "8:00 PM \u2022 Audio therapy & breathing",
+            resetBtn: "Reset Today's Checklist"
+        },
+        gameMenu: {
+            title: "Targeted Therapy",
+            desc: "Play specific games to improve your cognitive skills. Games are recommended based on your recent assessment."
+        },
+        family: {
+            title: "Family Connect",
+            desc: "Recognize your loved ones to strengthen your memory."
+        }
+    },
+    hi: {
+        progress: {
+            title: "दैनिक वेलनेस प्रगति",
+            adherence: "अनुपालन",
+            physicalTitle: "शारीरिक और दिनचर्या",
+            hydLabel: "हाइड्रेशन",
+            mobLabel: "गतिशीलता",
+            glasses: "गिलास",
+            session: "सत्र",
+            aiCompTitle: "AI फोकस तुलना",
+            aiModelBadge: "AI मॉडल",
+            aiCompDesc: "आपकी हालिया गतिविधि आपके आयु वर्ग के सामान्य स्तर से कैसे मेल खाती है।",
+            aiSummaryLabel: "AI सारांश:",
+            aiSummaryDefault: "AI विश्लेषण आपके अगले मूल्यांकन या खेल सत्र के बाद यहाँ दिखाई देगा।",
+            cognitiveTitle: "संज्ञानात्मक वेलनेस",
+            typical: "सामान्य"
+        },
+        nav: {
+            home: "होम",
+            progress: "प्रगति"
+        },
+        home: {
+            routineHeading: "आपकी दैनिक वेलनेस दिनचर्या",
+            subGame: "लक्षित अभ्यास",
+            subFamily: "दृश्य अभ्यास",
+            subRoutine: "दैनिक दिनचर्या",
+            subSos: "आपातकालीन अलर्ट"
+        },
+        routine: {
+            back: "होम",
+            badge: "दैनिक वेलनेस",
+            title: "आज की दिनचर्या",
+            scaffolding: "मस्तिष्क सुदृढ़ीकरण",
+            desc: "ऐसी दैनिक आदतें जो याददाश्त को बदलने के बजाय सक्रिय बनाती हैं।",
+            progressLabel: "दैनिक प्रगति",
+            completed: "पूर्ण",
+            morningTitle: "\u{1F305} सुबह",
+            morningSub: "दिन की शुरुआत",
+            taskMorningTitle: "सुबह का दिमागी व्यायाम",
+            taskMorningDesc: "9:00 AM \u2022 हल्की स्मृति वार्मअप",
+            afternoonTitle: "\u{2600}\u{FE0F} दोपहर",
+            afternoonSub: "दोपहर की ऊर्जा",
+            taskWaterTitle: "पानी पीने का विराम",
+            taskWaterDesc: "11:00 AM \u2022 ताज़ा पानी का गिलास",
+            taskWalkTitle: "हल्की सैर और चलना",
+            taskWalkDesc: "2:00 PM \u2022 10 मिनट की हल्की सैर",
+            taskPuzzleTitle: "दोपहर का दिमाग ताज़ा करें",
+            taskPuzzleDesc: "4:00 PM \u2022 दृश्य मिलान खेल",
+            eveningTitle: "\u{1F319} शाम",
+            eveningSub: "विश्राम और शांति",
+            taskAudioTitle: "शाम का शांत संगीत",
+            taskAudioDesc: "8:00 PM \u2022 सुकून भरा संगीत और गहरी सांसें",
+            resetBtn: "आज की चेकलिस्ट रीसेट करें"
+        },
+        gameMenu: {
+            title: "लक्षित अभ्यास",
+            desc: "अपने संज्ञानात्मक कौशल को बेहतर बनाने के लिए खेल खेलें। खेल आपके हालिया मूल्यांकन के आधार पर सुझाए गए हैं।"
+        },
+        family: {
+            title: "पारिवारिक जुड़ाव",
+            desc: "अपनी याददाश्त मजबूत करने के लिए अपने प्रियजनों को पहचानें।"
+        }
+    },
+    bn: {
+        progress: {
+            title: "দৈনিক সুস্থতা অগ্রগতি",
+            adherence: "ধারাবাহিকতা",
+            physicalTitle: "শারীরিক ও রুটিন",
+            hydLabel: "জলপান",
+            mobLabel: "গতিশীলতা",
+            glasses: "গ্লাস",
+            session: "সেশন",
+            aiCompTitle: "AI ফোকাস তুলনা",
+            aiModelBadge: "AI মডেল",
+            aiCompDesc: "আপনার সাম্প্রতিক কার্যকলাপ আপনার বয়সীদের সাধারণ স্তরের সাথে কীভাবে মেলে।",
+            aiSummaryLabel: "AI সারাংশ:",
+            aiSummaryDefault: "পরবর্তী মূল্যায়ন বা গেম সেশনের পরে AI অন্তর্দৃষ্টি এখানে উপস্থিত হবে।",
+            cognitiveTitle: "জ্ঞানীয় সুস্থতা",
+            typical: "সাধারণ"
+        },
+        nav: {
+            home: "হোম",
+            progress: "অগ্রগতি"
+        },
+        home: {
+            routineHeading: "আপনার দৈনিক সুস্থতার রুটিন",
+            subGame: "টার্গেটেড থেরাপি",
+            subFamily: "ভিজ্যুয়াল থেরাপি",
+            subRoutine: "দৈনিক সুস্থতা",
+            subSos: "জরুরী সতর্কতা"
+        },
+        routine: {
+            back: "হোম",
+            badge: "দৈনিক সুস্থতা",
+            title: "আজকের রুটিন",
+            scaffolding: "স্ক্যাফোল্ডিং মোড",
+            desc: "দৈনন্দিন অভ্যাস যা স্মৃতি প্রতিস্থাপন নয়, সক্রিয় রাখে।",
+            progressLabel: "দৈনিক অগ্রগতি",
+            completed: "সম্পন্ন",
+            morningTitle: "\u{1F305} সকাল",
+            morningSub: "দিনের শুরু",
+            taskMorningTitle: "সকালের ব্রেন ওয়ার্মআপ",
+            taskMorningDesc: "সকাল ৯:০০ \u2022 হালকা স্মৃতির ব্যায়াম",
+            afternoonTitle: "\u{2600}\u{FE0F} দুপুর",
+            afternoonSub: "দিনের মধ্যভাগ",
+            taskWaterTitle: "জলপানের বিরতি",
+            taskWaterDesc: "বেলা ১১:০০ \u2022 এক গ্লাস সতেজ জল",
+            taskWalkTitle: "হালকা হাঁটাচলা",
+            taskWalkDesc: "দুপুর ২:০০ \u2022 ১০ মিনিটের হালকা হাঁটা",
+            taskPuzzleTitle: "মন সতেজ করার পাজল",
+            taskPuzzleDesc: "বিকাল ৪:০০ \u2022 ভিজ্যুয়াল ম্যাচিং গেম",
+            eveningTitle: "\u{1F319} সন্ধ্যা",
+            eveningSub: "বিশ্রাম ও শান্তি",
+            taskAudioTitle: "সন্ধ্যার শান্ত সাউন্ডস্কেপ",
+            taskAudioDesc: "রাত ৮:০০ \u2022 অডিও থেরাপি ও শ্বাসক্রিয়া",
+            resetBtn: "আজকের চেকলিস্ট রিসেট করুন"
+        },
+        gameMenu: {
+            title: "টার্গেটেড থেরাপি",
+            desc: "জ্ঞানীয় দক্ষতা বাড়াতে নির্দিষ্ট গেম খেলুন। আপনার সাম্প্রতিক মূল্যায়নের ভিত্তিতে গেমগুলি প্রস্তাবিত।"
+        },
+        family: {
+            title: "পারিবারিক সংযোগ",
+            desc: "স্মৃতিশক্তি শক্তিশালী করতে প্রিয়জনদের চিনুন।"
+        }
+    }
+};
+
+function applyAllPageTranslations(langCode) {
+    const loc = PAGE_SEGMENTS_I18N[langCode] || PAGE_SEGMENTS_I18N['en'];
+    
+    // Progress Screen
+    if (document.getElementById('progress-title')) document.getElementById('progress-title').innerText = loc.progress.title;
+    if (document.getElementById('progress-adherence-label')) document.getElementById('progress-adherence-label').innerText = loc.progress.adherence;
+    if (document.getElementById('progress-physical-title')) document.getElementById('progress-physical-title').innerText = loc.progress.physicalTitle;
+    if (document.getElementById('progress-hyd-label')) document.getElementById('progress-hyd-label').innerText = loc.progress.hydLabel;
+    if (document.getElementById('progress-mob-label')) document.getElementById('progress-mob-label').innerText = loc.progress.mobLabel;
+    if (document.getElementById('ai-comparison-title')) document.getElementById('ai-comparison-title').innerText = loc.progress.aiCompTitle;
+    if (document.getElementById('ai-model-badge')) document.getElementById('ai-model-badge').innerText = loc.progress.aiModelBadge;
+    if (document.getElementById('ai-comparison-desc')) document.getElementById('ai-comparison-desc').innerText = loc.progress.aiCompDesc;
+    if (document.getElementById('ai-summary-label')) document.getElementById('ai-summary-label').innerHTML = '&#x1F916; ' + loc.progress.aiSummaryLabel;
+    if (document.getElementById('progress-cognitive-title')) document.getElementById('progress-cognitive-title').innerText = loc.progress.cognitiveTitle;
+
+    // Bottom Navigation
+    if (document.getElementById('nav-label-home')) document.getElementById('nav-label-home').innerText = loc.nav.home;
+    if (document.getElementById('nav-label-progress')) document.getElementById('nav-label-progress').innerText = loc.nav.progress;
+
+    // Home Screen Card Subtitles
+    if (document.getElementById('home-routine-heading')) document.getElementById('home-routine-heading').innerText = loc.home.routineHeading;
+    if (document.getElementById('sub-btn-game')) document.getElementById('sub-btn-game').innerText = loc.home.subGame;
+    if (document.getElementById('sub-btn-family')) document.getElementById('sub-btn-family').innerText = loc.home.subFamily;
+    if (document.getElementById('sub-btn-routine')) document.getElementById('sub-btn-routine').innerText = loc.home.subRoutine;
+    if (document.getElementById('sub-btn-sos')) document.getElementById('sub-btn-sos').innerText = loc.home.subSos;
+
+    // Routine Screen
+    if (document.getElementById('routine-back-text')) document.getElementById('routine-back-text').innerText = loc.routine.back;
+    if (document.getElementById('routine-wellness-badge')) document.getElementById('routine-wellness-badge').innerText = loc.routine.badge;
+    if (document.getElementById('routine-header-title')) document.getElementById('routine-header-title').innerText = loc.routine.title;
+    if (document.getElementById('routine-scaffolding-text')) document.getElementById('routine-scaffolding-text').innerText = loc.routine.scaffolding;
+    if (document.getElementById('routine-header-desc')) document.getElementById('routine-header-desc').innerText = loc.routine.desc;
+    if (document.getElementById('routine-progress-label')) document.getElementById('routine-progress-label').innerText = loc.routine.progressLabel;
+
+    if (document.getElementById('routine-morning-title')) document.getElementById('routine-morning-title').innerText = loc.routine.morningTitle;
+    if (document.getElementById('routine-morning-sub')) document.getElementById('routine-morning-sub').innerText = loc.routine.morningSub;
+    if (document.getElementById('routine-task-morning-title')) document.getElementById('routine-task-morning-title').innerText = loc.routine.taskMorningTitle;
+    if (document.getElementById('routine-task-morning-desc')) document.getElementById('routine-task-morning-desc').innerText = loc.routine.taskMorningDesc;
+
+    if (document.getElementById('routine-afternoon-title')) document.getElementById('routine-afternoon-title').innerText = loc.routine.afternoonTitle;
+    if (document.getElementById('routine-afternoon-sub')) document.getElementById('routine-afternoon-sub').innerText = loc.routine.afternoonSub;
+    if (document.getElementById('routine-task-water-title')) document.getElementById('routine-task-water-title').innerText = loc.routine.taskWaterTitle;
+    if (document.getElementById('routine-water-desc')) document.getElementById('routine-water-desc').innerText = loc.routine.taskWaterDesc;
+    if (document.getElementById('routine-task-walk-title')) document.getElementById('routine-task-walk-title').innerText = loc.routine.taskWalkTitle;
+    if (document.getElementById('routine-task-walk-desc')) document.getElementById('routine-task-walk-desc').innerText = loc.routine.taskWalkDesc;
+    if (document.getElementById('routine-task-puzzle-title')) document.getElementById('routine-task-puzzle-title').innerText = loc.routine.taskPuzzleTitle;
+    if (document.getElementById('routine-task-puzzle-desc')) document.getElementById('routine-task-puzzle-desc').innerText = loc.routine.taskPuzzleDesc;
+
+    if (document.getElementById('routine-evening-title')) document.getElementById('routine-evening-title').innerText = loc.routine.eveningTitle;
+    if (document.getElementById('routine-evening-sub')) document.getElementById('routine-evening-sub').innerText = loc.routine.eveningSub;
+    if (document.getElementById('routine-task-audio-title')) document.getElementById('routine-task-audio-title').innerText = loc.routine.taskAudioTitle;
+    if (document.getElementById('routine-task-audio-desc')) document.getElementById('routine-task-audio-desc').innerText = loc.routine.taskAudioDesc;
+    if (document.getElementById('routine-reset-btn-text')) document.getElementById('routine-reset-btn-text').innerText = loc.routine.resetBtn;
+
+    // Game Menu & Family
+    if (document.getElementById('game-menu-title')) document.getElementById('game-menu-title').innerText = loc.gameMenu.title;
+    if (document.getElementById('game-menu-desc')) document.getElementById('game-menu-desc').innerText = loc.gameMenu.desc;
+    if (document.getElementById('family-menu-title')) document.getElementById('family-menu-title').innerText = loc.family.title;
+    if (document.getElementById('family-menu-desc')) document.getElementById('family-menu-desc').innerText = loc.family.desc;
+
+    // Refresh dynamic widgets
+    if (typeof applyAllPageTranslations === 'function') applyAllPageTranslations(langCode);
+    if (typeof renderAiComparisonCard === 'function') renderAiComparisonCard();
+    if (typeof renderProgressTab === 'function') renderProgressTab();
+}
+
 function changeLanguage(langCode, btnElement = null) {
     currentLang = langCode;
     try { localStorage.setItem('appLang', currentLang); } catch (e) {}
@@ -245,7 +504,7 @@ function changeLanguage(langCode, btnElement = null) {
     const skipBtn = document.getElementById('demo-skip');
     if(skipBtn) skipBtn.innerText = gl.skip;
     
-    if (typeof renderAiCareTrackBanner === 'function') renderAiCareTrackBanner();
+    if (typeof applyAllPageTranslations === 'function') applyAllPageTranslations(langCode);
 
     if (btnElement) {
         document.querySelectorAll('.lang-card').forEach(card => card.classList.remove('active-lang'));
@@ -388,6 +647,10 @@ function resetLanguage() {
 function showScreen(screenId) {
     document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
     
+    if (typeof applyAllPageTranslations === 'function') {
+        applyAllPageTranslations(typeof currentLang !== 'undefined' ? currentLang : 'en');
+    }
+
     if (screenId === 'game-menu-screen') {
         if(typeof renderGamesList === 'function') renderGamesList();
         document.getElementById(screenId).style.display = 'block';
@@ -868,17 +1131,24 @@ function renderAiComparisonCard() {
         if (!profile && typeof runAICognitiveProfiler === 'function') profile = runAICognitiveProfiler();
         if (!profile) return;
 
+        const activeLang = (typeof currentLang !== 'undefined' && currentLang) ? currentLang : 'en';
+        const loc = (typeof PAGE_SEGMENTS_I18N !== 'undefined' && PAGE_SEGMENTS_I18N[activeLang]) ? PAGE_SEGMENTS_I18N[activeLang].progress : null;
+        const bannerLoc = (typeof AI_BANNER_I18N !== 'undefined' && AI_BANNER_I18N[activeLang]) ? AI_BANNER_I18N[activeLang] : null;
+
         barsContainer.innerHTML = '';
         for (const key in AI_DOMAIN_LABEL) {
             const userVal = profile.user[key];
             const baseVal = profile.baseline[key];
             const isFocus = key === profile.primaryDeficit;
+            const domainName = (bannerLoc && bannerLoc.domains && bannerLoc.domains[key]) ? bannerLoc.domains[key] : AI_DOMAIN_LABEL[key];
+            const typicalWord = (loc && loc.typical) ? loc.typical : 'typical';
+
             const row = document.createElement('div');
             row.style.marginBottom = '6px';
             row.innerHTML =
                 '<div style="display:flex;justify-content:space-between;font-size:12.5px;color:#37474F;font-weight:600;margin-bottom:3px;">' +
-                    '<span>' + AI_DOMAIN_LABEL[key] + (isFocus ? ' &#x1F3AF;' : '') + '</span>' +
-                    '<span style="color:#00796B;">' + userVal + '% <span style="color:#999;font-weight:400;">/ ' + baseVal + '% typical</span></span>' +
+                    '<span>' + domainName + (isFocus ? ' &#x1F3AF;' : '') + '</span>' +
+                    '<span style="color:#00796B;">' + userVal + '% <span style="color:#999;font-weight:400;">/ ' + baseVal + '% ' + typicalWord + '</span></span>' +
                 '</div>' +
                 '<div style="position:relative;height:10px;background:#EEF3F2;border-radius:6px;">' +
                     '<div style="height:100%;width:' + Math.max(2, Math.min(100, userVal)) + '%;background:' + (isFocus ? '#FF8A65' : '#00796B') + ';border-radius:6px;"></div>' +
@@ -886,7 +1156,19 @@ function renderAiComparisonCard() {
                 '</div>';
             barsContainer.appendChild(row);
         }
-        if (summaryEl) summaryEl.innerText = profile.summary;
+        if (summaryEl) {
+            if (activeLang === 'hi') {
+                const d = bannerLoc && bannerLoc.domains && bannerLoc.domains[profile.primaryDeficit] ? bannerLoc.domains[profile.primaryDeficit] : 'स्मृति';
+                const s = bannerLoc && bannerLoc.domains && bannerLoc.domains[profile.strengthDomain] ? bannerLoc.domains[profile.strengthDomain] : 'ध्यान';
+                summaryEl.innerText = 'इस सप्ताह ' + s + ' आपका सबसे मजबूत क्षेत्र रहा है। ' + d + ' पर दैनिक अभ्यास से और सुधार होगा।';
+            } else if (activeLang === 'bn') {
+                const d = bannerLoc && bannerLoc.domains && bannerLoc.domains[profile.primaryDeficit] ? bannerLoc.domains[profile.primaryDeficit] : 'স্মৃতি';
+                const s = bannerLoc && bannerLoc.domains && bannerLoc.domains[profile.strengthDomain] ? bannerLoc.domains[profile.strengthDomain] : 'মনোযোগ';
+                summaryEl.innerText = 'এই সপ্তাহে ' + s + ' আপনার সবচেয়ে শক্তিশালী এলাকা। ' + d + ' নিয়মিত অনুশীলনে আরও উন্নত হবে।';
+            } else {
+                summaryEl.innerText = profile.summary;
+            }
+        }
     } catch (e) {}
 }
 
@@ -2923,10 +3205,15 @@ function renderProgressTab() {
         pctText.style.color = themeColor;
     }
 
+    const activeLang = (typeof currentLang !== 'undefined' && currentLang) ? currentLang : 'en';
+    const loc = (typeof PAGE_SEGMENTS_I18N !== 'undefined' && PAGE_SEGMENTS_I18N[activeLang]) ? PAGE_SEGMENTS_I18N[activeLang].progress : null;
+    const glassesWord = loc && loc.glasses ? loc.glasses : 'Glasses';
+    const sessionWord = loc && loc.session ? loc.session : 'Session';
+
     // 2. Physical & Routine Cards
     const hydText = document.getElementById('hyd-text');
     const hydBar = document.getElementById('hyd-bar');
-    if (hydText) hydText.innerText = `${metrics.waterCompleted} / ${metrics.waterGoal} Glasses`;
+    if (hydText) hydText.innerText = `${metrics.waterCompleted} / ${metrics.waterGoal} ${glassesWord}`;
     if (hydBar) {
         const hydPct = (metrics.waterCompleted / metrics.waterGoal) * 100;
         hydBar.style.width = `${hydPct}%`;
@@ -2936,7 +3223,7 @@ function renderProgressTab() {
 
     const mobText = document.getElementById('mob-text');
     const mobBar = document.getElementById('mob-bar');
-    if (mobText) mobText.innerText = `${metrics.walkCompleted} / ${metrics.walkGoal} Session`;
+    if (mobText) mobText.innerText = `${metrics.walkCompleted} / ${metrics.walkGoal} ${sessionWord}`;
     if (mobBar) {
         const mobPct = (metrics.walkCompleted / metrics.walkGoal) * 100;
         mobBar.style.width = `${mobPct}%`;
@@ -2945,12 +3232,24 @@ function renderProgressTab() {
     }
 
     // 3. Cognitive Domain Breakdown
+    const bannerLoc = (typeof AI_BANNER_I18N !== 'undefined' && AI_BANNER_I18N[activeLang]) ? AI_BANNER_I18N[activeLang] : null;
     const cogContainer = document.getElementById('cognitive-progress-list');
     if (cogContainer) {
         cogContainer.innerHTML = '';
         for (let cat in metrics.cognitive) {
             const item = metrics.cognitive[cat];
             const pct = item.total === 0 ? 0 : Math.round((item.done / item.total) * 100);
+            
+            let catName = cat;
+            const catLower = cat.toLowerCase();
+            if (bannerLoc && bannerLoc.domains) {
+                if (catLower.includes('memory') && bannerLoc.domains.memory) catName = bannerLoc.domains.memory;
+                else if (catLower.includes('attention') && bannerLoc.domains.attention) catName = bannerLoc.domains.attention;
+                else if (catLower.includes('reason') && bannerLoc.domains.executive) catName = bannerLoc.domains.executive;
+                else if (catLower.includes('visual') && bannerLoc.domains.visuospatial) catName = bannerLoc.domains.visuospatial;
+                else if (catLower.includes('speed') && bannerLoc.domains.speed) catName = bannerLoc.domains.speed;
+            }
+
             const card = document.createElement('div');
             card.className = 'progress-card';
             card.style.background = 'white';
@@ -2960,7 +3259,7 @@ function renderProgressTab() {
             card.style.boxShadow = '0 2px 6px rgba(0,0,0,0.05)';
             card.innerHTML = `
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <span style="font-weight: 700; font-size: 14px; color: #37474F;">${cat}</span>
+                    <span style="font-weight: 700; font-size: 14px; color: #37474F;">${catName}</span>
                     <span style="font-size: 13px; font-weight: 700; color: ${pct >= 100 ? '#4CAF50' : '#00796B'};">${item.done} / ${item.total}</span>
                 </div>
                 <div class="bar-bg" style="width: 100%; height: 8px; background: #eee; border-radius: 4px; overflow: hidden;">
@@ -3338,7 +3637,7 @@ function initRoutineScreen() {
     // Progress counter and bar
     const progText = document.getElementById('routine-progress-text');
     if (progText) {
-        progText.innerText = `${completedCount} / 5 Completed`;
+        progText.innerText = `${completedCount} / 5 `;
     }
 
     const progBar = document.getElementById('routine-progress-bar');
