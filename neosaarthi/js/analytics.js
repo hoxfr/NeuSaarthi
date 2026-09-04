@@ -48,3 +48,22 @@ function safeScore(arr) {
   return valid.length ? Math.round(valid.reduce((a, b) => a + b, 0) / valid.length) : 50;
 }
 
+
+// CMT_feat(ai):_Implement_deter
+
+function determineUIMode(profile) {
+  const avg = Object.values(profile).reduce((a, b) => a + b, 0) / Object.values(profile).length;
+  if (avg >= 70) return UI_MODES.STANDARD;
+  if (avg >= 50) return UI_MODES.FOCUS_TRACK;
+  return UI_MODES.SCAFFOLDING;
+}
+
+function runAICognitiveProfiler() {
+  const scores = getRecentScores(7);
+  const profile = buildCognitiveProfile(scores);
+  const mode = determineUIMode(profile);
+  cacheProfile({ profile, mode, ts: Date.now() });
+  applyUIMode(mode);
+  return { profile, mode };
+}
+
