@@ -217,3 +217,30 @@ function startGoNoGo(diff) {
   runTrial();
 }
 
+
+// CMT_feat(game10-11):_Rule_Lea
+
+// Rule Learning
+let activeRule = 'left', consecutiveCorrect = 0;
+const REVERSAL_THRESHOLD = 4;
+function startRuleLearning(diff) { activeRule = 'left'; consecutiveCorrect = 0; spawnRuleItem(); }
+function checkRuleLearning(choice) {
+  const ok = choice === activeRule;
+  if (ok && ++consecutiveCorrect >= REVERSAL_THRESHOLD) {
+    activeRule = activeRule === 'left' ? 'right' : 'left'; consecutiveCorrect = 0; showRuleChange();
+  }
+  recordTaskScore(ok ? 1 : 0, 1, Date.now() - taskStartTime);
+}
+
+// Memory Recognition
+function startMemoryRecognition(diff) {
+  const studyCount = 4 + diff;
+  studySet = pickRandom(SYMBOLS, studyCount);
+  testSet = [...studySet, ...pickRandom(SYMBOLS.filter(s => !studySet.includes(s)), 4)].sort(() => Math.random() - 0.5);
+  runStudyPhase(studySet, elderlyTimer(2000 * studyCount), () => runRecognitionTest(testSet));
+}
+function checkRecognition(symbol, answeredOld) {
+  const correct = studySet.includes(symbol) === answeredOld;
+  recordTaskScore(correct ? 1 : 0, 1, Date.now() - taskStartTime);
+}
+
