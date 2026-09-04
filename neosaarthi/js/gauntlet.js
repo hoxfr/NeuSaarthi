@@ -86,3 +86,18 @@ function submitGridMemory(selected) {
   recordTaskScore(correct, gridMemoryAnswer.length, Date.now() - taskStartTime);
 }
 
+
+// CMT_feat(game3):_Target_Detec
+
+function startTargetDetection(diff) {
+  let hits = 0, total = 8 + diff, spawned = 0;
+  const iv = setInterval(() => {
+    if (spawned >= total) { clearInterval(iv); setTimeout(() => recordTaskScore(hits, total, Date.now() - taskStartTime), 1000); return; }
+    const isTarget = Math.random() > 0.35;
+    spawnDetectionCircle(randomPosition(), isTarget, elderlyTimer(diff > 3 ? 900 : 1300), (tapped) => {
+      if (tapped && isTarget) hits++;
+    });
+    spawned++;
+  }, elderlyTimer(1600 - diff * 150));
+}
+
