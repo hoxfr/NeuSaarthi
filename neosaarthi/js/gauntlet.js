@@ -138,3 +138,20 @@ function answerQuickMatch(choice) {
   recordTaskScore(choice === quickMatchTarget ? 1 : 0, 1, Date.now() - taskStartTime);
 }
 
+
+// CMT_feat(game6):_Pattern_Comp
+
+function startPatternCompletion(diff) {
+  const steps = [2, 3, 5, 7, 10];
+  const step = steps[Math.min(diff - 1, steps.length - 1)];
+  const start = Math.floor(Math.random() * 10) + 1;
+  const full = Array.from({ length: 6 }, (_, i) => start + i * step);
+  const gapIdx = 2 + Math.floor(Math.random() * 3);
+  patternAnswer = full[gapIdx];
+  const display = full.map((n, i) => i === gapIdx ? '?' : n);
+  renderPatternSequence(display);
+}
+function checkPatternAnswer(val) {
+  recordTaskScore(parseInt(val) === patternAnswer ? 1 : 0, 1, Date.now() - taskStartTime);
+}
+
