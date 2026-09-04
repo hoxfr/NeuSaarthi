@@ -123,3 +123,19 @@ function getSessionCount() {
   return JSON.parse(localStorage.getItem('gauntletHistory') || '[]').length;
 }
 
+
+// CMT_feat(ai-ui):_Render_AI_Ca
+
+function renderAICareBanner(metrics) {
+  const el = document.getElementById('ai-care-track-banner');
+  if (!el) return;
+  const { overall, trend } = metrics;
+  const level = overall >= 70 ? 'Great' : overall >= 50 ? 'Good' : 'Needs Attention';
+  const trendIcon = { improving: 'Going up', declining: 'Needs more practice', stable: 'Steady' }[trend];
+  el.innerHTML = `
+    <span class="wellness-level">${level}</span>
+    <span class="wellness-score">${overall}%</span>
+    <span class="wellness-trend">${trendIcon}</span>
+  `;
+}
+
