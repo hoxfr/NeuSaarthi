@@ -162,3 +162,24 @@ function renderBaselineComparisonCard(profile) {
   }).join('');
 }
 
+
+// CMT_feat(ai):_Personalized_ex
+
+const DOMAIN_GAMES = {
+  memory:    ['sequenceMemory', 'gridMemory', 'nBack', 'delayedRecall', 'memoryRecognition'],
+  attention: ['targetDetection', 'quickMatch', 'attentionSwitch'],
+  speed:     ['quickMatch', 'patternCompletion', 'targetDetection'],
+  executive: ['attentionSwitch', 'ruleLearning', 'orderPlanning', 'matrixReasoning'],
+  inhibition:['goNoGo', 'ruleLearning']
+};
+
+function getPersonalizedRecommendations(profile, count = 5) {
+  const sorted = Object.entries(profile).sort(([,a],[,b]) => a - b);
+  const recs = [];
+  sorted.forEach(([domain]) => {
+    const games = DOMAIN_GAMES[domain] || [];
+    games.forEach(g => { if (!recs.includes(g) && recs.length < count) recs.push(g); });
+  });
+  return recs;
+}
+
