@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Environment and sensitive keys
+.env
+
+# System and logs
+*.log
+.gemini/
+scratch/
+
+# Temporary python & js migration/patch scripts
+patch*.js
+patch*.py
+fix*.js
+run*.js
+update*.js
+inject*.js
+inject*.py
+check*.py
+repl.txt
+replacement.txt
+rewrite.js
+rand.js
+test*.js
+temp_script.js
+add_*.py
+remove_*.py
+apply_*.py
