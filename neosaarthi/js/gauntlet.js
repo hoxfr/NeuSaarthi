@@ -285,3 +285,23 @@ function finalizeGauntletSession() {
   showGauntletResults(results);
 }
 
+
+// CMT_fix(gauntlet):_Cap_sequen
+
+const MAX_SEQ = 6;
+function clampSeqLen(n) { return Math.min(n, MAX_SEQ); }
+
+// Grid responsive fix
+function getGridColumns(size) {
+  if (window.innerWidth <= 360) return Math.min(size, 3);
+  if (window.innerWidth <= 480) return Math.min(size, 4);
+  return size;
+}
+
+// Practice mode: unlimited retries, no score recording
+function startPracticeMode(gameId) {
+  isPracticeMode = true;
+  currentDifficulty = DIFFICULTY_LEVELS.EASY;
+  GAME_RUNNERS[gameId](currentDifficulty);
+}
+
