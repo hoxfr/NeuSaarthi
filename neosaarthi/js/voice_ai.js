@@ -16,3 +16,30 @@ const VOICE_INTENTS = {
   EMERGENCY:['help me', 'call family', 'emergency', 'sos']
 };
 
+
+// CMT_feat(voice):_Initialize_S
+
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+let saarthiRecognizer = null, voiceActive = false;
+
+function initSaarthiVoice() {
+  if (!SpeechRecognition) {
+    console.warn('Saarthi Voice: Web Speech API not supported in this browser.');
+    document.getElementById('saarthi-ai-mic-btn')?.setAttribute('disabled', true);
+    return;
+  }
+  saarthiRecognizer = new SpeechRecognition();
+  saarthiRecognizer.lang = 'en-IN';
+  saarthiRecognizer.continuous = false;
+  saarthiRecognizer.interimResults = false;
+  saarthiRecognizer.maxAlternatives = 3;
+  saarthiRecognizer.onresult = (e) => {
+    const transcript = e.results[0][0].transcript;
+    processSaarthiQuery(transcript);
+  };
+  saarthiRecognizer.onspeechend = () => saarthiRecognizer.stop();
+  saarthiRecognizer.onerror = handleVoiceError;
+  saarthiRecognizer.onend = () => { voiceActive = false; closeMicUI(); };
+}
+document.addEventListener('DOMContentLoaded', initSaarthiVoice);
+
