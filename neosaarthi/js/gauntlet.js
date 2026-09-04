@@ -101,3 +101,23 @@ function startTargetDetection(diff) {
   }, elderlyTimer(1600 - diff * 150));
 }
 
+
+// CMT_feat(game4):_Attention_Sw
+
+const SWITCH_RULES = ['color','shape','size'];
+let switchRuleIdx = 0, switchCorrect = 0, switchTotal = 0;
+function startAttentionSwitch(diff) {
+  switchRuleIdx = 0; switchCorrect = 0; switchTotal = 10 + diff * 2;
+  showCurrentRule(SWITCH_RULES[switchRuleIdx]);
+  spawnNextSwitchItem();
+}
+function classifyItem(item, answer) {
+  const rule = SWITCH_RULES[switchRuleIdx % SWITCH_RULES.length];
+  const correct = rule === 'color' ? (item.color === 'blue') === answer
+    : rule === 'shape' ? (item.shape === 'circle') === answer : (item.size === 'large') === answer;
+  if (correct) switchCorrect++;
+  if (++switchTotal % 4 === 0) { switchRuleIdx++; showCurrentRule(SWITCH_RULES[switchRuleIdx % SWITCH_RULES.length]); }
+  if (switchTotal >= 10) recordTaskScore(switchCorrect, switchTotal, Date.now() - taskStartTime);
+  else spawnNextSwitchItem();
+}
+
