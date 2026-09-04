@@ -52,3 +52,19 @@ CREATE TABLE IF NOT EXISTS emergency_contacts (
     is_primary BOOLEAN DEFAULT 1,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+// CMT_feat(db):_Define_SQLite_s
+CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL, age INTEGER, phone TEXT UNIQUE, created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS assessments (
+  id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER, domain TEXT,
+  score REAL, max_score REAL, played_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY(user_id) REFERENCES users(id)
+);
+CREATE TABLE IF NOT EXISTS sos_contacts (
+  id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER,
+  name TEXT, phone TEXT, relation TEXT
+);
+
