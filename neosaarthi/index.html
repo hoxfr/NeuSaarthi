@@ -504,14 +504,18 @@
                     <p style="color: #93C5FD; font-size: 16px; margin-top: 5px;">Steps</p>
                 </div>
  
-                <div style="display: flex; gap: 40px; margin-bottom: 50px;">
+                <div style="display: flex; gap: 30px; margin-bottom: 30px; justify-content: center;">
                     <div>
-                        <h2 id="walk-time" style="font-size: 32px; margin: 0;">00:00</h2>
-                        <p style="color: #93C5FD; font-size: 14px;">Time</p>
+                        <h2 id="walk-time" style="font-size: 30px; margin: 0;">00:00</h2>
+                        <p style="color: #93C5FD; font-size: 13px;">Active Time</p>
                     </div>
                     <div>
-                        <h2 id="walk-goal" style="font-size: 32px; margin: 0;">10:00</h2>
-                        <p style="color: #93C5FD; font-size: 14px;">Goal</p>
+                        <h2 id="walk-distance" style="font-size: 30px; margin: 0;">0.00 km</h2>
+                        <p style="color: #93C5FD; font-size: 13px;">Distance</p>
+                    </div>
+                    <div>
+                        <h2 id="walk-goal" style="font-size: 30px; margin: 0;">10:00</h2>
+                        <p style="color: #93C5FD; font-size: 13px;">Daily Goal</p>
                     </div>
                 </div>
  
@@ -521,7 +525,7 @@
                         <span id="text-walk-action">Start Walk</span>
                     </button>
                 </div>
-                <p style="color: rgba(255,255,255,0.5); font-size: 12px; margin-top: 20px;">* Demo mode: 1 second = 1 minute</p>
+                <p id="walk-status-hint" style="color: #93C5FD; font-size: 13px; margin-top: 16px;">Active pedometer: Timer pauses automatically when stationary</p>
             </main>
         </section>
         <!-- --- Progress Screen --- -->

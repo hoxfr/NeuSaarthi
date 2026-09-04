@@ -1041,7 +1041,7 @@ function startAssessment() {
     if(!document.getElementById('demo-skip')) {
         const skipBtn = document.createElement('button');
         skipBtn.id = 'demo-skip';
-        skipBtn.innerText = 'Skip to Results (Demo Mode)';
+        skipBtn.innerText = 'Skip to Results';
         skipBtn.style.position = 'absolute'; skipBtn.style.bottom = '10px'; skipBtn.style.background = 'transparent';
         skipBtn.style.border = 'none'; skipBtn.style.textDecoration = 'underline'; skipBtn.style.color = '#999';
         skipBtn.onclick = finishAssessment;
@@ -1577,75 +1577,217 @@ function verifyPendingGame() {
 }
 
 
-// --- WALK TRACKER LOGIC ---
+// --- REAL-TIME ACCELEROMETER WALK TRACKER LOGIC ---
 let walkInterval = null;
-let walkTime = 0;
+let walkActiveSecs = 0;
 let walkSteps = 0;
 let walkActive = false;
+let walkMoving = false;
+let walkInactivityTimer = null;
+let walkLastStepMs = 0;
+let walkLpX = 0, walkLpY = 0, walkLpZ = 0;
+let walkPrevMag = 0, walkPrevPrevMag = 0;
+let walkMotionBound = false;
 
-function toggleWalk() {
+const WALK_LOW_PASS_ALPHA = 0.15;
+const WALK_STEP_THRESHOLD = 1.8; // m/s^2
+const WALK_DEBOUNCE_MS = 320;
+const WALK_STRIDE_M = 0.68;
+const WALK_GOAL_SECS = 600; // 10 mins
+
+function updateWalkUI() {
+    const stepsEl = document.getElementById('walk-steps');
+    if (stepsEl) stepsEl.innerText = walkSteps;
+
+    const distEl = document.getElementById('walk-distance');
+    if (distEl) distEl.innerText = ((walkSteps * WALK_STRIDE_M) / 1000).toFixed(2) + ' km';
+
+    const m = Math.floor(walkActiveSecs / 60).toString().padStart(2, '0');
+    const s = (walkActiveSecs % 60).toString().padStart(2, '0');
+    const timeEl = document.getElementById('walk-time');
+    if (timeEl) timeEl.innerText = `${m}:${s}`;
+
+    const progress = Math.min(1, walkActiveSecs / WALK_GOAL_SECS);
+    const ring = document.getElementById('walk-ring');
+    if (ring) ring.style.transform = `rotate(${-45 + (progress * 360)}deg)`;
+}
+
+function recordWalkStep() {
+    walkSteps++;
+    walkLastStepMs = performance.now();
+
+    // If movement was paused, resume timer
+    if (!walkMoving && walkActive) {
+        walkMoving = true;
+        startActiveWalkTicker();
+        const hint = document.getElementById('walk-status-hint');
+        if (hint) {
+            hint.innerText = "Walking actively... Timer running";
+            hint.style.color = "#4CAF50";
+        }
+    }
+
+    // Reset 3-second inactivity watchdog
+    clearTimeout(walkInactivityTimer);
+    walkInactivityTimer = setTimeout(() => {
+        pauseWalkDueToInactivity();
+    }, 3000);
+
+    updateWalkUI();
+}
+
+function pauseWalkDueToInactivity() {
+    if (!walkActive) return;
+    walkMoving = false;
+    clearInterval(walkInterval);
+    walkInterval = null;
+
+    const hint = document.getElementById('walk-status-hint');
+    if (hint) {
+        hint.innerText = "Paused — timer stopped (walk to resume)";
+        hint.style.color = "#FFB74D";
+    }
+}
+
+function startActiveWalkTicker() {
+    if (walkInterval) clearInterval(walkInterval);
+    walkInterval = setInterval(() => {
+        if (!walkActive || !walkMoving) return;
+        walkActiveSecs++;
+        updateWalkUI();
+
+        if (walkActiveSecs >= WALK_GOAL_SECS) {
+            finishWalk();
+        }
+    }, 1000);
+}
+
+function handleWalkDeviceMotion(event) {
+    if (!walkActive) return;
+
+    const acc = event.acceleration?.x != null ? event.acceleration : event.accelerationIncludingGravity;
+    if (!acc) return;
+
+    const rawX = acc.x || 0;
+    const rawY = acc.y || 0;
+    const rawZ = acc.z || 0;
+
+    // Low-pass filter
+    walkLpX = WALK_LOW_PASS_ALPHA * rawX + (1 - WALK_LOW_PASS_ALPHA) * walkLpX;
+    walkLpY = WALK_LOW_PASS_ALPHA * rawY + (1 - WALK_LOW_PASS_ALPHA) * walkLpY;
+    walkLpZ = WALK_LOW_PASS_ALPHA * rawZ + (1 - WALK_LOW_PASS_ALPHA) * walkLpZ;
+
+    const mag = Math.sqrt(walkLpX * walkLpX + walkLpY * walkLpY + walkLpZ * walkLpZ);
+    const now = performance.now();
+
+    // Peak detection
+    const isPeak = (walkPrevMag > walkPrevPrevMag && walkPrevMag > mag && walkPrevMag > WALK_STEP_THRESHOLD);
+    const debounceOk = (now - walkLastStepMs) >= WALK_DEBOUNCE_MS;
+
+    walkPrevPrevMag = walkPrevMag;
+    walkPrevMag = mag;
+
+    if (isPeak && debounceOk) {
+        recordWalkStep();
+    }
+}
+
+async function requestMotionPermissionIfNeeded() {
+    if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+        try {
+            const res = await DeviceMotionEvent.requestPermission();
+            return res === 'granted';
+        } catch (e) {
+            console.warn('DeviceMotion permission:', e);
+            return false;
+        }
+    }
+    return true;
+}
+
+async function toggleWalk() {
     const btn = document.getElementById('btn-walk-action');
     const icon = document.getElementById('icon-walk-action');
     const text = document.getElementById('text-walk-action');
-    const ring = document.getElementById('walk-ring');
+    const hint = document.getElementById('walk-status-hint');
 
     if (walkActive) {
-        // Pause
+        // Pause session manually
         pauseWalk();
-        btn.style.background = '#4CAF50';
-        icon.innerText = 'play_arrow';
-        text.innerText = 'Resume Walk';
+        if (btn) btn.style.background = '#4CAF50';
+        if (icon) icon.innerText = 'play_arrow';
+        if (text) text.innerText = 'Resume Walk';
+        if (hint) {
+            hint.innerText = "Walk paused";
+            hint.style.color = "#93C5FD";
+        }
     } else {
-        // Start
+        // Start session
+        await requestMotionPermissionIfNeeded();
+
+        if (!walkMotionBound) {
+            window.addEventListener('devicemotion', handleWalkDeviceMotion, { passive: true });
+            walkMotionBound = true;
+        }
+
         walkActive = true;
-        btn.style.background = '#F44336';
-        icon.innerText = 'pause';
-        text.innerText = 'Pause';
-        
-        walkInterval = setInterval(() => {
-            walkTime += 1; // 1 second = 1 minute in demo
-            walkSteps += Math.floor(Math.random() * 120) + 80; // Fake steps
-            
-            document.getElementById('walk-steps').innerText = walkSteps;
-            let m = Math.floor(walkTime);
-            document.getElementById('walk-time').innerText = (m < 10 ? '0' + m : m) + ':00';
-            
-            const progress = Math.min(1, walkTime / 10); // 10 seconds/minutes goal
-            ring.style.transform = `rotate(${-45 + (progress * 360)}deg)`;
-            
-            if (walkTime >= 10) {
-                finishWalk();
-            }
-        }, 1000);
+        walkMoving = false;
+        if (btn) btn.style.background = '#F44336';
+        if (icon) icon.innerText = 'pause';
+        if (text) text.innerText = 'Pause';
+        if (hint) {
+            hint.innerText = "Start walking — timer counts only while moving";
+            hint.style.color = "#93C5FD";
+        }
+        updateWalkUI();
     }
 }
 
 function pauseWalk() {
     walkActive = false;
+    walkMoving = false;
     clearInterval(walkInterval);
+    walkInterval = null;
+    clearTimeout(walkInactivityTimer);
 }
 
 function finishWalk() {
     pauseWalk();
-    // Show overlay
     const overlay = document.getElementById('walk-confetti');
-    overlay.style.display = 'flex';
-    
+    if (overlay) overlay.style.display = 'flex';
+
+    // Save real session history
+    try {
+        const hist = JSON.parse(localStorage.getItem('mobilityHistory') || '[]');
+        hist.push({
+            ts: Date.now(),
+            steps: walkSteps,
+            activeSecs: walkActiveSecs,
+            distanceKm: ((walkSteps * WALK_STRIDE_M) / 1000).toFixed(2)
+        });
+        localStorage.setItem('mobilityHistory', JSON.stringify(hist));
+    } catch(e) {}
+
     setTimeout(() => {
-        overlay.style.display = 'none';
-        walkTime = 0;
+        if (overlay) overlay.style.display = 'none';
+        walkActiveSecs = 0;
         walkSteps = 0;
-        document.getElementById('walk-steps').innerText = '0';
-        document.getElementById('walk-time').innerText = '00:00';
-        document.getElementById('walk-ring').style.transform = 'rotate(-45deg)';
-        
+        updateWalkUI();
+
         const btn = document.getElementById('btn-walk-action');
-        btn.style.background = '#4CAF50';
-        document.getElementById('icon-walk-action').innerText = 'play_arrow';
-        document.getElementById('text-walk-action').innerText = 'Start Walk';
-        
-        verifyPendingGame(); // Checks it off and adds to progress
-    }, 3000); // 3 seconds congratulations
+        if (btn) btn.style.background = '#4CAF50';
+        const icon = document.getElementById('icon-walk-action');
+        if (icon) icon.innerText = 'play_arrow';
+        const text = document.getElementById('text-walk-action');
+        if (text) text.innerText = 'Start Walk';
+        const hint = document.getElementById('walk-status-hint');
+        if (hint) {
+            hint.innerText = "Active pedometer: Timer pauses automatically when stationary";
+            hint.style.color = "#93C5FD";
+        }
+
+        verifyPendingGame(); // Checks it off in daily routine
+    }, 3000);
 }
 
 // ====================================================
