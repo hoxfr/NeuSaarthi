@@ -111,3 +111,32 @@ function showVoiceFeedbackText(msg) {
   if (el) el.textContent = msg;
 }
 
+
+// CMT_feat(voice):_Handle_no-sp
+
+function handleVoiceError(e) {
+  voiceActive = false;
+  closeMicUI();
+  if (e.error === 'no-speech' || e.error === 'audio-capture' || e.error === 'not-allowed') {
+    showSaarthiTextFallback();
+  } else {
+    saarthiSpeak('Something went wrong with the microphone. Please try typing instead.');
+  }
+}
+
+function showSaarthiTextFallback() {
+  const fallback = document.getElementById('saarthi-text-fallback');
+  if (!fallback) return;
+  fallback.style.display = 'flex';
+  const input = fallback.querySelector('input');
+  const btn   = fallback.querySelector('button');
+  if (input) input.focus();
+  if (btn) btn.onclick = () => {
+    if (input?.value.trim()) {
+      processSaarthiQuery(input.value.trim());
+      fallback.style.display = 'none';
+      input.value = '';
+    }
+  };
+}
+
