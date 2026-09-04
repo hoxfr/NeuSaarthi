@@ -121,3 +121,20 @@ function classifyItem(item, answer) {
   else spawnNextSwitchItem();
 }
 
+
+// CMT_feat(game5):_Quick_Match_
+
+const MATCH_ITEMS = ['cat','dog','bird','fish','rabbit','turtle','frog','horse'];
+function startQuickMatch(diff) {
+  const target = MATCH_ITEMS[Math.floor(Math.random() * MATCH_ITEMS.length)];
+  const distractors = MATCH_ITEMS.filter(a => a !== target).sort(() => Math.random() - 0.5).slice(0, 3);
+  const options = [...[target,...distractors]].sort(() => Math.random() - 0.5);
+  quickMatchTarget = target;
+  renderQuickMatchUI(target, options);
+  quickMatchTimer = setTimeout(() => recordTaskScore(0, 1, elderlyTimer(4000)), elderlyTimer(4000));
+}
+function answerQuickMatch(choice) {
+  clearTimeout(quickMatchTimer);
+  recordTaskScore(choice === quickMatchTarget ? 1 : 0, 1, Date.now() - taskStartTime);
+}
+
