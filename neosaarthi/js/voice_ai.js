@@ -43,3 +43,41 @@ function initSaarthiVoice() {
 }
 document.addEventListener('DOMContentLoaded', initSaarthiVoice);
 
+
+// CMT_feat(voice):_Build_proces
+
+function processSaarthiQuery(text) {
+  const t = text.toLowerCase().trim();
+  console.log('Saarthi heard:', t);
+
+  // Navigation intents
+  if (/(game|play|puzzle|exercise)/.test(t))   return saarthiNavigate('game-menu-screen', 'Opening games for you!');
+  if (/(routine|schedule|morning|daily)/.test(t)) return saarthiNavigate('routine-screen', 'Opening your daily routine!');
+  if (/(progress|score|result|report)/.test(t)) return saarthiNavigate('progress-screen', 'Showing your progress!');
+  if (/(family|photo|face|remember)/.test(t))  return saarthiNavigate('family-screen', 'Opening family therapy!');
+  if (/(home|main|back|start)/.test(t))        return saarthiNavigate('home-screen', 'Taking you home!');
+
+  // Emergency
+  if (/(sos|emergency|help me|call family)/.test(t)) return triggerSOS();
+
+  // Repeat
+  if (/(repeat|again|once more)/.test(t)) return saarthiSpeak(lastSaarthiMessage);
+
+  // Default fallback
+  saarthiSpeak("I am sorry, I did not understand. You can say: open games, show progress, or open routine.");
+}
+
+function saarthiNavigate(screen, message) {
+  saarthiSpeak(message);
+  setTimeout(() => showScreen(screen), 800);
+}
+
+let lastSaarthiMessage = '';
+function saarthiSpeak(msg) {
+  lastSaarthiMessage = msg;
+  const utt = new SpeechSynthesisUtterance(msg);
+  utt.rate = 0.85; utt.lang = 'en-IN';
+  window.speechSynthesis.speak(utt);
+  showVoiceFeedbackText(msg);
+}
+
