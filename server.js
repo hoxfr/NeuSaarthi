@@ -3,8 +3,118 @@ const https = require('https');
 const fs = require('fs');
 const path = require('path');
 
+// Load .env if present
+try {
+    const envPath = path.join(__dirname, '.env');
+    if (fs.existsSync(envPath)) {
+        const envLines = fs.readFileSync(envPath, 'utf8').split('\n');
+        for (const line of envLines) {
+            const trimmed = line.trim();
+            if (trimmed && !trimmed.startsWith('#') && trimmed.includes('=')) {
+                const idx = trimmed.indexOf('=');
+                const k = trimmed.slice(0, idx).trim();
+                const v = trimmed.slice(idx + 1).trim();
+                if (!process.env[k]) process.env[k] = v;
+            }
+        }
+    }
+} catch (e) {}
+
 const FAST2SMS_KEY = process.env.FAST2SMS_KEY || '';
+const SARVAM_API_KEY = process.env.SARVAM_API_KEY || 'sk_vwdpeqy0_kAUcIsDfqfeLlAPagRhXpvNA';
 const PORT = process.env.PORT || 3000;
+
+function callSarvamChat(prompt, chatHistory = []) {
+    return new Promise((resolve, reject) => {
+        const messages = [
+            {
+                role: 'system',
+                content: 'You are Saarthi (सारथी), an affectionate, warm, patient, and polite daily cognitive wellness companion for an Indian elder/grandparent (part of the NeoSaarthi app). Always reply in warm, simple, natural conversational Hindi (Devanagari script). Keep your replies concise (1 to 2 short sentences). Encourage their memory, hydration, light walking, family connections, and peaceful mind. Never diagnose or use clinical terms like Dementia or Alzheimer\'s. If they ask about their score, routine, or family, encourage them warmly.'
+            }
+        ];
+        
+        if (Array.isArray(chatHistory)) {
+            for (const h of chatHistory.slice(-4)) {
+                if (h && h.role && h.content) messages.push({ role: h.role, content: h.content });
+            }
+        }
+        
+        messages.push({ role: 'user', content: String(prompt || '').trim() });
+
+        const postData = JSON.stringify({
+            model: 'sarvam-105b-conversations',
+            messages: messages,
+            temperature: 0.3
+        });
+
+        const req = https.request('https://api.sarvam.ai/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-subscription-key': SARVAM_API_KEY,
+                'Content-Length': Buffer.byteLength(postData)
+            },
+            timeout: 12000
+        }, (res) => {
+            let data = '';
+            res.on('data', chunk => data += chunk);
+            res.on('end', () => {
+                try {
+                    const parsed = JSON.parse(data);
+                    if (parsed.choices && parsed.choices[0] && parsed.choices[0].message) {
+                        resolve(parsed.choices[0].message.content.trim());
+                    } else {
+                        reject(new Error(data));
+                    }
+                } catch (e) { reject(e); }
+            });
+        });
+
+        req.on('error', reject);
+        req.on('timeout', () => { req.destroy(); reject(new Error('Sarvam chat timeout')); });
+        req.write(postData);
+        req.end();
+    });
+}
+
+function callSarvamTTS(text) {
+    return new Promise((resolve, reject) => {
+        const postData = JSON.stringify({
+            inputs: [String(text || '').slice(0, 500)],
+            target_language_code: 'hi-IN',
+            speaker: 'ritu',
+            model: 'bulbul:v3'
+        });
+
+        const req = https.request('https://api.sarvam.ai/text-to-speech', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-subscription-key': SARVAM_API_KEY,
+                'Content-Length': Buffer.byteLength(postData)
+            },
+            timeout: 10000
+        }, (res) => {
+            let data = '';
+            res.on('data', chunk => data += chunk);
+            res.on('end', () => {
+                try {
+                    const parsed = JSON.parse(data);
+                    if (parsed.audios && parsed.audios[0]) {
+                        resolve(parsed.audios[0]);
+                    } else {
+                        resolve(null);
+                    }
+                } catch (e) { resolve(null); }
+            });
+        });
+
+        req.on('error', () => resolve(null));
+        req.on('timeout', () => { req.destroy(); resolve(null); });
+        req.write(postData);
+        req.end();
+    });
+}
 
 // In-memory store for OTPs: phone -> { otp, expiresAt }
 const otpStore = new Map();
@@ -60,6 +170,45 @@ const server = http.createServer(async (req, res) => {
     }
 
     const url = new URL(req.url, `http://localhost:${PORT}`);
+
+    // API: Sarvam AI Hindi Chat & Voice
+    if (req.method === 'POST' && url.pathname === '/api/sarvam-chat') {
+        let body = '';
+        req.on('data', chunk => body += chunk);
+        req.on('end', async () => {
+            try {
+                const { prompt, history } = JSON.parse(body || '{}');
+                if (!prompt) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ success: false, message: 'Prompt is required' }));
+                    return;
+                }
+
+                console.log('[Sarvam AI] Hindi query:', prompt);
+                const hindiReply = await callSarvamChat(prompt, history);
+                console.log('[Sarvam AI] Hindi reply:', hindiReply);
+
+                let audioBase64 = null;
+                try {
+                    audioBase64 = await callSarvamTTS(hindiReply);
+                } catch (ttsErr) {
+                    console.error('[Sarvam TTS Error]:', ttsErr.message);
+                }
+
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({
+                    success: true,
+                    reply: hindiReply,
+                    audio: audioBase64
+                }));
+            } catch (err) {
+                console.error('[Sarvam Chat Error]:', err.message);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: false, error: err.message }));
+            }
+        });
+        return;
+    }
 
     // API: Send OTP
     if (req.method === 'POST' && url.pathname === '/api/send-otp') {

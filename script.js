@@ -1313,7 +1313,8 @@ function speakSaarthi(text, onEnd) {
 // --- NLP intent router: broad cognitive-companion knowledge base ---
 function classifySaarthiIntent(text) {
     const t = (text || '').toLowerCase();
-    if (/talk (to me )?in hindi|speak (in )?hindi|switch( to)? hindi/i.test(t)) return 'switch_hindi';
+    if (/talk (to me )?in hindi|speak (in )?hindi|switch( to)? hindi|hindi me( baat| bolo)?|हिंदी में( बात| बोलो)?/i.test(t)) return 'switch_hindi';
+    if (/talk (to me )?in english|speak (in )?english|switch( to)? english|english me( baat| bolo)?|अंग्रेजी में( बात| बोलो)?/i.test(t)) return 'switch_english';
     
     const L = getSaarthiLang();
     const intents = L.intents || SAARTHI_I18N.en.intents;
@@ -1355,8 +1356,28 @@ function buildSaarthiReply(intent, rawText) {
             const goHindi = function () {
                 stopSaarthiListening(); SaarthiUI.state = 'idle'; SaarthiUI.hidePill();
                 if (typeof changeLanguage === 'function') changeLanguage('hi');
-                SaarthiUI.showPillText('नमस्ते! मैंने हिंदी में बोलना शुरू कर दिया है।');
-                speakSaarthi('नमस्ते! मैंने हिंदी में बोलना शुरू कर दिया है।', function () { SaarthiUI.settleIdle(); });
+                window.sarvamHindiActive = true;
+                const ack = 'नमस्ते! अब हम हिंदी में बात करेंगे। आप कैसे हैं?';
+                SaarthiUI.showPillText(ack);
+                // Try playing neural voice from Sarvam
+                fetch('/api/sarvam-chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: 'नमस्ते! मैंने अभी आपसे हिंदी में बात करने को कहा है।' })
+                })
+                .then(r => r.json())
+                .then(data => {
+                    const replyText = (data && data.reply) ? data.reply : ack;
+                    SaarthiUI.showPillText(replyText);
+                    if (data && data.audio && typeof playSarvamAudio === 'function') {
+                        playSarvamAudio(data.audio, replyText, function () { SaarthiUI.settleIdle(); });
+                    } else {
+                        speakSaarthi(replyText, function () { SaarthiUI.settleIdle(); });
+                    }
+                })
+                .catch(() => {
+                    speakSaarthi(ack, function () { SaarthiUI.settleIdle(); });
+                });
             };
             const goEnglish = function () {
                 stopSaarthiListening(); SaarthiUI.hideActions();
@@ -1371,6 +1392,30 @@ function buildSaarthiReply(intent, rawText) {
                     { label: '&#x274C; No, stay in English', onSelect: goEnglish }
                 ],
                 voice: { yes: goHindi, no: goEnglish }
+            };
+        }
+        if (intent === 'switch_english') {
+            const goEnglish = function () {
+                stopSaarthiListening(); SaarthiUI.state = 'idle'; SaarthiUI.hidePill();
+                if (typeof changeLanguage === 'function') changeLanguage('en');
+                window.sarvamHindiActive = false;
+                const ack = 'Sure, I have switched back to English. How can I help you today?';
+                SaarthiUI.showPillText(ack);
+                speakSaarthi(ack, function () { SaarthiUI.settleIdle(); });
+            };
+            const stayHindi = function () {
+                stopSaarthiListening(); SaarthiUI.hideActions();
+                const ack = 'ठीक है, हम हिंदी में ही बात करेंगे।';
+                SaarthiUI.showPillText(ack);
+                speakSaarthi(ack, function () { SaarthiUI.settleIdle(); });
+            };
+            return {
+                text: "क्या आप वापस अंग्रेजी में बात करना चाहते हैं? (Do you want to switch back to English?)",
+                choices: [
+                    { label: '&#x2705; Yes, English', primary: true, onSelect: goEnglish },
+                    { label: '&#x274C; No, stay in Hindi', onSelect: stayHindi }
+                ],
+                voice: { yes: goEnglish, no: stayHindi }
             };
         }
         if (intent === 'score') {
@@ -1478,11 +1523,113 @@ function buildSaarthiReply(intent, rawText) {
     }
 }
 
+function playSarvamAudio(base64Audio, fallbackText, onFinish) {
+    try {
+        if (window.currentSarvamAudio) {
+            try { window.currentSarvamAudio.pause(); } catch (e) {}
+            window.currentSarvamAudio = null;
+        }
+        if (base64Audio) {
+            const audio = new Audio("data:audio/wav;base64," + base64Audio);
+            window.currentSarvamAudio = audio;
+            audio.onended = function () {
+                window.currentSarvamAudio = null;
+                if (typeof onFinish === 'function') onFinish();
+            };
+            audio.onerror = function () {
+                window.currentSarvamAudio = null;
+                speakSaarthi(fallbackText, onFinish);
+            };
+            const p = audio.play();
+            if (p !== undefined) {
+                p.catch(function () {
+                    speakSaarthi(fallbackText, onFinish);
+                });
+            }
+        } else {
+            speakSaarthi(fallbackText, onFinish);
+        }
+    } catch (e) {
+        speakSaarthi(fallbackText, onFinish);
+    }
+}
+
 function processSaarthiQuery(text) {
     try {
-        const intent = classifySaarthiIntent(text);
-        const reply = buildSaarthiReply(intent, text);
+        const t = (text || '').trim();
+        if (!t) return;
 
+        const intent = classifySaarthiIntent(t);
+
+        // Language switch requests are handled through the interactive confirmation
+        if (intent === 'switch_hindi' || intent === 'switch_english') {
+            const reply = buildSaarthiReply(intent, t);
+            SaarthiUI.collapseToPill(t, reply.text);
+            speakSaarthi(reply.text, function () {
+                try {
+                    if (reply.choices && reply.choices.length) SaarthiUI.showChoices(reply.choices, reply.voice);
+                    else SaarthiUI.settleIdle();
+                } catch (e) {}
+            });
+            return;
+        }
+
+        // When in Hindi mode, use Sarvam AI Indic LLM & Neural Voice!
+        if (currentLang === 'hi' || window.sarvamHindiActive) {
+            SaarthiUI.collapseToPill(t, "सारथी सोच रहे हैं...");
+
+            if (!window.sarvamChatHistory) window.sarvamChatHistory = [];
+
+            fetch('/api/sarvam-chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt: t, history: window.sarvamChatHistory })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.success && data.reply) {
+                    window.sarvamChatHistory.push({ role: 'user', content: t });
+                    window.sarvamChatHistory.push({ role: 'assistant', content: data.reply });
+                    if (window.sarvamChatHistory.length > 8) {
+                        window.sarvamChatHistory = window.sarvamChatHistory.slice(-8);
+                    }
+
+                    SaarthiUI.showPillText(data.reply);
+
+                    playSarvamAudio(data.audio, data.reply, function () {
+                        // If user asked to navigate (score, routine, family, sos), show shortcut button
+                        if (intent === 'score' || intent === 'routine' || intent === 'family' || intent === 'emergency') {
+                            try {
+                                const localR = buildSaarthiReply(intent, t);
+                                if (localR && localR.choices) {
+                                    SaarthiUI.showChoices(localR.choices, localR.voice);
+                                    return;
+                                }
+                            } catch (e) {}
+                        }
+                        SaarthiUI.settleIdle();
+                    });
+                } else {
+                    fallbackToLocalSaarthi(t, intent);
+                }
+            })
+            .catch(err => {
+                console.error('[Sarvam Chat Client Error]:', err);
+                fallbackToLocalSaarthi(t, intent);
+            });
+            return;
+        }
+
+        // Default local companion logic for English / other languages
+        fallbackToLocalSaarthi(t, intent);
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+function fallbackToLocalSaarthi(text, intent) {
+    try {
+        const reply = buildSaarthiReply(intent, text);
         SaarthiUI.collapseToPill(text, reply.text);
         speakSaarthi(reply.text, function () {
             try {
