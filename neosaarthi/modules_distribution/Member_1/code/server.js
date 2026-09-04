@@ -1,10 +1,10 @@
-const http = require('http');
+﻿const http = require('http');
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
 
 const FAST2SMS_KEY = 'DeWwXpQ3Prc4ZtLTJ7NfOCgbxFv10YVqk9Hao5Ezs6dIRylm2iHjRIqdgync0wPoTlL7NZs3UBpFXexJ';
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
 // In-memory store for OTPs: phone -> { otp, expiresAt }
 const otpStore = new Map();
@@ -180,22 +180,3 @@ const server = http.createServer(async (req, res) => {
 server.listen(PORT, () => {
     console.log(`NeoSaarthi Fast2SMS OTP Server running at http://localhost:${PORT}`);
 });
-// CMT_feat(server):_Add_Express
-app.use(express.json({ limit: '10mb' }));
-app.use(cors({ origin: '*', methods: ['GET','POST','PUT','DELETE'] }));
-app.use((req, res, next) => { console.log(`${req.method} ${req.url}`); next(); });
-
-
-// CMT_feat(api):_Implement_/api
-app.post('/api/user/register', async (req, res) => {
-  const { name, age, phone } = req.body;
-  const otp = Math.floor(100000 + Math.random() * 900000);
-  await db.createUser({ name, age, phone, otp });
-  res.json({ success: true, message: 'OTP sent' });
-});
-app.post('/api/user/login', async (req, res) => {
-  const user = await db.findByPhone(req.body.phone);
-  if (!user || user.otp !== req.body.otp) return res.status(401).json({ error: 'Invalid OTP' });
-  res.json({ success: true, userId: user.id });
-});
-

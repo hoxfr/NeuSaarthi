@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NeoSaarthi MVP</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Meetei+Mayek&display=swap');
+      .primary-btn { background: #FF8A65; color: white; border: none; padding: 16px; border-radius: 20px; font-size: 18px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: transform 0.1s; }
+  .primary-btn:active { transform: scale(0.98); }
+</style>
+</head>
+<body>
+
+    <div id="app-frame">
+        
+        <!-- --- SIDE DRAWER (Gmail Style) --- -->
+        <div id="drawer-overlay" class="drawer-overlay" onclick="toggleDrawer()"></div>
+        <div id="side-drawer" class="side-drawer">
+            <div class="drawer-header">
+                <h2 style="color: #00796B; font-size: 18px;">Profile Menu</h2>
+                <button onclick="toggleDrawer()" style="background:none; border:none; color:#666; cursor:pointer;"><span class="material-symbols-rounded">close</span></button>
+            </div>
+            <div class="drawer-item" onclick="openProfileSection('clinical')">
+                <span class="material-symbols-rounded" style="color:#FF8A65;">badge</span> Wellness Profile
+            </div>
+            <div class="drawer-item" onclick="openProfileSection('cognitive')">
+                <span class="material-symbols-rounded" style="color:#00796B;">psychology</span> Cognitive Profile
+            </div>
+            <div class="drawer-item" onclick="openProfileSection('functional')">
+                <span class="material-symbols-rounded" style="color:#FFC107;">accessibility_new</span> Daily Support
+            </div>
+            <div class="drawer-item" onclick="openProfileSection('preferences')">
+                <span class="material-symbols-rounded" style="color:#00796B;">settings</span> User Preferences
+            </div>
+            <div class="drawer-item" onclick="openProfileSection('context')">
+                <span class="material-symbols-rounded" style="color:#FF8A65;">favorite</span> Personal Context
+            </div>
+        </div>
+
+        <!-- --- 1. Language Selection Screen --- -->
+        <section id="language-screen" class="screen active">
+            <main class="content-pad" style="display: flex; flex-direction: column;">
+                <p style="text-align: center; margin-bottom: 20px;">Choose your language</p>
+                <div class="lang-grid">
+                    <button class="lang-card active-lang" onclick="changeLanguage('en', this)">English</button>
+                    <button class="lang-card" onclick="changeLanguage('as', this)">Assamese (&#2437;&#2488;&#2478;&#2368;&#2351;&#2366;)</button>
+                    <button class="lang-card" onclick="changeLanguage('hi', this)">Hindi (&#2361;&#2368;&#2344;&#2381;&#2342;&#2368;)</button>
+                    <button class="lang-card" onclick="changeLanguage('mni', this)">Manipuri (&#43859;&#43850;&#43858;&#43845;&#43859;&#43864;&#43867;)</button>
+                    <button class="lang-card" onclick="changeLanguage('kha', this)">Khasi (Ka Ktien Khasi)</button>
+                    <button class="lang-card" onclick="changeLanguage('mz', this)">Mizo (Mizo &#x163;awng)</button>
+                    <button class="lang-card" onclick="changeLanguage('nag', this)">Nagamese (Nagamiz)</button>
+                    <button class="lang-card" onclick="changeLanguage('bn', this)">Bengali (&#2476;&#2494;&#2434;&#2482;&#2494;)</button>
+                    <button class="lang-card" onclick="changeLanguage('ne', this)">Nepali (&#2344;&#2375;&#2346;&#2344;&#2368;)</button>
+                </div>
+                
+                <button id="next-btn" class="primary-btn" style="margin-top: auto; padding: 16px; border-radius: 20px;" onclick="goToLogin()">
+                    <span id="next-btn-text">Next</span>
+                    <span class="material-symbols-rounded">arrow_forward</span>
+                </button>
+            </main>
+        </section>
+
+        <!-- --- 2. Login Screen --- -->
+        <section id="login-screen" class="screen">
+            <header class="app-header" style="text-align: center;">
+                <h1 id="login-title">Welcome</h1>
+                <p id="login-subtitle">Enter details to continue</p>
+            </header>
+            <main class="content-pad" style="display: flex; flex-direction: column; gap: 20px;">
+                <div class="input-group">
+                    <label id="label-phone">Phone Number (Required)*</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" value="+91" disabled style="width: 60px; text-align: center; border-radius: 12px; border: 1px solid #ddd; background: #f5f5f5;">
+                        <input type="tel" id="phone-input" placeholder="Enter 10-digit number" style="flex: 1; padding: 16px; border-radius: 12px; border: 1px solid #00796B; font-family: 'Poppins', sans-serif;">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label id="label-email">Email ID (Optional)</label>
+                    <input type="email" id="email-input" placeholder="you@example.com" style="width: 100%; padding: 16px; border-radius: 12px; border: 1px solid #ddd; font-family: 'Poppins', sans-serif;">
+                </div>
+                <button class="primary-btn" style="margin-top: auto;" onclick="sendOTP()">
+                    <span id="btn-send-otp">Send OTP</span>
+                </button>
+            </main>
+        </section>
+
+        <!-- --- 3. OTP Screen --- -->
+        <section id="otp-screen" class="screen">
+            <header class="app-header" style="text-align: center;">
+                <h1 id="otp-title">Verify Phone</h1>
+                <p id="otp-subtitle">OTP sent to your number</p>
+            </header>
+            <main class="content-pad" style="display: flex; flex-direction: column; align-items: center; gap: 30px;">
+                <div class="otp-group" style="display: flex; gap: 12px; justify-content: center; margin-top: 20px;">
+                    <input type="text" class="otp-input" maxlength="1" onkeyup="moveToNext(this, 'otp2')">
+                    <input type="text" class="otp-input" id="otp2" maxlength="1" onkeyup="moveToNext(this, 'otp3')">
+                    <input type="text" class="otp-input" id="otp3" maxlength="1" onkeyup="moveToNext(this, 'otp4')">
+                    <input type="text" class="otp-input" id="otp4" maxlength="1" onkeyup="verifyOTP()">
+                </div>
+                <button class="primary-btn" id="btn-verify-otp" onclick="verifyOTP()" style="width: 100%;">
+                    <span>Verify & Secure</span>
+                </button>
+            </main>
+        </section>
+
+        <!-- --- 4. Role Selection --- -->
+        <section id="role-screen" class="screen">
+            <header class="app-header" style="text-align: center;">
+                <h1 id="role-title">Who is using this?</h1>
+                <p id="role-subtitle">We will adapt the experience for you.</p>
+            </header>
+            <main class="content-pad" style="display: flex; flex-direction: column; gap: 20px;">
+                <div class="action-card" onclick="selectRole('self')" style="text-align: center; padding: 30px 20px; border: 2px solid #00796B; background: white;">
+                    <span class="material-symbols-rounded" style="font-size: 48px; color: #00796B; margin-bottom: 10px;">person</span>
+                    <h2 id="role-self-title" style="color: #37474F;">Set up for myself</h2>
+                    <p id="role-self-desc" style="font-size: 14px; color: #666; margin-top: 8px;">I want to exercise my brain and maintain a healthy routine.</p>
+                </div>
+                <div class="action-card" onclick="selectRole('loved_one')" style="text-align: center; padding: 30px 20px; border: 2px solid #FF8A65; background: white;">
+                    <span class="material-symbols-rounded" style="font-size: 48px; color: #FF8A65; margin-bottom: 10px;">favorite</span>
+                    <h2 id="role-loved-title" style="color: #37474F;">Set up for a loved one</h2>
+                    <p id="role-loved-desc" style="font-size: 14px; color: #666; margin-top: 8px;">I am managing care and routines for a family member.</p>
+                </div>
+            </main>
+        </section>
+
+        <!-- --- 5. Welcome Screen (FTUX) --- -->
+        <section id="welcome-screen" class="screen">
+            <main class="content-pad" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100%;">
+                <span class="material-symbols-rounded" style="font-size: 80px; color: #FF8A65; margin-bottom: 20px;">celebration</span>
+                <h1 id="welcome-title" style="color: #00796B; margin-bottom: 10px;">Let's warm up!</h1>
+                <p id="welcome-desc" style="color: #666; margin-bottom: 40px; line-height: 1.5;">Play a quick game so we can personalize your experience.</p>
+                <button class="primary-btn" onclick="startAssessment()" style="width: 100%; border-radius: 24px;">
+                    <span id="btn-start-game">Start Fun Game</span>
+                </button>
+            </main>
+        </section>
+
+        <!-- --- 6. Assessment Game (Dynamic Gauntlet) --- -->
+        <section id="assessment-screen" class="screen">
+            <header class="inner-header" style="text-align: center; padding-top: 40px; background: white; border-bottom: 1px solid #eee; position: relative;">
+                <button class="back-btn" onclick="quitAssessment()" style="position: absolute; left: 15px; top: 20px; font-size: 24px; background: none; border: none; cursor: pointer; color: #37474F;">&#x2190;</button>
+                <div style="background: #E0F2F1; color: #00796B; display: inline-block; padding: 6px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; margin-bottom: 12px; border: 2px solid #00796B;" id="gauntlet-timer" style="display:none;">05:00</div>
+                <h2 id="gauntlet-title" style="color: #37474F; font-size: 20px;">Phase 1: Reflexes</h2>
+                <div class="progress-bar" style="width: 80%; height: 8px; background: #eee; margin: 15px auto 10px; border-radius: 4px; overflow: hidden;">
+                    <div id="gauntlet-progress" style="width: 25%; height: 100%; background: #FF8A65; border-radius: 4px; transition: 0.4s ease-out;"></div>
+                </div>
+            </header>
+            <main style="flex: 1; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #FDFCF0; position: relative;" id="gauntlet-area">
+                <!-- Injected by JS -->
+            </main>
+        </section>
+
+        <!-- --- 7. Analyzing Screen --- -->
+        <section id="analyzing-screen" class="screen">
+            <main class="content-pad" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100%;">
+                <div class="spinner"></div>
+                <h2 id="analyzing-text" style="color: #00796B; margin-top: 30px; font-size: 18px;">Analyzing your interactions...</h2>
+            </main>
+        </section>
+
+        <!-- --- Home Screen --- -->
+        <section id="home-screen" class="screen">
+            <header class="app-header">
+                <div class="header-top-actions" style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                    <button onclick="toggleDrawer()" style="background: rgba(255,255,255,0.2); border: none; border-radius: 20px; padding: 6px 12px; color: white; display: flex; align-items: center; cursor: pointer; backdrop-filter: blur(5px);">
+                        <span class="material-symbols-rounded" style="font-size: 24px;">menu</span>
+                    </button>
+                    <button id="change-lang-btn" onclick="resetLanguage()" style="background: rgba(255,255,255,0.2); border: none; border-radius: 20px; padding: 6px 12px; color: white; display: flex; align-items: center; gap: 6px; cursor: pointer; backdrop-filter: blur(5px);">
+                        <span class="material-symbols-rounded" style="font-size: 18px;">language</span>
+                        <span id="change-lang-text" style="font-size: 14px; font-weight: 600;">Change Language</span>
+                    </button>
+                </div>
+                <div class="header-content">
+                    <h1 id="home-greeting">Good Morning</h1>
+                    <p>It's a beautiful day.</p>
+                </div>
+                <div class="stats-widget">
+                    <span class="material-symbols-rounded">local_fire_department</span>
+                    <span class="streak-text">Streak: 5 Days</span>
+                </div>
+                
+                <!-- Live Accurate Daily Progress Bar on Home Screen -->
+                <div class="home-progress-container" style="background: rgba(255,255,255,0.18); border-radius: 14px; padding: 12px 16px; margin-top: 14px; backdrop-filter: blur(4px);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 13px; font-weight: 700; color: white;">
+                        <span>Today's Wellness Goal</span>
+                        <span id="home-progress-pct" style="color: #FFF9C4;">0% (0 / 5 Tasks)</span>
+                    </div>
+                    <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.25); border-radius: 4px; overflow: hidden;">
+                        <div id="home-progress-fill" style="width: 0%; height: 100%; background: #FFC107; border-radius: 4px; transition: 0.4s ease-out;"></div>
+                    </div>
+                </div>
+            </header>
+
+            <main class="content-pad" style="display: flex; flex-direction: column; gap: 16px; padding-bottom: 100px;">
+                <!-- 🤖 AI Dynamic Care Track Banner -->
+                <div id="ai-care-track-banner" style="display: none; background: linear-gradient(135deg, #004D40, #00796B); border-radius: 18px; padding: 16px; color: white; box-shadow: 0 4px 15px rgba(0,77,64,0.25); border: 1px solid rgba(255,255,255,0.2); position: relative; overflow: hidden;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+                        <span style="background: rgba(255,255,255,0.22); padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
+                            <span class="material-symbols-rounded" style="font-size: 14px;">psychology</span> AI Care Plan Active
+                        </span>
+                        <span id="ai-plan-date" style="font-size: 11px; opacity: 0.85;">Calibrated Today</span>
+                    </div>
+                    <h3 id="ai-plan-title" style="margin: 4px 0; font-size: 17px; font-weight: 800; color: #FFF9C4;">Focus: Working Memory & Visual Attention</h3>
+                    <p id="ai-plan-desc" style="margin: 0 0 12px 0; font-size: 13px; opacity: 0.92; line-height: 1.4;">Calibrated to your recent assessment profile.</p>
+                    <button onclick="showScreen('progress-screen')" style="background: #FFC107; color: #37474F; border: none; padding: 7px 14px; border-radius: 12px; font-weight: 800; font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+                        View AI Analysis &#x27A1;
+                    </button>
+                </div>
+                <p style="font-size: 14px; color: #666; margin-bottom: -8px; font-weight: 600;">Your Daily Wellness Routine</p>
+                <div class="quest-card" onclick="showScreen('game-menu-screen')" style="border-left: 6px solid #00796B;">
+                    <div class="quest-icon" style="background: #E0F2F1; color: #00796B;"><span class="material-symbols-rounded">extension</span></div>
+                    <div class="quest-text"><h2 id="btn-game" style="color:#37474F;">Cognitive Exercise</h2><p style="color:#666;">Targeted Therapy</p></div>
+                    <span class="material-symbols-rounded" style="color: #ccc;">chevron_right</span>
+                </div>
+                <div class="quest-card" onclick="showScreen('family-screen')" style="border-left: 6px solid #FF8A65;">
+                    <div class="quest-icon" style="background: #FBE9E7; color: #FF8A65;"><span class="material-symbols-rounded">diversity_1</span></div>
+                    <div class="quest-text"><h2 id="btn-family" style="color:#37474F;">Visual Therapy</h2><p style="color:#666;">Targeted Therapy</p></div>
+                    <span class="material-symbols-rounded" style="color: #ccc;">chevron_right</span>
+                </div>
+                <div class="quest-card" onclick="showScreen('routine-screen')" style="border-left: 6px solid #FFC107;">
+                    <div class="quest-icon" style="background: #FFF8E1; color: #FFC107;"><span class="material-symbols-rounded">event_available</span></div>
+                    <div class="quest-text"><h2 id="btn-routine" style="color:#37474F;">Audio Therapy</h2><p style="color:#666;">Targeted Therapy</p></div>
+                    <span class="material-symbols-rounded" style="color: #ccc;">chevron_right</span>
+                </div>
+                <button class="sos-btn pulse-animation" onclick="showScreen('sos-screen')" style="margin-top: 20px;">
+                    <span class="material-symbols-rounded">emergency</span>
+                    <span id="btn-sos">SOS Alert</span>
+                </button>
+            </main>
+        </section>
+        <!-- --- PROFILE 1: Wellness Profile --- -->
+        <section id="screen-clinical" class="screen" style="background: #FDFCF0;">
+            <header class="inner-header" style="display: flex; align-items: center; justify-content: space-between; padding: 20px; background: white; border-bottom: 1px solid #eee;">
+                <button onclick="showScreen('home-screen')" style="background: none; border: none; font-size: 24px; color: #37474F; cursor: pointer;"><span class="material-symbols-rounded">arrow_back</span></button>
+                <h2 style="font-size: 18px; color: #FF8A65;">Wellness Profile</h2>
+                <button onclick="showScreen('home-screen')" style="background: #FF8A65; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: bold;">Save</button>
+            </header>
+            <main class="content-pad" style="padding-top: 20px;">
+                <div style="display: flex; flex-direction: column; gap: 16px; background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
+                    <label style="font-size: 14px; color: #666; font-weight: 600;">Primary Focus Area*</label>
+                    <select style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; background: #f9f9f9; font-family: 'Poppins';">
+                        <option>Memory Support</option>
+                        <option>Movement &amp; Coordination</option>
+                        <option>Attention &amp; Orientation</option>
+                        <option>Early Memory Changes</option>
+                    </select>
+                    <label style="font-size: 14px; color: #666; font-weight: 600;">Support Level*</label>
+                    <div style="display: flex; gap: 10px;">
+                        <button style="flex: 1; padding: 10px; background: #FF8A65; color: white; border: none; border-radius: 8px; font-weight: 600;">Light</button>
+                        <button style="flex: 1; padding: 10px; background: white; color: #666; border: 1px solid #ddd; border-radius: 8px;">Moderate</button>
+                        <button style="flex: 1; padding: 10px; background: white; color: #666; border: 1px solid #ddd; border-radius: 8px;">High</button>
+                    </div>
+                    <label style="font-size: 14px; color: #666; font-weight: 600;">Care Notes</label>
+                    <textarea rows="4" placeholder="Enter notes..." style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; background: #f9f9f9; font-family: 'Poppins';"></textarea>
+                </div>
+            </main>
+        </section>
+
+        <!-- --- PROFILE 2: Cognitive Profile --- -->
+        <section id="screen-cognitive" class="screen" style="background: #FDFCF0;">
+            <header class="inner-header" style="display: flex; align-items: center; justify-content: space-between; padding: 20px; background: white; border-bottom: 1px solid #eee;">
+                <button onclick="showScreen('home-screen')" style="background: none; border: none; font-size: 24px; color: #37474F; cursor: pointer;"><span class="material-symbols-rounded">arrow_back</span></button>
+                <h2 style="font-size: 18px; color: #00796B;">Cognitive Profile</h2>
+                <button onclick="showScreen('home-screen')" style="background: #00796B; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: bold;">Save</button>
+            </header>
+            <main class="content-pad" style="padding-top: 20px;">
+                <div style="display: flex; flex-direction: column; gap: 20px; background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
+                    <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-size: 15px; font-weight: 500; color: #37474F;">Memory</span><input type="range" min="0" max="100" value="40" style="width: 60%; accent-color: #00796B;"></div>
+                    <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-size: 15px; font-weight: 500; color: #37474F;">Attention</span><input type="range" min="0" max="100" value="65" style="width: 60%; accent-color: #00796B;"></div>
+                    <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-size: 15px; font-weight: 500; color: #37474F;">Executive Func.</span><input type="range" min="0" max="100" value="50" style="width: 60%; accent-color: #00796B;"></div>
+                    <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-size: 15px; font-weight: 500; color: #37474F;">Recognition</span><input type="range" min="0" max="100" value="70" style="width: 60%; accent-color: #00796B;"></div>
+                    <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-size: 15px; font-weight: 500; color: #37474F;">Language</span><input type="range" min="0" max="100" value="85" style="width: 60%; accent-color: #00796B;"></div>
+                    <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-size: 15px; font-weight: 500; color: #37474F;">Visuospatial</span><input type="range" min="0" max="100" value="45" style="width: 60%; accent-color: #00796B;"></div>
+                    <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-size: 15px; font-weight: 500; color: #37474F;">Orientation</span><input type="range" min="0" max="100" value="30" style="width: 60%; accent-color: #00796B;"></div>
+                </div>
+            </main>
+        </section>
+
+        <!-- --- PROFILE 3: Functional Needs --- -->
+        <section id="screen-functional" class="screen" style="background: #FDFCF0;">
+            <style>
+                .check-circle { width: 24px; height: 24px; border: 2px solid #ccc; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+                .routine-task.done .check-circle { background: #4CAF50; border-color: #4CAF50; }
+                .routine-task.done .check-circle::after { content: "\2714"; color: white; font-size: 14px; font-weight: bold; }
+                .routine-task.done h2, .routine-task.done p { text-decoration: line-through; opacity: 0.6; }
+                
+                /* Bottom Nav */
+                .bottom-nav { background: white; padding: 15px 20px; display: none; flex-direction: row; justify-content: space-around; align-items: center; border-top: 1px solid #eee; border-radius: 0 0 40px 40px; box-shadow: 0 -4px 20px rgba(0,0,0,0.05); width: 100%; position: absolute; bottom: 0; z-index: 100; }
+                .nav-item { display: flex; flex-direction: column; align-items: center; color: #999; font-size: 12px; cursor: pointer; transition: 0.2s; }
+                .nav-item.active { color: #00796B; font-weight: bold; transform: scale(1.1); }
+                .nav-item span.material-symbols-rounded { margin-bottom: 4px; font-size: 28px; }
+            </style>
+            <header class="inner-header" style="display: flex; align-items: center; justify-content: space-between; padding: 20px; background: white; border-bottom: 1px solid #eee;">
+                <button onclick="showScreen('home-screen')" style="background: none; border: none; font-size: 24px; color: #37474F; cursor: pointer;"><span class="material-symbols-rounded">arrow_back</span></button>
+                <h2 style="font-size: 18px; color: #FFC107;">Daily Support</h2>
+                <button onclick="showScreen('home-screen')" style="background: #FFC107; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: bold;">Save</button>
+            </header>
+            <main class="content-pad" style="padding-top: 20px;">
+                <div style="display: flex; flex-direction: column; gap: 12px; background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f9f9f9; border-radius: 12px;">
+                        <span style="font-size: 15px; color: #37474F; font-weight: 500;">Routine Assistance</span>
+                        <div style="width: 40px; height: 24px; background: #00796B; border-radius: 12px; position: relative;"><div style="width: 18px; height: 18px; background: white; border-radius: 50%; position: absolute; right: 3px; top: 3px;"></div></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f9f9f9; border-radius: 12px;">
+                        <span style="font-size: 15px; color: #37474F; font-weight: 500;">Daily Routine Reminders</span>
+                        <div style="width: 40px; height: 24px; background: #00796B; border-radius: 12px; position: relative;"><div style="width: 18px; height: 18px; background: white; border-radius: 50%; position: absolute; right: 3px; top: 3px;"></div></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f9f9f9; border-radius: 12px;">
+                        <span style="font-size: 15px; color: #37474F; font-weight: 500;">Appointment Reminders</span>
+                        <div style="width: 40px; height: 24px; background: #ccc; border-radius: 12px; position: relative;"><div style="width: 18px; height: 18px; background: white; border-radius: 50%; position: absolute; left: 3px; top: 3px;"></div></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f9f9f9; border-radius: 12px;">
+                        <span style="font-size: 15px; color: #37474F; font-weight: 500;">Orientation Support</span>
+                        <div style="width: 40px; height: 24px; background: #00796B; border-radius: 12px; position: relative;"><div style="width: 18px; height: 18px; background: white; border-radius: 50%; position: absolute; right: 3px; top: 3px;"></div></div>
+                    </div>
+                </div>
+            </main>
+        </section>
+
+        <!-- --- PROFILE 4: User Preferences --- -->
+        <section id="screen-preferences" class="screen" style="background: #FDFCF0;">
+            <header class="inner-header" style="display: flex; align-items: center; justify-content: space-between; padding: 20px; background: white; border-bottom: 1px solid #eee;">
+                <button onclick="showScreen('home-screen')" style="background: none; border: none; font-size: 24px; color: #37474F; cursor: pointer;"><span class="material-symbols-rounded">arrow_back</span></button>
+                <h2 style="font-size: 18px; color: #00796B;">User Preferences</h2>
+                <button onclick="showScreen('home-screen')" style="background: #00796B; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: bold;">Save</button>
+            </header>
+            <main class="content-pad" style="padding-top: 20px;">
+                <div style="display: flex; flex-direction: column; gap: 16px; background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
+                    <label style="font-size: 14px; color: #666; font-weight: 600;">Voice / Text Preference</label>
+                    <select style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; background: #f9f9f9; font-family: 'Poppins';">
+                        <option>Voice Only</option>
+                        <option selected>Hybrid (Voice + Text)</option>
+                    </select>
+                    <label style="font-size: 14px; color: #666; font-weight: 600;">Cultural Content</label>
+                    <select style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; background: #f9f9f9; font-family: 'Poppins';">
+                        <option selected>North East India (Assam)</option>
+                        <option>North East India (Meghalaya)</option>
+                    </select>
+                    <label style="font-size: 14px; color: #666; font-weight: 600;">Difficulty</label>
+                    <select style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; background: #f9f9f9; font-family: 'Poppins';">
+                        <option selected>Adaptive Mode</option>
+                        <option>Easy Mode</option>
+                    </select>
+                </div>
+            </main>
+        </section>
+
+        <!-- --- PROFILE 5: Personal Context --- -->
+        <section id="screen-context" class="screen" style="background: #FDFCF0;">
+            <header class="inner-header" style="display: flex; align-items: center; justify-content: space-between; padding: 20px; background: white; border-bottom: 1px solid #eee;">
+                <button onclick="showScreen('home-screen')" style="background: none; border: none; font-size: 24px; color: #37474F; cursor: pointer;"><span class="material-symbols-rounded">arrow_back</span></button>
+                <h2 style="font-size: 18px; color: #FF8A65;">Personal Context</h2>
+                <button onclick="showScreen('home-screen')" style="background: #FF8A65; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: bold;">Save</button>
+            </header>
+            <main class="content-pad" style="padding-top: 20px;">
+                <div style="display: flex; flex-direction: column; gap: 16px; background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
+                    <label style="font-size: 14px; color: #666; font-weight: 600;">Family / Familiar People</label>
+                    <button style="width: 100%; padding: 12px; border-radius: 8px; border: 1px dashed #00796B; background: #E0F2F1; color: #00796B; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: 'Poppins';">
+                        <span class="material-symbols-rounded">upload</span> Upload Photo
+                    </button>
+                    <label style="font-size: 14px; color: #666; font-weight: 600;">Favourite Activities</label>
+                    <input type="text" placeholder="e.g., Gardening" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; background: #f9f9f9; font-family: 'Poppins';">
+                </div>
+            </main>
+        </section>
+
+        <!-- --- 6. Routine Screen --- -->
+                        <!-- --- 6. Routine Screen --- -->
+        <section id="routine-screen" class="screen" style="background: #FDFCF0;">
+            <header class="dash-header" style="border-radius: 0 0 24px 24px; padding: 45px 24px 20px; background: linear-gradient(135deg, #00796B, #004D40); color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.12); position: relative;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <button onclick="showScreen('home-screen')" style="background: rgba(255,255,255,0.2); border: none; padding: 7px 14px; border-radius: 20px; color: white; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-weight: 600; font-size: 14px; backdrop-filter: blur(4px);">
+                        <span class="material-symbols-rounded" style="font-size: 18px;">arrow_back</span> Home
+                    </button>
+                    <span style="font-size: 13px; background: rgba(255,255,255,0.18); padding: 5px 12px; border-radius: 12px; font-weight: 600;">Daily Wellness</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                    <h1 style="font-size: 24px; margin: 0; font-weight: 800;">Today's Routine</h1>
+                    <span style="background: rgba(255,255,255,0.22); color: #FFF9C4; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
+                        <span class="material-symbols-rounded" style="font-size: 14px;">psychology</span> Scaffolding Mode
+                    </span>
+                </div>
+                <p style="opacity: 0.92; font-size: 13px; margin: 0 0 14px 0;">Daily habits that actively exercise, not replace, your memory.</p>
+                
+                <div style="background: rgba(255,255,255,0.18); border-radius: 14px; padding: 14px 16px; backdrop-filter: blur(4px);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="font-weight: 700; font-size: 14px;">Daily Progress</span>
+                        <span id="routine-progress-text" style="font-weight: 700; font-size: 14px; color: #FFF9C4;">0 / 5 Completed</span>
+                    </div>
+                    <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.25); border-radius: 4px; overflow: hidden;">
+                        <div id="routine-progress-bar" style="width: 0%; height: 100%; background: #FFC107; border-radius: 4px; transition: 0.4s ease-out;"></div>
+                    </div>
+                </div>
+            </header>
+
+            <main class="content-pad" style="padding-bottom: 90px; padding-top: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <h3 style="color: #00796B; margin: 0; font-size: 16px; font-weight: 700;">&#x1F305; Morning</h3>
+                    <span style="font-size: 12px; color: #78909C;">Start of Day</span>
+                </div>
+                
+                <!-- Task 1: Morning Brain Warmup -->
+                <div id="routine-task-morning" class="quest-card routine-task" onclick="handleRoutineClick('morning_brain')" style="cursor: pointer; transition: 0.2s;">
+                    <div class="quest-icon" style="background: #E8F5E9; color: #4CAF50;"><span class="material-symbols-rounded">psychology</span></div>
+                    <div style="flex: 1;">
+                        <h2 style="font-size: 16px; color: #37474F; margin: 0 0 2px 0;">Morning Brain Exercise</h2>
+                        <p style="font-size: 13px; color: #666; margin: 0;">9:00 AM &bull; Gentle memory warmup</p>
+                    </div>
+                    <div class="check-circle"></div>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin: 24px 0 12px;">
+                    <h3 style="color: #00796B; margin: 0; font-size: 16px; font-weight: 700;">&#x2600;&#xFE0F; Afternoon</h3>
+                    <span style="font-size: 12px; color: #78909C;">Mid-Day Energy</span>
+                </div>
+                
+                <!-- Task 2: Hydration Break -->
+                <div id="routine-task-water" class="quest-card routine-task" onclick="handleRoutineClick('hydration')" style="cursor: pointer; transition: 0.2s;">
+                    <div class="quest-icon" style="background: #E3F2FD; color: #2196F3;"><span class="material-symbols-rounded">water_drop</span></div>
+                    <div style="flex: 1;">
+                        <h2 style="font-size: 16px; color: #37474F; margin: 0 0 2px 0;">Hydration Break</h2>
+                        <p id="routine-water-desc" style="font-size: 13px; color: #666; margin: 0;">11:00 AM &bull; Fresh glass of water</p>
+                    </div>
+                    <div class="check-circle"></div>
+                </div>
+                
+                <!-- Task 3: Physical Mobility -->
+                <div id="routine-task-walk" class="quest-card routine-task" onclick="handleRoutineClick('walk')" style="cursor: pointer; transition: 0.2s; margin-top: 12px;">
+                    <div class="quest-icon" style="background: #FFF3E0; color: #FF9800;"><span class="material-symbols-rounded">directions_walk</span></div>
+                    <div style="flex: 1;">
+                        <h2 style="font-size: 16px; color: #37474F; margin: 0 0 2px 0;">Gentle Movement & Walk</h2>
+                        <p style="font-size: 13px; color: #666; margin: 0;">2:00 PM &bull; 10-Min light walk</p>
+                    </div>
+                    <div class="check-circle"></div>
+                </div>
+                
+                <!-- Task 4: Afternoon Mind Refresh -->
+                <div id="routine-task-puzzle" class="quest-card routine-task" onclick="handleRoutineClick('afternoon_puzzle')" style="cursor: pointer; transition: 0.2s; margin-top: 12px;">
+                    <div class="quest-icon" style="background: #F3E5F5; color: #9C27B0;"><span class="material-symbols-rounded">extension</span></div>
+                    <div style="flex: 1;">
+                        <h2 style="font-size: 16px; color: #37474F; margin: 0 0 2px 0;">Afternoon Mind Refresh</h2>
+                        <p style="font-size: 13px; color: #666; margin: 0;">4:00 PM &bull; Visual matching game</p>
+                    </div>
+                    <div class="check-circle"></div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin: 24px 0 12px;">
+                    <h3 style="color: #00796B; margin: 0; font-size: 16px; font-weight: 700;">&#x1F319; Evening</h3>
+                    <span style="font-size: 12px; color: #78909C;">Rest & Relaxation</span>
+                </div>
+                
+                <!-- Task 5: Evening Audio Therapy -->
+                <div id="routine-task-audio" class="quest-card routine-task" onclick="handleRoutineClick('evening_audio')" style="cursor: pointer; transition: 0.2s;">
+                    <div class="quest-icon" style="background: #EFEBE9; color: #795548;"><span class="material-symbols-rounded">headphones</span></div>
+                    <div style="flex: 1;">
+                        <h2 style="font-size: 16px; color: #37474F; margin: 0 0 2px 0;">Evening Calming Soundscape</h2>
+                        <p style="font-size: 13px; color: #666; margin: 0;">8:00 PM &bull; Audio therapy & breathing</p>
+                    </div>
+                    <div class="check-circle"></div>
+                </div>
+
+                <!-- Reset button for testing/next day -->
+                <div style="text-align: center; margin-top: 32px;">
+                    <button onclick="resetRoutineTasks()" style="background: transparent; border: 1px dashed #B0BEC5; color: #78909C; padding: 8px 18px; border-radius: 20px; font-size: 13px; cursor: pointer;">
+                        &#x21BA; Reset Today's Checklist
+                    </button>
+                </div>
+            </main>
+        </section>
+        <!-- --- SOS Screen --- -->
+        <section id="sos-screen" class="screen" style="background: #B71C1C;">
+            <main class="content-pad" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center;">
+                <div class="sos-ripple" style="width: 150px; height: 150px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 40px; box-shadow: 0 0 0 20px rgba(255,255,255,0.2), 0 0 0 40px rgba(255,255,255,0.1);">
+                    <span class="material-symbols-rounded" style="font-size: 80px; color: #B71C1C;">emergency</span>
+                </div>
+                <h1 style="color: white; font-size: 32px; margin-bottom: 10px;">Emergency</h1>
+                <p style="color: rgba(255,255,255,0.8); font-size: 18px; margin-bottom: 50px;">Alerting family in <span style="font-weight: bold; font-size: 24px;">5</span>s</p>
+                <button onclick="showScreen('home-screen')" style="background: transparent; border: 2px solid white; color: white; padding: 16px 40px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer;">Cancel</button>
+            </main>
+        </section>
+
+                <!-- --- Walk Tracker Screen --->
+        <section id="walk-screen" class="screen" style="background: #1E3A8A; color: white;">
+            <header class="inner-header" style="padding: 50px 24px 10px; background: transparent; display: flex; justify-content: space-between; align-items: center;">
+                <button onclick="pauseWalk(); showScreen('routine-screen');" style="background: rgba(255,255,255,0.2); border: none; padding: 10px; border-radius: 50%; color: white; display: flex; cursor: pointer;"><span class="material-symbols-rounded">arrow_back</span></button>
+                <span style="font-size: 18px; font-weight: bold;">Mobility Tracker</span>
+                <div style="width: 44px;"></div>
+            </header>
+            <main class="content-pad" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; position: relative;">
+                
+                <div id="walk-confetti" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100; flex-direction: column; justify-content: center; align-items: center;">
+                    <span class="material-symbols-rounded" style="font-size: 100px; color: #4CAF50; margin-bottom: 20px;">task_alt</span>
+                    <h2 style="font-size: 32px; color: white; margin-bottom: 10px;">Goal Reached!</h2>
+                    <p style="color: #ccc; font-size: 18px;">Great job completing your walk.</p>
+                </div>
+ 
+                <div id="walk-ring" style="position: relative; width: 250px; height: 250px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 8px solid rgba(255,255,255,0.2); border-radius: 50%; margin-bottom: 40px; box-shadow: 0 0 40px rgba(0,0,0,0.2);">
+                    <span class="material-symbols-rounded" style="font-size: 40px; color: #4CAF50; margin-bottom: 10px;">directions_walk</span>
+                    <h1 id="walk-steps" style="font-size: 48px; margin: 0; line-height: 1;">0</h1>
+                    <p style="color: #93C5FD; font-size: 16px; margin-top: 5px;">Steps</p>
+                </div>
+ 
+                <div style="display: flex; gap: 40px; margin-bottom: 50px;">
+                    <div>
+                        <h2 id="walk-time" style="font-size: 32px; margin: 0;">00:00</h2>
+                        <p style="color: #93C5FD; font-size: 14px;">Time</p>
+                    </div>
+                    <div>
+                        <h2 id="walk-goal" style="font-size: 32px; margin: 0;">10:00</h2>
+                        <p style="color: #93C5FD; font-size: 14px;">Goal</p>
+                    </div>
+                </div>
+ 
+                <div style="display: flex; gap: 20px; width: 100%;">
+                    <button id="btn-walk-action" onclick="toggleWalk()" style="flex: 1; padding: 20px; border-radius: 20px; font-size: 20px; font-weight: bold; border: none; cursor: pointer; background: #4CAF50; color: white; display: flex; justify-content: center; align-items: center; gap: 10px; transition: 0.2s;">
+                        <span class="material-symbols-rounded" id="icon-walk-action">play_arrow</span>
+                        <span id="text-walk-action">Start Walk</span>
+                    </button>
+                </div>
+                <p style="color: rgba(255,255,255,0.5); font-size: 12px; margin-top: 20px;">* Demo mode: 1 second = 1 minute</p>
+            </main>
+        </section>
+        <!-- --- Progress Screen --- -->
+        <section id="progress-screen" class="screen" style="background: #FDFCF0;">
+            <header class="inner-header" style="padding: 40px 24px 20px; background: white; border-bottom: 1px solid #eee; text-align: center; display: block;">
+                <h1 style="font-size: 24px; color: #00796B; margin: 0;">Daily Wellness Progress</h1>
+            </header>
+            <main class="content-pad" style="padding-bottom: 120px;">
+                
+                <div class="progress-hero">
+                    <div class="progress-ring-container">
+                        <svg class="progress-ring" width="160" height="160">
+                            <circle stroke="#eee" stroke-width="12" fill="transparent" r="70" cx="80" cy="80"/>
+                            <circle id="overall-ring" stroke-width="12" stroke-linecap="round" fill="transparent" r="70" cx="80" cy="80"/>
+                        </svg>
+                        <div class="progress-ring-text">
+                            <h2 id="overall-percentage">0%</h2>
+                            <p>Adherence</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="section-title">Physical & Routine</h3>
+                <div class="progress-card">
+                    <div class="progress-header"><span>Hydration</span><span id="hyd-text">0/0</span></div>
+                    <div class="bar-bg"><div class="bar-fill" id="hyd-bar"></div></div>
+                </div>
+                <div class="progress-card">
+                    <div class="progress-header"><span>Mobility</span><span id="mob-text">0/0</span></div>
+                    <div class="bar-bg"><div class="bar-fill" id="mob-bar"></div></div>
+                </div>
+
+                <!-- 🧠 AI Focus Comparison vs age-typical baseline -->
+                <div id="ai-clinical-comparison-card" style="background: white; border-radius: 18px; padding: 18px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); border: 1px solid #E0F2F1;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span class="material-symbols-rounded" style="color: #00796B;">neurology</span>
+                            <h3 style="margin: 0; font-size: 16px; color: #00796B; font-weight: 800;">AI Focus Comparison</h3>
+                        </div>
+                        <span style="font-size: 11px; background: #E0F2F1; color: #004D40; padding: 3px 8px; border-radius: 10px; font-weight: 700;">AI Model</span>
+                    </div>
+                    <p style="color: #666; font-size: 12px; margin: 0 0 14px 0; line-height: 1.4;">
+                        How your recent activity compares to the typical range for your age group.
+                    </p>
+                    <div id="ai-baseline-bars-container" style="display: flex; flex-direction: column; gap: 10px;">
+                        <!-- Dynamically Injected AI Domain Vectors -->
+                    </div>
+                    <div id="ai-caregiver-summary-box" style="margin-top: 14px; background: #F9FBE7; border: 1px solid #DCE775; border-radius: 12px; padding: 10px 12px; font-size: 12.5px; color: #33691E; line-height: 1.4;">
+                        <strong>&#x1F916; AI Summary:</strong> <span id="ai-summary-text">AI insights will appear here after your next assessment or game session.</span>
+                    </div>
+                </div>
+
+                <h3 class="section-title" style="margin-top: 20px;">Cognitive Wellness</h3>
+                <div id="cognitive-progress-list">
+                    <!-- Injected by JS -->
+                </div>
+            </main>
+        </section>
+
+        <!-- Bottom Navigation -->
+        
+        <!-- --- Games Menu Screen --- -->
+        <section id="game-menu-screen" class="screen">
+            <header class="inner-header">
+                <button class="back-btn" onclick="showScreen('home-screen')">&#x2190;</button>
+                <h2>Targeted Therapy</h2>
+            </header>
+            <main class="content-pad" style="background: #FDFCF0; min-height: 100vh;">
+                <p style="color: #78909C; margin-bottom: 20px; font-size: 14px;">Play specific games to improve your cognitive skills. Games are recommended based on your recent assessment.</p>
+                <div id="games-list-container" style="display: flex; flex-direction: column; gap: 15px; padding-bottom: 40px;">
+                    <!-- Games injected here -->
+                </div>
+            </main>
+        </section>
+
+        
+        <!-- --- Family Therapy Screen --- -->
+        <section id="family-screen" class="screen">
+            <header class="inner-header" style="position: relative;">
+                <button class="back-btn" onclick="showScreen('home-screen')" style="position: absolute; left: 15px; top: 20px; font-size: 24px; background: none; border: none; cursor: pointer; color: #37474F;">&#x2190;</button>
+                <h2>Family Connect</h2>
+            </header>
+            <main class="content-pad" style="background: #FDFCF0; min-height: 100vh; text-align: center;">
+                <p style="color: #78909C; margin-bottom: 20px; font-size: 14px;">Recognize your loved ones to strengthen your memory.</p>
+                <div id="family-game-area" style="display: flex; flex-direction: column; gap: 20px; align-items: center;">
+                    <!-- Game content injected here -->
+                </div>
+            </main>
+        </section>
+
+        <nav class="bottom-nav" style="position: absolute; bottom: 0; width: 100%; z-index: 50;">
+            <div class="nav-item active" id="nav-home" onclick="switchNav('home-screen')">
+                <span class="material-symbols-rounded">home</span>
+                <span>Home</span>
+            </div>
+
+            <div class="nav-item" id="nav-progress" onclick="switchNav('progress-screen')">
+                <span class="material-symbols-rounded">bar_chart</span>
+                <span>Progress</span>
+            </div>
+        </nav>
+
+    </div>
+    <script src="script.js"></script>
+
+    <!-- 🎙️ Floating Saarthi Voice AI Button -->
+    <div id="saarthi-ai-mic-btn" onclick="openSaarthiVoiceModal()" style="position: fixed; bottom: 80px; right: 20px; z-index: 9999; cursor: pointer;">
+        <div style="position: relative; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #00796B, #004D40); display: flex; align-items: center; justify-content: center; color: white; font-size: 26px; box-shadow: 0 6px 20px rgba(0, 121, 107, 0.4); border: 2px solid white; transition: 0.2s;">
+            <span class="material-symbols-rounded" style="font-size: 28px;">mic</span>
+            <span style="position: absolute; top: -2px; right: -2px; width: 14px; height: 14px; background: #FFC107; border-radius: 50%; border: 2px solid white;"></span>
+        </div>
+        <div style="position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); color: white; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 700; white-space: nowrap; pointer-events: none;">
+            Voice AI
+        </div>
+    </div>
+    
+</body>
+</html>
+

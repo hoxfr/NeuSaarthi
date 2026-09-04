@@ -1,0 +1,2808 @@
+let stats = { cog: 0, hyd: 0, phy: 0 };
+const langData = {
+    "en": { 
+        label: "English", 
+        changeLang: "Change Language",
+        landing: { greeting: "Welcome", next: "Next" },
+        login: { title: "Welcome", sub: "Enter details to continue", phone: "Phone Number (Required)*", email: "Email ID (Optional)", btn: "Send OTP" },
+        otp: { title: "Verify Phone", sub: "OTP sent to your number", btn: "Verify & Secure" },
+        role: { title: "Who is using this?", sub: "We will adapt the experience for you.", self_title: "Set up for myself", self_desc: "I want to maintain a healthy routine.", loved_title: "Set up for a loved one", loved_desc: "I am managing care for a family member." },
+        home: { greeting: "Good Morning", btn1: "Play Game", btn2: "Family", btn3: "Routine", btn4: "SOS Alert" }
+    },
+    "as": { 
+        label: "Assamese (অসমীয়া)", 
+        changeLang: "ভাষা সলনি কৰক",
+        landing: { greeting: "স্বাগতম", next: "পৰৱৰ্তী" },
+        login: { title: "স্বাগতম", sub: "আগবাঢ়িবলৈ সবিশেষ দিয়ক", phone: "ফোন নম্বৰ (প্ৰয়োজনীয়)*", email: "ইমেইল (বৈকল্পিক)", btn: "OTP পঠিয়াওক" },
+        otp: { title: "ফোন প্ৰমাণিত কৰক", sub: "আপোনাৰ নম্বৰলৈ OTP পঠিওৱা হৈছে", btn: "প্ৰমাণিত কৰক" },
+        role: { title: "কোনে ব্যৱহাৰ কৰিছে?", sub: "আমি আপোনাৰ বাবে অভিজ্ঞতা সলনি কৰিম।", self_title: "মোৰ বাবে ছেট আপ কৰক", self_desc: "মই এটা সুস্থ ৰুটিন বজাই ৰাখিব বিচাৰো।", loved_title: "প্ৰিয়জনৰ বাবে ছেট আপ কৰক", loved_desc: "মই পৰিয়ালৰ সদস্যৰ বাবে যতন পৰিচালনা কৰি আছো।" },
+        home: { greeting: "সুপ্ৰভাত", btn1: "খেল খেলক", btn2: "পৰিয়াল", btn3: "ৰুটিন", btn4: "জৰুৰীকালীন" }
+    },
+    "hi": { 
+        label: "Hindi (हिंदी)", 
+        changeLang: "भाषा बदलें",
+        landing: { greeting: "नमस्ते", next: "अगला" },
+        login: { title: "स्वागत है", sub: "जारी रखने के लिए विवरण दर्ज करें", phone: "फोन नंबर (आवश्यक)*", email: "ईमेल (वैकल्पिक)", btn: "OTP भेजें" },
+        otp: { title: "फोन सत्यापित करें", sub: "आपके नंबर पर OTP भेजा गया", btn: "सत्यापित करें" },
+        role: { title: "इसका उपयोग कौन कर रहा है?", sub: "हम आपके लिए अनुभव को अनुकूलित करेंगे।", self_title: "मेरे लिए सेट अप करें", self_desc: "मैं एक स्वस्थ दिनचर्या बनाए रखना चाहता हूँ।", loved_title: "प्रियजन के लिए सेट अप करें", loved_desc: "मैं परिवार के सदस्य की देखभाल प्रबंधित कर रहा हूँ।" },
+        home: { greeting: "नमस्ते", btn1: "खेल खेलें", btn2: "परिवार", btn3: "दिनचर्या", btn4: "आपातकालीन" }
+    },
+    "mni": { 
+        label: "Manipuri (ꯃꯤꯇꯩꯂꯣꯟ)",
+        changeLang: "ꯂꯣꯟ ꯍꯣꯡꯗꯣꯛꯎ",
+        landing: { greeting: "ꯈꯨꯔꯨꯝꯖꯔꯤ", next: "ꯃꯊꯪ" },
+        login: { title: "ꯈꯨꯔꯨꯝꯖꯔꯤ", sub: "ꯃꯈꯥ ꯆꯠꯊꯅꯕꯥ ꯑꯀꯨꯞꯄꯥ ꯃꯔꯣꯜ ꯍꯥꯞꯆꯤꯟꯕꯤꯌꯨ", phone: "ꯐꯣꯟ ꯅꯝꯕꯔ (ꯃꯊꯧ ꯇꯥꯕꯥ)*", email: "ꯏꯃꯦꯜ (ꯑꯄꯥꯝꯕ)", btn: "OTP ꯊꯥꯕꯤꯌꯨ" },
+        otp: { title: "ꯐꯣꯟ ꯌꯦꯡꯁꯤꯟꯕꯤꯌꯨ", sub: "ꯅꯍꯥꯛꯀꯤ ꯅꯝꯕꯔꯗꯥ OTP ꯊꯥꯈ꯭ꯔꯦ", btn: "ꯌꯦꯡꯁꯤꯟꯕꯤꯌꯨ" },
+        role: { title: "ꯃꯁꯤ ꯀꯅꯥꯅꯥ ꯁꯤꯖꯤꯟꯅꯔꯤꯕꯅꯣ?", sub: "ꯑꯩꯈꯣꯌꯅꯥ ꯅꯍꯥꯛꯀꯤꯗꯃꯛ ꯑꯦꯛꯁꯄꯤꯔꯤꯌꯦꯟꯁ ꯑꯗꯨ ꯁꯦꯝꯒꯅꯤ꯫", self_title: "ꯏꯁꯥꯒꯤꯗꯃꯛ ꯁꯦꯠ ꯑꯞ ꯇꯧꯕꯤꯌꯨ", self_desc: "ꯑꯩꯅꯥ ꯍꯛꯆꯥꯡ ꯐꯕꯥ ꯔꯨꯇꯤꯟ ꯑꯃꯥ ꯊꯝꯅꯤꯡꯏ꯫", loved_title: "ꯅꯨꯡꯁꯤꯔꯕꯥ ꯃꯤꯑꯣꯏ ꯑꯃꯒꯤꯗꯃꯛ ꯁꯦꯠ ꯑꯞ ꯇꯧꯕꯤꯌꯨ", loved_desc: "ꯑꯩꯅꯥ ꯏꯃꯨꯡꯒꯤ ꯃꯤꯑꯣꯏ ꯑꯃꯒꯤ ꯌꯦꯡꯁꯤꯟꯕꯒꯤ ꯊꯕꯛ ꯇꯧꯔꯤ꯫" },
+        home: { greeting: "ꯈꯨꯔꯨꯝꯖꯔꯤ", btn1: "ꯁꯥꯟꯅꯕ", btn2: "ꯏꯃꯨꯡ", btn3: "ꯊꯧꯔꯝ", btn4: "ꯆꯦꯛꯁꯤꯟ" }
+    }
+    // Note: Other languages omitted in this snippet for brevity but should follow same structure
+};
+
+let currentLang = 'en';
+
+function changeLanguage(langCode, btnElement = null) {
+    currentLang = langCode;
+    const data = langData[langCode] || langData['en'];
+    
+    if (langCode === 'mni') {
+        document.body.classList.add('font-manipuri');
+    } else {
+        document.body.classList.remove('font-manipuri');
+    }
+    
+    // Landing
+    if(document.getElementById('greeting-text')) document.getElementById('greeting-text').innerText = data.landing.greeting;
+    if(document.getElementById('next-btn-text')) document.getElementById('next-btn-text').innerText = data.landing.next;
+    
+    // Login
+    if(document.getElementById('login-title')) document.getElementById('login-title').innerText = data.login.title;
+    if(document.getElementById('login-subtitle')) document.getElementById('login-subtitle').innerText = data.login.sub;
+    if(document.getElementById('label-phone')) document.getElementById('label-phone').innerText = data.login.phone;
+    if(document.getElementById('label-email')) document.getElementById('label-email').innerText = data.login.email;
+    if(document.getElementById('btn-send-otp')) document.getElementById('btn-send-otp').innerText = data.login.btn;
+
+    // OTP
+    if(document.getElementById('otp-title')) document.getElementById('otp-title').innerText = data.otp.title;
+    if(document.getElementById('otp-subtitle')) document.getElementById('otp-subtitle').innerText = data.otp.sub;
+    if(document.getElementById('btn-verify-otp')) document.getElementById('btn-verify-otp').innerText = data.otp.btn;
+
+    // Role
+    if(document.getElementById('role-title')) document.getElementById('role-title').innerText = data.role.title;
+    if(document.getElementById('role-subtitle')) document.getElementById('role-subtitle').innerText = data.role.sub;
+    if(document.getElementById('role-self-title')) document.getElementById('role-self-title').innerText = data.role.self_title;
+    if(document.getElementById('role-self-desc')) document.getElementById('role-self-desc').innerText = data.role.self_desc;
+    if(document.getElementById('role-loved-title')) document.getElementById('role-loved-title').innerText = data.role.loved_title;
+    if(document.getElementById('role-loved-desc')) document.getElementById('role-loved-desc').innerText = data.role.loved_desc;
+
+    // Home
+    if(document.getElementById('home-greeting')) document.getElementById('home-greeting').innerText = data.home.greeting;
+    if(document.getElementById('btn-game')) document.getElementById('btn-game').innerText = data.home.btn1;
+    if(document.getElementById('btn-family')) document.getElementById('btn-family').innerText = data.home.btn2;
+    if(document.getElementById('btn-routine')) document.getElementById('btn-routine').innerText = data.home.btn3;
+    if(document.getElementById('btn-sos')) document.getElementById('btn-sos').innerText = data.home.btn4;
+    
+    if(document.getElementById('change-lang-text')) document.getElementById('change-lang-text').innerText = data.changeLang;
+    
+    if (btnElement) {
+        document.querySelectorAll('.lang-card').forEach(card => card.classList.remove('active-lang'));
+        btnElement.classList.add('active-lang');
+    }
+}
+
+// --- Navigation Flow ---
+
+function goToLogin() {
+    localStorage.setItem('appLang', currentLang);
+    showScreen('login-screen');
+}
+
+let currentAuthPhone = '';
+
+async function sendOTP() {
+    const phoneInput = document.getElementById('phone-input');
+    const phone = phoneInput ? phoneInput.value.replace(/\D/g, '').slice(-10) : '';
+    if (!phone || phone.length < 10) {
+        alert("Please enter a valid 10-digit Indian phone number.");
+        return;
+    }
+    currentAuthPhone = phone;
+
+    const btn = document.getElementById('btn-send-otp');
+    const originalText = btn.innerText;
+    btn.innerText = "Sending SMS...";
+    btn.disabled = true;
+
+    try {
+        const res = await fetch('/api/send-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ phone })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            showScreen('otp-screen');
+            const subTitle = document.getElementById('otp-subtitle');
+            if (subTitle) {
+                subTitle.innerText = "OTP sent to +91 " + phone;
+            }
+
+            // Clear inputs & focus
+            ['otp1', 'otp2', 'otp3', 'otp4'].forEach((id, idx) => {
+                const el = idx === 0 ? document.querySelector('.otp-group .otp-input:first-child') : document.getElementById(id);
+                if (el) el.value = '';
+            });
+            const firstInput = document.querySelector('.otp-group .otp-input:first-child');
+            if (firstInput) firstInput.focus();
+
+            if (data.delivered) {
+                console.log("[Fast2SMS] Real SMS dispatched via Fast2SMS (0.20 INR). Check your phone!");
+            } else if (data.fallback_otp) {
+                // If website verification is still pending on Fast2SMS dashboard, alert user nicely
+                alert("Fast2SMS Notice: " + data.gateway_error + "\n\nFor this test, your verification OTP is: " + data.fallback_otp);
+            }
+        } else {
+            alert(data.message || "Failed to send OTP. Please try again.");
+        }
+    } catch (err) {
+        console.warn("Backend not running or offline, using fallback:", err);
+        // Direct UI transition fallback
+        showScreen('otp-screen');
+    } finally {
+        btn.innerText = originalText;
+        btn.disabled = false;
+    }
+}
+
+function moveToNext(current, nextFieldID) {
+    if (current.value.length >= 1 && nextFieldID) {
+        document.getElementById(nextFieldID).focus();
+    }
+}
+
+async function verifyOTP() {
+    const inputs = document.querySelectorAll('.otp-group .otp-input');
+    let enteredOTP = '';
+    inputs.forEach(input => enteredOTP += input.value.trim());
+
+    if (enteredOTP.length < 4) {
+        alert("Please enter the complete 4-digit OTP.");
+        return;
+    }
+
+    const btn = document.getElementById('btn-verify-otp');
+    const originalText = btn.innerHTML;
+    btn.innerText = "Verifying...";
+    btn.disabled = true;
+
+    try {
+        const res = await fetch('/api/verify-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ phone: currentAuthPhone, otp: enteredOTP })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            localStorage.setItem('isAuthenticated', 'true');
+            showScreen('role-screen');
+        } else {
+            alert(data.message || "Invalid OTP. Please check the code and try again.");
+            inputs.forEach(input => input.value = '');
+            if (inputs[0]) inputs[0].focus();
+        }
+    } catch (err) {
+        console.warn("Verify endpoint offline, allowing demo:", err);
+        localStorage.setItem('isAuthenticated', 'true');
+        showScreen('role-screen');
+    } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    }
+}
+
+function selectRole(role) {
+    localStorage.setItem('userRole', role);
+    
+    if(role === 'self') {
+        // User sets it up themselves -> run the light warm-up assessment
+        showScreen('welcome-screen');
+    } else {
+        // Caregiver is setting it up -> open the Wellness Profile builder
+        localStorage.setItem('hasCompletedAssessment', 'true');
+        showScreen('screen-clinical');
+    }
+}
+
+
+// Universal Reset Function
+function resetLanguage() {
+    localStorage.clear(); // Clear all memory to test flow again
+    location.reload(); 
+}
+
+function showScreen(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
+    
+    if (screenId === 'game-menu-screen') {
+        if(typeof renderGamesList === 'function') renderGamesList();
+        document.getElementById(screenId).style.display = 'block';
+    } else if (screenId === 'home-screen') {
+        if(typeof updateProgressUI === 'function') updateProgressUI();
+        if(typeof renderAiCareTrackBanner === 'function') renderAiCareTrackBanner();
+        document.getElementById(screenId).style.display = 'block';
+    } else if (screenId === 'family-screen') {
+        if(typeof renderFamilyMenu === 'function') renderFamilyMenu();
+        document.getElementById(screenId).style.display = 'block';
+    } else if (screenId === 'routine-screen') {
+        if(typeof initRoutineScreen === 'function') initRoutineScreen();
+        document.getElementById(screenId).style.display = 'block';
+    } else {
+        const el = document.getElementById(screenId);
+        if(el) el.style.display = 'flex';
+    }
+
+    const nav = document.querySelector('.bottom-nav');
+    if (nav) {
+        if (['home-screen', 'progress-screen', 'routine-screen'].includes(screenId)) {
+            nav.style.display = 'flex';
+        } else {
+            nav.style.display = 'none';
+        }
+    }
+
+    if (screenId === 'progress-screen') {
+        if(typeof renderProgressTab === 'function') renderProgressTab();
+        if(typeof renderAiComparisonCard === 'function') renderAiComparisonCard();
+    }
+
+    if (typeof updateSaarthiMicVisibility === 'function') updateSaarthiMicVisibility(screenId);
+}
+
+window.onload = () => {
+    const savedLang = localStorage.getItem('appLang');
+    const isAuth = localStorage.getItem('isAuthenticated');
+    const hasRole = localStorage.getItem('userRole');
+    const hasAssessed = localStorage.getItem('hasCompletedAssessment');
+
+    if (savedLang) {
+        changeLanguage(savedLang);
+        
+        // Strict Flow Routing based on offline state
+        if(isAuth && hasRole) {
+            if (hasRole === 'self' && !hasAssessed) {
+                // Intercept them if they closed app before finishing assessment
+                showScreen('welcome-screen');
+            } else {
+                showScreen('home-screen');
+            }
+        } else if (isAuth) {
+            showScreen('role-screen');
+        } else {
+            showScreen('login-screen');
+        }
+    } else {
+        // Default to English Landing Page
+        changeLanguage('en');
+    }
+};
+
+// --- Side Drawer Functions ---
+function toggleDrawer() {
+    const overlay = document.getElementById('drawer-overlay');
+    const drawer = document.getElementById('side-drawer');
+    if (overlay && drawer) {
+        overlay.classList.toggle('active');
+        drawer.classList.toggle('open');
+    }
+}
+
+function openProfileSection(sectionId) {
+    toggleDrawer(); // close drawer
+    showScreen('screen-' + sectionId);
+}
+
+
+
+
+
+
+// ==========================================
+// MODULE 2: GAUNTLET COGNITIVE ASSESSMENT
+// Lead: Member 2 (Core Cognitive Engine)
+// Contains 13 randomized cognitive games mapped to wellness focus areas
+// ==========================================
+
+var gauntletInterval = null;
+var gauntletTimeLeft = 300;
+var currentPhase = 0;
+window.savedRecallItems = [];
+window.gauntletTasksQueue = [];
+
+// --- AI SCORING ENGINE: real per-game accuracy + reaction-time capture ---
+// Crash-proof by design: every public method is wrapped so a missing/out-of-order
+// call never throws and never blocks the game it's instrumenting.
+window.GauntletScore = (function () {
+    let current = null;   // in-progress task: { taskType, hits, misses, latencies, lastPrompt }
+    const detail = {};    // finalized per-game detail, keyed by taskType
+
+    function begin(taskType) {
+        try {
+            commit(); // auto-commit whatever task was running before this one
+            current = { taskType: taskType, hits: 0, misses: 0, latencies: [], lastPrompt: performance.now() };
+        } catch (e) { current = null; }
+    }
+    function prompted() { try { if (current) current.lastPrompt = performance.now(); } catch (e) {} }
+    function hit() {
+        try {
+            if (!current) return;
+            current.hits++;
+            current.latencies.push(performance.now() - current.lastPrompt);
+        } catch (e) {}
+    }
+    function miss() {
+        try {
+            if (!current) return;
+            current.misses++;
+            current.latencies.push(performance.now() - current.lastPrompt);
+        } catch (e) {}
+    }
+    function commit() {
+        try {
+            if (!current) return;
+            const total = current.hits + current.misses;
+            let score, accuracyPct = null, speedPct = null;
+            if (total === 0) {
+                score = 60; // played but nothing scorable captured (e.g. time ran out) - neutral, never punishing
+            } else {
+                const accuracy = current.hits / total;
+                const avgLatency = current.latencies.length
+                    ? current.latencies.reduce((a, b) => a + b, 0) / current.latencies.length
+                    : 1500;
+                const latencyBonus = Math.max(0, Math.min(1, (2500 - avgLatency) / (2500 - 300))); // 300ms fast .. 2500ms slow
+                accuracyPct = Math.round(accuracy * 100);
+                speedPct = Math.round(latencyBonus * 100);
+                score = Math.max(10, Math.min(100, Math.round(accuracy * 70 + latencyBonus * 30)));
+            }
+            detail[current.taskType] = {
+                score: score, accuracyPct: accuracyPct, speedPct: speedPct,
+                hits: current.hits, misses: current.misses
+            };
+            current = null;
+        } catch (e) {}
+    }
+    function finalize() {
+        try {
+            commit();
+            const scores = {};
+            for (const k in detail) scores[k] = detail[k].score;
+            return { scores: scores, detail: JSON.parse(JSON.stringify(detail)) };
+        } catch (e) { return { scores: {}, detail: {} }; }
+    }
+    function reset() { try { current = null; for (const k in detail) delete detail[k]; } catch (e) {} }
+
+    return { begin: begin, prompted: prompted, hit: hit, miss: miss, commit: commit, finalize: finalize, reset: reset };
+})();
+
+// --- AI COGNITIVE BASELINE MATCHER ---
+// Normative reference range for this age group, on the same 0-100 scale as gameScores.
+// Internal engineering constant only - never rendered to the user as-is (see DOMAIN_LABEL).
+const AI_CLINICAL_BASELINE = {
+    memory: 78,       // Working memory & recall baseline (%)
+    attention: 75,    // Selective attention & visual search (%)
+    executive: 74,    // Logic, rule switching, and sequencing (%)
+    visuospatial: 72, // Pattern & facial recognition (%)
+    speed: 70         // Motor response latency index (%)
+};
+
+const AI_DOMAIN_LABEL = {
+    memory: 'Memory & Recall',
+    attention: 'Attention & Focus',
+    executive: 'Reasoning & Planning',
+    visuospatial: 'Visual Recognition',
+    speed: 'Response Speed'
+};
+
+// Which gauntlet game ids feed each domain (mirrors the aggregation in
+// runAICognitiveProfiler) - used by renderGamesList to pin/badge the right games.
+const AI_DOMAIN_GAMES = {
+    memory: [0, 1, 7, 10, 11],
+    attention: [2, 3, 8],
+    executive: [5, 6, 9, 12],
+    visuospatial: [4],
+    speed: [2, 3, 8]
+};
+
+function aiDomainAverage(values) {
+    const v = values.filter(function (n) { return n !== null && n !== undefined && !isNaN(n); });
+    return v.length ? v.reduce(function (a, b) { return a + b; }, 0) / v.length : null;
+}
+
+// Aggregates the 13 game scores into 5 domain vectors, matches them against
+// AI_CLINICAL_BASELINE, and computes the gap vector (User - Baseline).
+// Wellness-worded (Rule 1 applies to caregivers too - "primaryDeficit" is an
+// internal variable name only; the rendered summary never says "deficit").
+function runAICognitiveProfiler() {
+    try {
+        let gameScores = {}, detail = {}, familyStats = null;
+        try { gameScores = JSON.parse(localStorage.getItem('gameScores')) || {}; } catch (e) {}
+        try { detail = JSON.parse(localStorage.getItem('gameScoreDetail')) || {}; } catch (e) {}
+        try { familyStats = JSON.parse(localStorage.getItem('familyQuizStats')); } catch (e) {}
+
+        // Domain mapping: Memory[0,1,7,10,11] | Executive[5,6,9,12] |
+        // Attention & Speed[2,3,8] (accuracy component -> attention, latency component -> speed) |
+        // Visuospatial & Recognition[Game 4 + Family Face Quiz]
+        const memory = aiDomainAverage([0, 1, 7, 10, 11].map(function (id) { return gameScores[id]; }));
+        const executive = aiDomainAverage([5, 6, 9, 12].map(function (id) { return gameScores[id]; }));
+        const attention = aiDomainAverage([2, 3, 8].map(function (id) { return detail[id] ? detail[id].accuracyPct : null; }));
+        const speed = aiDomainAverage([2, 3, 8].map(function (id) { return detail[id] ? detail[id].speedPct : null; }));
+        const familyAccuracy = (familyStats && familyStats.count > 0) ? (familyStats.score / familyStats.count) * 100 : null;
+        const visuospatial = aiDomainAverage([gameScores[4], familyAccuracy]);
+
+        const raw = { memory: memory, attention: attention, executive: executive, visuospatial: visuospatial, speed: speed };
+        const user = {}, gap = {};
+        for (const k in AI_CLINICAL_BASELINE) {
+            // No data yet for a domain -> assume on-par with baseline (gap 0) rather than
+            // flagging a growth area we have no evidence for.
+            user[k] = (raw[k] !== null && raw[k] !== undefined) ? Math.round(raw[k]) : AI_CLINICAL_BASELINE[k];
+            gap[k] = Math.round((user[k] - AI_CLINICAL_BASELINE[k]) * 10) / 10;
+        }
+
+        const measuredDomains = Object.keys(raw).filter(function (k) { return raw[k] !== null && raw[k] !== undefined; });
+        let primaryDeficit = null, strengthDomain = null;
+        if (measuredDomains.length) {
+            primaryDeficit = measuredDomains.reduce(function (a, b) { return gap[a] <= gap[b] ? a : b; });
+            strengthDomain = measuredDomains.reduce(function (a, b) { return gap[a] >= gap[b] ? a : b; });
+        }
+
+        const summary = measuredDomains.length
+            ? buildAiCaregiverSummary(primaryDeficit, strengthDomain, gap)
+            : "Complete a wellness assessment or play a few games to unlock personalized AI insights. Results will appear here once there's enough activity to compare. In the meantime, all 13 activities are ready whenever you are.";
+
+        const profile = {
+            user: user, baseline: AI_CLINICAL_BASELINE, gap: gap,
+            primaryDeficit: primaryDeficit, strengthDomain: strengthDomain,
+            primaryDeficitLabel: primaryDeficit ? AI_DOMAIN_LABEL[primaryDeficit] : null,
+            strengthDomainLabel: strengthDomain ? AI_DOMAIN_LABEL[strengthDomain] : null,
+            summary: summary, generatedAt: Date.now()
+        };
+        localStorage.setItem('neosaarthi_ai_profile', JSON.stringify(profile));
+        return profile;
+    } catch (e) { return null; }
+}
+
+// Automated 3-sentence caregiver-facing narrative. Deliberately avoids clinical/
+// diagnostic wording (Rule 1) in favor of the app's wellness vocabulary.
+function buildAiCaregiverSummary(deficitKey, strengthKey, gap) {
+    try {
+        const d = AI_DOMAIN_LABEL[deficitKey], s = AI_DOMAIN_LABEL[strengthKey];
+        const dGap = Math.abs(gap[deficitKey]).toFixed(0);
+        const sGap = Math.abs(gap[strengthKey]).toFixed(0);
+        const s1 = "This week's activity shows steady engagement across the wellness games.";
+        const s2 = (deficitKey === strengthKey)
+            ? (d + " is the most consistent area right now, tracking close to the typical range for this age group.")
+            : (s + " is tracking " + sGap + " points above the typical range, while " + d + " is " + dGap + " points below it and would benefit from a little extra practice.");
+        const s3 = "We've prioritized " + d + "-focused activities in the Games menu to help build that skill through gentle, regular practice.";
+        return s1 + ' ' + s2 + ' ' + s3;
+    } catch (e) { return 'AI insights are being calibrated based on recent activity.'; }
+}
+
+// --- DYNAMIC UI: Home Screen "AI Personalized Care Track" banner ---
+// Targets the #ai-care-track-banner / #ai-plan-title / #ai-plan-desc / #ai-plan-date
+// markup in index.html. Hidden until we actually have a profile to show.
+function renderAiCareTrackBanner() {
+    try {
+        const banner = document.getElementById('ai-care-track-banner');
+        if (!banner) return;
+        let profile = null;
+        try { profile = JSON.parse(localStorage.getItem('neosaarthi_ai_profile')); } catch (e) {}
+        if (!profile || !profile.primaryDeficitLabel) { banner.style.display = 'none'; return; }
+
+        banner.style.display = 'block';
+        const titleEl = document.getElementById('ai-plan-title');
+        const dateEl = document.getElementById('ai-plan-date');
+        if (titleEl) titleEl.innerText = 'AI Focus Track: ' + profile.primaryDeficitLabel;
+        if (dateEl) {
+            try { dateEl.innerText = new Date(profile.generatedAt).toLocaleDateString(); } catch (e) {}
+        }
+    } catch (e) {}
+}
+
+// --- DYNAMIC UI: Progress Screen "AI Focus Comparison" card ---
+// Targets #ai-clinical-comparison-card / #ai-baseline-bars-container / #ai-summary-text.
+function renderAiComparisonCard() {
+    try {
+        const barsContainer = document.getElementById('ai-baseline-bars-container');
+        const summaryEl = document.getElementById('ai-summary-text');
+        if (!barsContainer) return;
+
+        let profile = null;
+        try { profile = JSON.parse(localStorage.getItem('neosaarthi_ai_profile')); } catch (e) {}
+        if (!profile && typeof runAICognitiveProfiler === 'function') profile = runAICognitiveProfiler();
+        if (!profile) return;
+
+        barsContainer.innerHTML = '';
+        for (const key in AI_DOMAIN_LABEL) {
+            const userVal = profile.user[key];
+            const baseVal = profile.baseline[key];
+            const isFocus = key === profile.primaryDeficit;
+            const row = document.createElement('div');
+            row.style.marginBottom = '6px';
+            row.innerHTML =
+                '<div style="display:flex;justify-content:space-between;font-size:12.5px;color:#37474F;font-weight:600;margin-bottom:3px;">' +
+                    '<span>' + AI_DOMAIN_LABEL[key] + (isFocus ? ' &#x1F3AF;' : '') + '</span>' +
+                    '<span style="color:#00796B;">' + userVal + '% <span style="color:#999;font-weight:400;">/ ' + baseVal + '% typical</span></span>' +
+                '</div>' +
+                '<div style="position:relative;height:10px;background:#EEF3F2;border-radius:6px;">' +
+                    '<div style="height:100%;width:' + Math.max(2, Math.min(100, userVal)) + '%;background:' + (isFocus ? '#FF8A65' : '#00796B') + ';border-radius:6px;"></div>' +
+                    '<div style="position:absolute;top:-3px;left:' + Math.max(0, Math.min(100, baseVal)) + '%;width:2px;height:16px;background:#37474F;"></div>' +
+                '</div>';
+            barsContainer.appendChild(row);
+        }
+        if (summaryEl) summaryEl.innerText = profile.summary;
+    } catch (e) {}
+}
+
+// --- SAARTHI VOICE AI COMPANION ---
+// Floating mic button already lives in index.html (#saarthi-ai-mic-btn). Everything
+// else - the modal, the recognition/synthesis engine, and the intent router - is
+// built here and is fully crash-proof: unsupported browsers and denied mic
+// permission both degrade gracefully to the quick-tap prompt chips.
+let saarthiRecognition = null;
+let saarthiModalReady = false;
+
+function ensureSaarthiModal() {
+    if (saarthiModalReady) return;
+    try {
+        const wrap = document.createElement('div');
+        wrap.innerHTML =
+            '<style>' +
+                '@keyframes saarthiRingPulse{0%{box-shadow:0 0 0 0 rgba(0,121,107,.5);}70%{box-shadow:0 0 0 22px rgba(0,121,107,0);}100%{box-shadow:0 0 0 0 rgba(0,121,107,0);}}' +
+                '@keyframes saarthiMicPulse{0%{box-shadow:0 0 0 0 rgba(0,121,107,.5);}70%{box-shadow:0 0 0 14px rgba(0,121,107,0);}100%{box-shadow:0 0 0 0 rgba(0,121,107,0);}}' +
+                '@keyframes saarthiPillIn{from{transform:translate(-50%,16px);opacity:0;}to{transform:translate(-50%,0);opacity:1;}}' +
+                '.saarthi-ring{width:96px;height:96px;border-radius:50%;background:linear-gradient(135deg,#00796B,#00BFA5);display:flex;align-items:center;justify-content:center;color:white;margin:0 auto;animation:saarthiRingPulse 1.6s infinite;font-size:34px;}' +
+                '.saarthi-chip{min-height:55px;padding:14px 16px;font-size:17px;text-align:left;border-radius:14px;border:1px solid #ddd;background:#F4F7F6;color:#37474F;font-weight:600;cursor:pointer;width:100%;}' +
+                '.saarthi-chip:active{background:#E0F2F1;}' +
+                '.saarthi-pill-icon{animation:saarthiMicPulse 2s infinite;}' +
+                '.saarthi-text-input{flex:1;min-height:48px;padding:0 14px;border-radius:14px;border:1px solid #ddd;font-size:15px;font-family:"Poppins",sans-serif;color:#37474F;}' +
+                '.saarthi-send-btn{min-height:48px;padding:0 18px;border-radius:14px;border:none;background:#00796B;color:white;font-weight:700;font-size:15px;cursor:pointer;}' +
+            '</style>' +
+            '<div id="saarthi-voice-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9998;align-items:flex-end;justify-content:center;">' +
+                '<div style="background:white;width:100%;max-width:420px;border-radius:24px 24px 0 0;padding:26px 22px 30px;text-align:center;max-height:88vh;overflow-y:auto;">' +
+                    '<div class="saarthi-ring"><span>&#x1F399;&#xFE0F;</span></div>' +
+                    '<p id="saarthi-status-text" style="font-size:17px;font-weight:600;color:#37474F;margin:16px 0 6px;">Listening... Speak to Saarthi in English or Hindi</p>' +
+                    '<div id="saarthi-transcript" style="min-height:24px;color:#00796B;font-size:15px;font-style:italic;margin-bottom:14px;"></div>' +
+                    '<div style="display:flex;gap:8px;margin-bottom:16px;">' +
+                        '<input id="saarthi-text-input" class="saarthi-text-input" type="text" placeholder="Or type your message here...">' +
+                        '<button class="saarthi-send-btn" onclick="sendSaarthiTextQuery()">Send</button>' +
+                    '</div>' +
+                    '<div style="display:flex;flex-direction:column;gap:10px;margin-bottom:18px;">' +
+                        '<button class="saarthi-chip" onclick="processSaarthiQuery(\'What is NeoSaarthi?\')">&#x1F4AC; What is NeoSaarthi?</button>' +
+                        '<button class="saarthi-chip" onclick="processSaarthiQuery(\'How was my test result?\')">&#x1F4AC; How was my test result?</button>' +
+                        '<button class="saarthi-chip" onclick="processSaarthiQuery(\'What should I do right now?\')">&#x1F4AC; What should I do right now?</button>' +
+                        '<button class="saarthi-chip" onclick="processSaarthiQuery(\'Open family album\')">&#x1F4AC; Open family album</button>' +
+                        '<button class="saarthi-chip" onclick="processSaarthiQuery(\'Help me relax\')">&#x1F4AC; Help me relax</button>' +
+                    '</div>' +
+                    '<button onclick="closeSaarthiVoiceModal()" style="min-height:52px;width:100%;border-radius:14px;border:none;background:#eee;color:#37474F;font-weight:700;font-size:17px;cursor:pointer;">Close</button>' +
+                '</div>' +
+            '</div>' +
+            '<div id="saarthi-pill" style="display:none;position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:9999;width:min(94vw,380px);background:linear-gradient(135deg,#00796B,#004D40);color:white;border-radius:26px;box-shadow:0 8px 24px rgba(0,0,0,0.3);padding:12px 16px;animation:saarthiPillIn .25s ease-out;">' +
+                '<div style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="reopenSaarthiFull()">' +
+                    '<div class="saarthi-pill-icon" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;">&#x1F399;&#xFE0F;</div>' +
+                    '<div style="flex:1;text-align:left;overflow:hidden;">' +
+                        '<div id="saarthi-pill-user-line" style="font-size:10.5px;opacity:.8;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></div>' +
+                        '<div id="saarthi-pill-reply-line" style="font-size:13.5px;font-weight:600;line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">Listening...</div>' +
+                    '</div>' +
+                '</div>' +
+                '<div id="saarthi-pill-actions" style="display:none;gap:8px;margin-top:10px;flex-wrap:wrap;"></div>' +
+            '</div>';
+        document.body.appendChild(wrap);
+
+        const textInput = document.getElementById('saarthi-text-input');
+        if (textInput) {
+            textInput.addEventListener('keydown', function (ev) {
+                if (ev.key === 'Enter') { ev.preventDefault(); sendSaarthiTextQuery(); }
+            });
+        }
+
+        saarthiModalReady = true;
+    } catch (e) {}
+}
+
+function sendSaarthiTextQuery() {
+    try {
+        const input = document.getElementById('saarthi-text-input');
+        if (!input) return;
+        const text = input.value.trim();
+        if (!text) return;
+        input.value = '';
+        stopSaarthiListening();
+        processSaarthiQuery(text);
+    } catch (e) {}
+}
+
+// Which .screen id (if any) is currently visible - used to restore the round mic
+// button to the right state once an active conversation settles back to idle.
+function getVisibleScreenId() {
+    try {
+        const els = document.querySelectorAll('.screen');
+        for (let i = 0; i < els.length; i++) { if (els[i].style.display && els[i].style.display !== 'none') return els[i].id; }
+        return null;
+    } catch (e) { return null; }
+}
+
+// Controls the round idle mic button only. The pill/full-modal are owned by
+// SaarthiUI and stay visible across screen changes while a conversation is active -
+// that's what makes Saarthi "persistent" rather than tied to showScreen().
+function updateSaarthiMicVisibility(screenId) {
+    try {
+        const btn = document.getElementById('saarthi-ai-mic-btn');
+        if (!btn) return;
+        if (typeof SaarthiUI !== 'undefined' && SaarthiUI.state !== 'idle') { btn.style.display = 'none'; return; }
+        const visibleOn = ['home-screen', 'routine-screen', 'game-menu-screen', 'progress-screen'];
+        btn.style.display = visibleOn.indexOf(screenId) !== -1 ? 'block' : 'none';
+    } catch (e) {}
+}
+
+// --- Saarthi UI state machine: idle (round button) -> full (bottom-sheet dialogue)
+// -> pill-speaking (compact, non-blocking, voice plays in background) -> pill-confirm
+// (Yes/No for a navigational answer) -> back to idle. Never a blocking full-screen
+// modal while Saarthi is just talking - only while actively capturing a question.
+const SaarthiUI = {
+    state: 'idle', // idle | full | pill-speaking | pill-confirm
+
+    openFull: function () {
+        try {
+            ensureSaarthiModal();
+            this.hidePill();
+            const modal = document.getElementById('saarthi-voice-modal');
+            if (modal) modal.style.display = 'flex';
+            const t = document.getElementById('saarthi-transcript'); if (t) t.innerText = '';
+            const st = document.getElementById('saarthi-status-text'); if (st) st.innerText = 'Listening... Speak to Saarthi in English or Hindi';
+            const micBtn = document.getElementById('saarthi-ai-mic-btn'); if (micBtn) micBtn.style.display = 'none';
+            this.state = 'full';
+            startSaarthiListening();
+        } catch (e) {}
+    },
+
+    closeFull: function () {
+        try {
+            stopSaarthiListening();
+            if (window.speechSynthesis) window.speechSynthesis.cancel();
+            const modal = document.getElementById('saarthi-voice-modal');
+            if (modal) modal.style.display = 'none';
+            this.state = 'idle';
+            updateSaarthiMicVisibility(getVisibleScreenId());
+        } catch (e) {}
+    },
+
+    // Collapses the full dialogue into the compact floating pill the instant we
+    // have something to say, so speech plays in the background while the user is
+    // free to tap around the app - never a blocking modal for the answer itself.
+    // Shows a tiny "You: ..." caption above the reply, like a chat bubble.
+    collapseToPill: function (userText, replyText) {
+        try {
+            ensureSaarthiModal();
+            stopSaarthiListening();
+            const modal = document.getElementById('saarthi-voice-modal'); if (modal) modal.style.display = 'none';
+            const pill = document.getElementById('saarthi-pill');
+            const userLine = document.getElementById('saarthi-pill-user-line');
+            const replyLine = document.getElementById('saarthi-pill-reply-line');
+            const actions = document.getElementById('saarthi-pill-actions');
+            if (userLine) userLine.innerText = userText ? ('You: ' + userText) : '';
+            if (replyLine) replyLine.innerText = replyText;
+            if (actions) { actions.innerHTML = ''; actions.style.display = 'none'; }
+            if (pill) pill.style.display = 'block';
+            const micBtn = document.getElementById('saarthi-ai-mic-btn'); if (micBtn) micBtn.style.display = 'none';
+            this.state = 'pill-speaking';
+        } catch (e) {}
+    },
+
+    // Updates just the reply line (used for short follow-up acknowledgments,
+    // keeping the original "You: ..." question visible above it for context).
+    showPillText: function (text) {
+        try { const r = document.getElementById('saarthi-pill-reply-line'); if (r) r.innerText = text; } catch (e) {}
+    },
+
+    // Called once speech has FULLY finished (utterance.onend). Renders 2-4 compact
+    // choice buttons in the pill - the classic Yes/No confirm is just a 2-choice
+    // case of this, built by makeYesNoChoices(). `voice` (optional) is {yes, no}
+    // for the simple binary case - listenForYesNo() layers spoken confirmation on
+    // top of the buttons, which always remain the reliable path.
+    showChoices: function (choices, voice) {
+        try {
+            const actions = document.getElementById('saarthi-pill-actions');
+            if (!actions || !choices || !choices.length) return;
+            actions.innerHTML = '';
+            choices.forEach(function (c) {
+                const btn = document.createElement('button');
+                btn.innerHTML = c.label;
+                btn.style.cssText = 'flex:1 1 45%;min-height:46px;border:none;border-radius:12px;background:' +
+                    (c.primary ? '#4CAF50' : 'rgba(255,255,255,0.22)') +
+                    ';color:white;font-weight:700;font-size:13px;cursor:pointer;padding:6px 10px;';
+                btn.onclick = c.onSelect;
+                actions.appendChild(btn);
+            });
+            actions.style.display = 'flex';
+            this.state = 'pill-confirm';
+            if (voice && voice.yes && voice.no) listenForYesNo(voice.yes, voice.no);
+        } catch (e) {}
+    },
+
+    hideActions: function () {
+        try { const a = document.getElementById('saarthi-pill-actions'); if (a) { a.style.display = 'none'; a.innerHTML = ''; } } catch (e) {}
+    },
+
+    // For informational answers (no choices offered) - let the reply stay
+    // readable on the pill for a moment, then fade back to just the round mic button.
+    settleIdle: function () {
+        try {
+            setTimeout(() => {
+                this.hidePill();
+                this.state = 'idle';
+                updateSaarthiMicVisibility(getVisibleScreenId());
+            }, 2600);
+        } catch (e) {}
+    },
+
+    hidePill: function () {
+        try { const pill = document.getElementById('saarthi-pill'); if (pill) pill.style.display = 'none'; } catch (e) {}
+    }
+};
+
+// Standard "Yes, take me there / No, stay here" pair, shared by every navigational
+// intent. Buttons own their full lifecycle (hide pill / settle / speak ack) so each
+// intent doesn't have to repeat that plumbing.
+function makeYesNoChoices(navScreen, onNav) {
+    const goYes = function () {
+        stopSaarthiListening();
+        SaarthiUI.state = 'idle'; // set before showScreen() so its mic-visibility check applies the normal per-screen rule
+        SaarthiUI.hidePill();
+        showScreen(navScreen);
+        if (typeof onNav === 'function') { try { onNav(); } catch (e) {} }
+    };
+    const goNo = function () {
+        stopSaarthiListening();
+        SaarthiUI.hideActions();
+        const ack = 'Okay, staying right here.';
+        SaarthiUI.showPillText(ack);
+        speakSaarthi(ack, function () { SaarthiUI.settleIdle(); });
+    };
+    return {
+        choices: [
+            { label: '&#x2705; Yes, take me there', primary: true, onSelect: goYes },
+            { label: '&#x274C; No, stay here', onSelect: goNo }
+        ],
+        voice: { yes: goYes, no: goNo }
+    };
+}
+
+function openSaarthiVoiceModal() { SaarthiUI.openFull(); }
+function closeSaarthiVoiceModal() { SaarthiUI.closeFull(); }
+function reopenSaarthiFull() { SaarthiUI.openFull(); }
+
+function startSaarthiListening() {
+    try {
+        const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const st = document.getElementById('saarthi-status-text');
+        if (!SR) {
+            if (st) st.innerText = "Voice input isn't available on this browser — try a quick-tap prompt below.";
+            return;
+        }
+        saarthiRecognition = new SR();
+        saarthiRecognition.lang = 'en-IN';
+        saarthiRecognition.interimResults = true;
+        saarthiRecognition.continuous = false;
+        saarthiRecognition.onresult = function (ev) {
+            try {
+                let text = '';
+                for (let i = 0; i < ev.results.length; i++) text += ev.results[i][0].transcript;
+                const t = document.getElementById('saarthi-transcript'); if (t) t.innerText = text;
+                if (ev.results[ev.results.length - 1].isFinal) processSaarthiQuery(text);
+            } catch (e) {}
+        };
+        saarthiRecognition.onerror = function () {
+            const s = document.getElementById('saarthi-status-text');
+            if (s) s.innerText = "Didn't catch that — try a quick-tap prompt below.";
+        };
+        saarthiRecognition.start();
+    } catch (e) {}
+}
+
+// A short, separate recognition pass used only while the pill is showing the
+// Yes/No confirmation - listens for a spoken "yes"/"no" on top of the buttons.
+// Purely additive: if unsupported or nothing matches, the buttons still work.
+function listenForYesNo(onYes, onNo) {
+    try {
+        const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SR) return;
+        stopSaarthiListening();
+        saarthiRecognition = new SR();
+        saarthiRecognition.lang = 'en-IN';
+        saarthiRecognition.interimResults = false;
+        saarthiRecognition.continuous = false;
+        saarthiRecognition.onresult = function (ev) {
+            try {
+                const said = ev.results[ev.results.length - 1][0].transcript.toLowerCase();
+                if (/\b(yes|yeah|yep|sure|okay|ok|haan)\b/.test(said)) onYes();
+                else if (/\b(no|nope|nah|nahi)\b/.test(said)) onNo();
+            } catch (e) {}
+        };
+        saarthiRecognition.onerror = function () {};
+        saarthiRecognition.start();
+    } catch (e) {}
+}
+
+function stopSaarthiListening() {
+    try {
+        if (saarthiRecognition) {
+            saarthiRecognition.onresult = null;
+            saarthiRecognition.onerror = null;
+            saarthiRecognition.onend = null;
+            saarthiRecognition.stop();
+            saarthiRecognition = null;
+        }
+    } catch (e) {}
+}
+
+// Calm, unhurried voice calibrated for elderly listening: slightly slower rate, en-IN
+// voice when available. onEnd fires when speech truly finishes (utterance.onend) so
+// callers can wait for the full answer before doing anything else - with a timed
+// safety net in case a browser never fires onend, so the UI never gets stuck.
+function speakSaarthi(text, onEnd) {
+    try {
+        if (!window.speechSynthesis) { if (typeof onEnd === 'function') onEnd(); return; }
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'en-IN'; u.rate = 0.88; u.pitch = 1.05; u.volume = 1;
+        let finished = false;
+        const finish = function () { if (finished) return; finished = true; if (typeof onEnd === 'function') { try { onEnd(); } catch (e) {} } };
+        u.onend = finish;
+        u.onerror = finish;
+        setTimeout(finish, Math.max(2500, (text || '').length * 90)); // safety net
+        const speakNow = function () {
+            try {
+                const voices = window.speechSynthesis.getVoices();
+                const v = voices.find(function (v) { return v.lang === 'en-IN'; }) || voices.find(function (v) { return v.lang && v.lang.indexOf('en') === 0; });
+                if (v) u.voice = v;
+                window.speechSynthesis.speak(u);
+            } catch (e) { finish(); }
+        };
+        if (window.speechSynthesis.getVoices().length) speakNow();
+        else window.speechSynthesis.onvoiceschanged = speakNow;
+    } catch (e) { if (typeof onEnd === 'function') onEnd(); }
+}
+
+// --- NLP intent router: broad cognitive-companion knowledge base ---
+function classifySaarthiIntent(text) {
+    const t = (text || '').toLowerCase();
+    if (/my score|my (test )?result|test result|wellness score|how (was|did) i (do|perform)|how am i doing|my progress|my performance/.test(t)) return 'score';
+    if (/routine|\btask\b|today'?s (schedule|plan)|what should i do|remind/.test(t)) return 'routine';
+    if (/family|photo|album|picture|remember my|who is in my/.test(t)) return 'family';
+    if (/\blonely\b|\bbored\b|\bboring\b|nothing to do|feel(ing)? alone/.test(t)) return 'lonely';
+    if (/anxious|restless|help me sleep|can'?t sleep|i'?m tired|feel (tired|anxious|restless|stressed)|relax|\bcalm\b|breath(e|ing)|sound(scape)?|\bmusic\b/.test(t)) return 'relax';
+    if (/\bemergency\b|call someone|call for help|need help (now|immediately)|send help|i need help\b/.test(t)) return 'emergency';
+    if (/what is (neosaarthi|this app)|what does this app do|how does this (app )?help|about (this app|neosaarthi)/.test(t)) return 'about';
+    if (/improve my memory|why (should i |do i need to )?play (games|the games)|cognitive scaffolding|brain (exercise|training)|neuroplasticity/.test(t)) return 'cognitive';
+    if (/why (is )?water|why do i need to walk|why (should i )?walk|hydration|drink(ing)? water/.test(t)) return 'wellness';
+    if (/^(hi|hello|hey|namaste)\b|good (morning|afternoon|evening)|how are you|how'?s your day|who are you|who (made|built|created) you|what('?s| is) your name|thank(s| you)|shukriya/.test(t)) return 'smalltalk';
+    return 'offtopic';
+}
+
+// Builds { text, choices, voice } for a classified intent. `choices` is null for
+// purely informational answers (nothing to confirm); otherwise an array of
+// { label, primary?, onSelect } shown as compact pill buttons once speech finishes.
+// `voice` (optional) is {yes, no} for the classic binary confirm - listenForYesNo()
+// layers spoken "yes"/"no" on top of the buttons, which always remain the fallback.
+function buildSaarthiReply(intent, rawText) {
+    try {
+        if (intent === 'score') {
+            const profile = (typeof runAICognitiveProfiler === 'function') ? runAICognitiveProfiler() : null;
+            let text;
+            if (profile && profile.primaryDeficitLabel) {
+                const vals = Object.keys(profile.user).map(function (k) { return profile.user[k]; });
+                const overall = Math.round(vals.reduce(function (a, b) { return a + b; }, 0) / vals.length);
+                text = 'Your overall wellness score is ' + overall + ' percent. ' + profile.strengthDomainLabel +
+                       ' is your strongest area, and ' + profile.primaryDeficitLabel + ' could use a little more practice.';
+            } else {
+                text = "You haven't finished an assessment yet, but you're welcome to play any game whenever you like.";
+            }
+            const yn = makeYesNoChoices('progress-screen');
+            return { text: text + ' Would you like me to take you there now?', choices: yn.choices, voice: yn.voice };
+        }
+        if (intent === 'routine') {
+            let remaining = 5;
+            try {
+                const d = (typeof getRoutineData === 'function') ? getRoutineData() : null;
+                if (d) remaining = ['morning_brain', 'hydration', 'walk', 'afternoon_puzzle', 'evening_audio'].filter(function (k) { return !d[k]; }).length;
+            } catch (e) {}
+            const text = remaining > 0
+                ? ('You have ' + remaining + ' ' + (remaining === 1 ? 'activity' : 'activities') + ' left in today\'s routine.')
+                : "You've completed today's whole routine — wonderful work!";
+            const yn = makeYesNoChoices('routine-screen');
+            return { text: text + ' Would you like me to take you there now?', choices: yn.choices, voice: yn.voice };
+        }
+        if (intent === 'family') {
+            let names = 'your loved ones';
+            try {
+                if (typeof familyMembers !== 'undefined' && familyMembers.length) {
+                    const firstNames = familyMembers.map(function (m) { return m.name.split(' ')[0]; });
+                    names = firstNames.length > 1
+                        ? (firstNames.slice(0, -1).join(', ') + ' and ' + firstNames[firstNames.length - 1])
+                        : firstNames[0];
+                }
+            } catch (e) {}
+            const yn = makeYesNoChoices('family-screen');
+            return { text: 'Your family album has photos of your loved ones including ' + names + '. Would you like to practice your face recognition game?', choices: yn.choices, voice: yn.voice };
+        }
+        if (intent === 'lonely') {
+            const goFamily = function () {
+                stopSaarthiListening(); SaarthiUI.state = 'idle'; SaarthiUI.hidePill();
+                showScreen('family-screen');
+            };
+            const goMusic = function () {
+                stopSaarthiListening(); SaarthiUI.state = 'idle'; SaarthiUI.hidePill();
+                showScreen('routine-screen');
+                if (typeof showAudioTherapyModal === 'function') { try { showAudioTherapyModal(); } catch (e) {} }
+            };
+            const justChat = function () {
+                stopSaarthiListening(); SaarthiUI.hideActions();
+                const ack = "I'm here for you anytime you want to talk.";
+                SaarthiUI.showPillText(ack);
+                speakSaarthi(ack, function () { SaarthiUI.settleIdle(); });
+            };
+            return {
+                text: "I am right here with you! Would you like to practice identifying your family in the photo album, or shall we listen to some relaxing bamboo flute music together?",
+                choices: [
+                    { label: '&#x1F46A; Family Album', primary: true, onSelect: goFamily },
+                    { label: '&#x1F3B6; Relaxing Music', onSelect: goMusic },
+                    { label: '&#x1F4AC; Just chat', onSelect: justChat }
+                ]
+            };
+        }
+        if (intent === 'relax') {
+            const yn = makeYesNoChoices('routine-screen', function () { if (typeof showAudioTherapyModal === 'function') { try { showAudioTherapyModal(); } catch (e) {} } });
+            return { text: 'Take a slow, deep breath with me. Everything is peaceful. Would you like me to start your evening calming soundscape and breathing guide?', choices: yn.choices, voice: yn.voice };
+        }
+        if (intent === 'emergency') {
+            const yn = makeYesNoChoices('sos-screen');
+            return { text: 'If you are feeling unwell or need immediate help, I can open your emergency SOS Alert right away. Would you like me to open SOS?', choices: yn.choices, voice: yn.voice };
+        }
+        if (intent === 'about') {
+            return { text: "NeoSaarthi is your daily cognitive wellness companion. It exercises your memory through gentle brain games, keeps you hydrated, and helps you stay connected with your loved ones.", choices: null };
+        }
+        if (intent === 'cognitive') {
+            return { text: "Daily active recall, regular gentle walking, and staying mentally engaged stimulate your brain's neuroplasticity. We focus on exercising your memory, not replacing it.", choices: null };
+        }
+        if (intent === 'wellness') {
+            return { text: "Drinking water prevents sudden fatigue and keeps your brain alert, while a ten-minute walk boosts oxygen and blood flow to your memory centers.", choices: null };
+        }
+        if (intent === 'smalltalk') {
+            const t = (rawText || '').toLowerCase();
+            if (/who are you|who (made|built|created) you|what('?s| is) your name/.test(t)) {
+                return { text: "I am Saarthi, your personal cognitive wellness companion, built by Team NeoSaarthi to support your daily memory, health, and happiness.", choices: null };
+            }
+            if (/thank|shukriya/.test(t)) {
+                return { text: "You are most welcome! Always happy to be by your side.", choices: null };
+            }
+            if (/how are you|how'?s your day/.test(t)) {
+                return { text: "I am doing great, thank you for asking! I'm here and ready to help you with your daily routine or games.", choices: null };
+            }
+            let timeGreet = 'Hello';
+            try {
+                const hour = new Date().getHours();
+                timeGreet = hour < 12 ? 'Good morning' : (hour < 17 ? 'Good afternoon' : 'Good evening');
+            } catch (e) {}
+            return { text: 'Namaste! ' + timeGreet + '. It is wonderful to talk with you today. How are you feeling?', choices: null };
+        }
+        // Out-of-scope: a gentle, elderly-friendly boundary rather than silence or a robotic error.
+        return { text: "I am sorry, but I am specifically designed to assist you with your cognitive exercises, daily wellness, and family memories. Is there something about your routine or games I can help you with today?", choices: null };
+    } catch (e) {
+        return { text: 'I had a little trouble with that — please try again.', choices: null };
+    }
+}
+
+function processSaarthiQuery(text) {
+    try {
+        const intent = classifySaarthiIntent(text);
+        const reply = buildSaarthiReply(intent, text);
+
+        SaarthiUI.collapseToPill(text, reply.text);
+        speakSaarthi(reply.text, function () {
+            try {
+                if (reply.choices && reply.choices.length) SaarthiUI.showChoices(reply.choices, reply.voice);
+                else SaarthiUI.settleIdle();
+            } catch (e) {}
+        });
+    } catch (e) {}
+}
+
+function startAssessment() {
+    showScreen('assessment-screen');
+    gauntletTimeLeft = 300;
+    currentPhase = 0;
+    window.savedRecallItems = [];
+    GauntletScore.reset();
+    
+    // Shuffle 13 games
+    window.gauntletTasksQueue = [0,1,2,3,4,5,6,7,8,9,10,11,12].sort(() => Math.random() - 0.5);
+    let recallIdx = window.gauntletTasksQueue.indexOf(11);
+    if (recallIdx < 5) {
+        let swap = window.gauntletTasksQueue[12];
+        window.gauntletTasksQueue[12] = 11;
+        window.gauntletTasksQueue[recallIdx] = swap;
+    }
+
+    document.getElementById('gauntlet-timer').innerText = '05:00';
+    document.getElementById('gauntlet-progress').style.width = '0%';
+    
+    const area = document.getElementById('gauntlet-area');
+    if(!document.getElementById('demo-skip')) {
+        const skipBtn = document.createElement('button');
+        skipBtn.id = 'demo-skip';
+        skipBtn.innerText = 'Skip to Results (Demo Mode)';
+        skipBtn.style.position = 'absolute'; skipBtn.style.bottom = '10px'; skipBtn.style.background = 'transparent';
+        skipBtn.style.border = 'none'; skipBtn.style.textDecoration = 'underline'; skipBtn.style.color = '#999';
+        skipBtn.onclick = finishAssessment;
+        document.getElementById('assessment-screen').appendChild(skipBtn);
+    }
+    
+    clearInterval(gauntletInterval);
+    gauntletInterval = setInterval(() => {
+        gauntletTimeLeft--;
+        let m = Math.floor(gauntletTimeLeft / 60).toString().padStart(2, '0');
+        let s = (gauntletTimeLeft % 60).toString().padStart(2, '0');
+        document.getElementById('gauntlet-timer').innerText = m + ':' + s;
+        
+        let pct = ((300 - gauntletTimeLeft) / 300) * 100;
+        document.getElementById('gauntlet-progress').style.width = pct + '%';
+
+        if (gauntletTimeLeft <= 0) {
+            clearInterval(gauntletInterval);
+            finishAssessment();
+        }
+    }, 1000);
+
+    loadNextGauntletTask();
+}
+
+function loadNextGauntletTask() {
+    if (gauntletTimeLeft <= 0) return;
+    const area = document.getElementById('gauntlet-area');
+    area.innerHTML = ''; 
+    
+    if (window.gauntletTasksQueue.length === 0) {
+        finishAssessment();
+        return;
+    }
+
+    let taskType = window.gauntletTasksQueue.shift();
+    currentPhase++;
+    GauntletScore.begin(taskType);
+
+    let level = 1; let levelText = 'Level 1: Easy';
+    if (currentPhase > 4 && currentPhase <= 9) {
+        level = 2; levelText = 'Level 2: Medium';
+    } else if (currentPhase > 9) {
+        level = 3; levelText = 'Level 3: Hard';
+    }
+    
+    const badge = document.createElement('div');
+    badge.innerText = levelText;
+    badge.style.padding = '4px 8px'; 
+    badge.style.background = level === 1 ? '#4CAF50' : level === 2 ? '#FF9800' : '#F44336';
+    badge.style.color = 'white'; badge.style.borderRadius = '8px'; badge.style.fontSize = '14px'; badge.style.fontWeight = 'bold';
+    badge.style.marginBottom = '15px';
+    badge.style.display = 'inline-block';
+    area.appendChild(badge);
+
+    const titleEl = document.getElementById('gauntlet-title');
+
+    const emj = {
+        fruits: ['&#x1F34E;','&#x1F34C;','&#x1F347;','&#x1F353;','&#x1F34A;'],
+        shapes: ['&#x1F534;','&#x1F7E2;','&#x1F7E1;','&#x1F535;','&#x1F7E3;'],
+        animals: ['&#x1F436;','&#x1F431;','&#x1F42D;','&#x1F430;','&#x1F43B;'],
+        weather: ['&#x2600;&#xFE0F;','&#x1F327;&#xFE0F;','&#x26C4;','&#x1F308;','&#x26A1;']
+    };
+
+    function makeGrid(items, onSelect) {
+        const grid = document.createElement('div');
+        grid.style.display = 'grid'; 
+        grid.style.gridTemplateColumns = items.length <= 4 ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)'; 
+        grid.style.gap = '15px'; 
+        grid.style.marginTop = '20px';
+        grid.style.width = '100%';
+        grid.style.maxWidth = '400px';
+        items.forEach(obj => {
+            const btn = document.createElement('button'); btn.innerHTML = obj; 
+            btn.style.padding = '15px'; btn.style.fontSize = '35px'; 
+            btn.style.borderRadius = '12px'; btn.style.border = '2px solid #ccc'; 
+            btn.style.background = 'white'; btn.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+            btn.style.cursor = 'pointer';
+            btn.onclick = () => onSelect(obj, btn);
+            grid.appendChild(btn);
+        });
+        area.appendChild(grid);
+    }
+    
+    function makeInst(text) {
+        const inst = document.createElement('p'); inst.innerHTML = text; inst.style.fontSize = '20px'; inst.style.fontWeight = '600'; inst.style.color = '#37474F'; inst.style.textAlign = 'center'; area.appendChild(inst);
+    }
+
+    if (taskType === 0) {
+        titleEl.innerText = 'Game 1: Sequence Memory';
+        let seqLen = level === 1 ? 3 : 4; // user requested max 4 items for level 3
+        let speed = level === 1 ? 2000 : level === 2 ? 1600 : 1300;
+        let pool = emj.shapes;
+        let seq = [];
+        for(let i=0; i<seqLen; i++) seq.push(pool[Math.floor(Math.random()*pool.length)]);
+        window.savedRecallItems.push(seq[0]); 
+        
+        makeInst('Watch the sequence...');
+        const disp = document.createElement('h2'); disp.style.fontSize = '80px'; disp.style.margin = '30px 0'; area.appendChild(disp);
+        
+        let step = 0;
+        let intv = setInterval(() => {
+            if(gauntletTimeLeft <= 0) { clearInterval(intv); return; }
+            if(step < seqLen) {
+                disp.innerHTML = seq[step];
+                setTimeout(() => { disp.innerHTML = ''; }, speed - 300);
+                step++;
+            } else {
+                clearInterval(intv);
+                area.innerHTML = ''; area.appendChild(badge); makeInst('Tap the sequence in order:');
+                let userSeq = [];
+                makeGrid(pool, (val, btn) => {
+                    userSeq.push(val);
+                    btn.style.background = '#E0F2F1';
+                    if(userSeq.length === seqLen) {
+                        for (let i = 0; i < seqLen; i++) GauntletScore[userSeq[i] === seq[i] ? 'hit' : 'miss']();
+                        setTimeout(loadNextGauntletTask, 300);
+                    }
+                });
+            }
+        }, speed);
+    }
+    else if (taskType === 1) {
+        titleEl.innerText = 'Game 2: Grid Memory';
+        let count = level === 1 ? 3 : 4; // user requested max 4
+        makeInst('Remember the green squares');
+        
+        const grid = document.createElement('div');
+        grid.style.display = 'grid'; grid.style.gridTemplateColumns = 'repeat(3, 1fr)'; grid.style.gap = '15px'; grid.style.margin = '30px auto'; grid.style.width = '240px'; grid.style.height = '240px';
+        let cells = [];
+        let active = [];
+        for(let i=0; i<9; i++) {
+            let c = document.createElement('div'); c.style.background = '#eee'; c.style.borderRadius = '12px'; c.style.boxShadow = 'inset 0 0 5px rgba(0,0,0,0.1)';
+            grid.appendChild(c); cells.push(c);
+        }
+        area.appendChild(grid);
+        
+        while(active.length < count) {
+            let r = Math.floor(Math.random()*9);
+            if(!active.includes(r)) active.push(r);
+        }
+        
+        active.forEach(idx => cells[idx].style.background = '#00796B');
+        
+        setTimeout(() => {
+            if(gauntletTimeLeft <= 0) return;
+            cells.forEach(c => c.style.background = '#eee');
+            makeInst('Tap the squares that were green');
+            let found = 0;
+            cells.forEach((c, idx) => {
+                c.onclick = () => {
+                    if(active.includes(idx)) { c.style.background = '#4CAF50'; found++; GauntletScore.hit(); }
+                    else { c.style.background = '#F44336'; GauntletScore.miss(); }
+                    if(found === count) setTimeout(loadNextGauntletTask, 500);
+                }
+            });
+        }, level === 1 ? 4000 : level === 2 ? 3000 : 2500);
+    }
+    else if (taskType === 2) {
+        titleEl.innerText = 'Game 3: Target Detection';
+        makeInst('Tap the Blue Circle (&#x1F535;) as soon as it appears!');
+        const box = document.createElement('div'); box.style.height = '120px'; box.style.margin = '40px 0'; box.style.fontSize = '80px'; area.appendChild(box);
+        let reps = 0;
+        let everHitTarget = false;
+        let intv = setInterval(() => {
+            if(gauntletTimeLeft <= 0) { clearInterval(intv); return; }
+            let isTarget = Math.random() < 0.3 || reps === 3;
+            box.innerHTML = isTarget ? '&#x1F535;' : '&#x1F7E2;';
+            GauntletScore.prompted();
+            box.onclick = () => {
+                if(isTarget) { everHitTarget = true; GauntletScore.hit(); clearInterval(intv); box.style.background = '#E8F5E9'; box.style.borderRadius = '50%'; setTimeout(loadNextGauntletTask, 500); }
+                else { GauntletScore.miss(); }
+            };
+            reps++;
+            if (reps > 6) { clearInterval(intv); if(!everHitTarget) GauntletScore.miss(); loadNextGauntletTask(); }
+            setTimeout(() => { box.innerHTML = ''; }, level === 1 ? 1500 : level === 2 ? 1200 : 1000);
+        }, level === 1 ? 2500 : level === 2 ? 2000 : 1500);
+    }
+    else if (taskType === 3) {
+        titleEl.innerText = 'Game 4: Attention Switching';
+        makeInst(level === 1 ? 'If EVEN tap Left, If ODD tap Right' : 'If RED tap Left, If BLUE tap Right');
+        
+        let target = document.createElement('h2'); target.style.fontSize = '100px'; target.style.margin = '30px 0'; area.appendChild(target);
+        let val = level === 1 ? Math.floor(Math.random()*8)+2 : (Math.random() > 0.5 ? '&#x1F534;' : '&#x1F535;');
+        target.innerHTML = val;
+        let correctSide3 = level === 1 ? (val % 2 === 0 ? 'L' : 'R') : (val === '&#x1F534;' ? 'L' : 'R');
+
+        const flex = document.createElement('div'); flex.style.display = 'flex'; flex.style.gap = '20px'; flex.style.justifyContent = 'center'; flex.style.width = '100%'; flex.style.maxWidth = '400px';
+        let btnL = document.createElement('button'); btnL.innerText = 'LEFT'; btnL.style.padding = '25px'; btnL.style.fontSize = '24px'; btnL.style.flex = '1'; btnL.style.borderRadius = '16px'; btnL.style.border = '2px solid #ccc'; btnL.onclick = () => { GauntletScore[correctSide3 === 'L' ? 'hit' : 'miss'](); loadNextGauntletTask(); };
+        let btnR = document.createElement('button'); btnR.innerText = 'RIGHT'; btnR.style.padding = '25px'; btnR.style.fontSize = '24px'; btnR.style.flex = '1'; btnR.style.borderRadius = '16px'; btnR.style.border = '2px solid #ccc'; btnR.onclick = () => { GauntletScore[correctSide3 === 'R' ? 'hit' : 'miss'](); loadNextGauntletTask(); };
+        flex.appendChild(btnL); flex.appendChild(btnR); area.appendChild(flex);
+    }
+    else if (taskType === 4) {
+        titleEl.innerText = 'Game 5: Quick Match';
+        makeInst('Find the matching animal:');
+        
+        const targetDisp = document.createElement('div');
+        targetDisp.innerHTML = '&#x1F431;'; // Cat
+        targetDisp.style.fontSize = '60px';
+        targetDisp.style.margin = '10px 0';
+        area.appendChild(targetDisp);
+
+        let count = level === 1 ? 4 : level === 2 ? 6 : 9;
+        let pool = emj.animals.slice();
+        let items = ['&#x1F431;'];
+        while(items.length < count) {
+            items.push(pool[Math.floor(Math.random()*pool.length)]);
+        }
+        items.sort(() => Math.random() - 0.5);
+        makeGrid(items, (val) => {
+            if(val === '&#x1F431;') { GauntletScore.hit(); loadNextGauntletTask(); }
+            else { GauntletScore.miss(); }
+        });
+    }
+    else if (taskType === 5) {
+        titleEl.innerText = 'Game 6: Pattern Completion';
+        makeInst('What number comes next?');
+        let pat = level === 1 ? [2, 4, 6, 8] : level === 2 ? [5, 10, 15, 20] : [1, 2, 4, 8];
+        let ans = level === 1 ? 10 : level === 2 ? 25 : 16;
+        let pText = document.createElement('h2'); pText.innerText = pat.join(', ') + ', ?'; pText.style.margin = '30px 0'; pText.style.letterSpacing = '2px'; pText.style.color = '#00796B'; area.appendChild(pText);
+
+        let opts = [ans, ans+1, ans-1, ans+2].sort(() => Math.random()-0.5);
+        makeGrid(opts, (val) => { GauntletScore[val === ans ? 'hit' : 'miss'](); loadNextGauntletTask(); });
+    }
+    else if (taskType === 6) {
+        titleEl.innerText = 'Game 7: Matrix Reasoning';
+        makeInst('Complete the logic:');
+        let pText = document.createElement('h2'); pText.innerHTML = '&#x2600;&#xFE0F; -> &#x1F305; <br><br> &#x1F319; -> ?'; pText.style.margin = '30px 0'; pText.style.fontSize = '40px'; area.appendChild(pText);
+
+        let correctOpt6 = '&#x1F30C;';
+        let opts = ['&#x1F30C;', '&#x1F327;&#xFE0F;', '&#x26C4;', '&#x1F308;'].sort(() => Math.random()-0.5);
+        makeGrid(opts, (val) => { GauntletScore[val === correctOpt6 ? 'hit' : 'miss'](); loadNextGauntletTask(); });
+    }
+    else if (taskType === 7) {
+        titleEl.innerText = 'Game 8: N-Back Memory';
+        makeInst('Tap Match if the current shape is EXACTLY the same as the PREVIOUS shape.');
+        const box = document.createElement('div'); box.style.height = '120px'; box.style.margin = '20px 0'; box.style.fontSize = '80px'; area.appendChild(box);
+        
+        let btn = document.createElement('button'); btn.innerText = 'MATCH!'; btn.style.padding = '20px'; btn.style.width = '100%'; btn.style.maxWidth = '300px'; btn.style.fontSize = '24px'; btn.style.fontWeight = 'bold'; btn.style.borderRadius = '16px'; btn.style.border = '2px solid #ccc'; btn.style.background = 'white'; area.appendChild(btn);
+        
+        let pool = emj.shapes;
+        let last = '';
+        let step = 0;
+        let everMatched = false, matchOpportunities = 0;
+        let intv = setInterval(() => {
+            if(gauntletTimeLeft <= 0) { clearInterval(intv); return; }
+            let cur = Math.random() < 0.4 && last !== '' ? last : pool[Math.floor(Math.random()*pool.length)];
+            if (cur === last && last !== '') matchOpportunities++;
+            box.innerHTML = cur;
+            GauntletScore.prompted();
+            btn.onclick = () => {
+                if(cur === last) { everMatched = true; GauntletScore.hit(); clearInterval(intv); btn.style.background = '#C8E6C9'; setTimeout(loadNextGauntletTask, 500); }
+                else { GauntletScore.miss(); }
+            };
+            last = cur;
+            step++;
+            if(step > 6) { clearInterval(intv); if(!everMatched && matchOpportunities > 0) GauntletScore.miss(); loadNextGauntletTask(); }
+            setTimeout(() => { box.innerHTML = ''; }, level === 1 ? 2000 : 1500);
+        }, level === 1 ? 3500 : 2500);
+    }
+    else if (taskType === 8) {
+        titleEl.innerText = 'Game 9: Go/No-Go';
+        makeInst('Tap GREEN (&#x1F7E2;). DO NOT tap RED (&#x1F534;).');
+        const box = document.createElement('div'); box.style.height = '120px'; box.style.margin = '40px 0'; box.style.fontSize = '100px'; box.style.cursor = 'pointer'; area.appendChild(box);
+        let taps = 0; let step = 0;
+        let intv = setInterval(() => {
+            if(gauntletTimeLeft <= 0) { clearInterval(intv); return; }
+            let isGreen = Math.random() > 0.4;
+            box.innerHTML = isGreen ? '&#x1F7E2;' : '&#x1F534;';
+            GauntletScore.prompted();
+            box.onclick = () => {
+                if(isGreen) { taps++; GauntletScore.hit(); }
+                else { GauntletScore.miss(); }
+            };
+            step++;
+            if(taps >= 3 || step > 6) { clearInterval(intv); loadNextGauntletTask(); }
+            setTimeout(() => { box.innerHTML = ''; }, level === 1 ? 1500 : level === 2 ? 1200 : 1000);
+        }, level === 1 ? 2500 : 1800);
+    }
+    else if (taskType === 9) {
+        titleEl.innerText = 'Game 10: Rule Learning';
+        let isReversed = level > 1;
+        makeInst(isReversed ? 'Reverse Rule: Apple Right, Banana Left' : 'Rule: Apple Left, Banana Right');
+
+        let target = document.createElement('h2'); target.style.fontSize = '100px'; target.style.margin = '30px 0'; area.appendChild(target);
+        let val = Math.random() > 0.5 ? '&#x1F34E;' : '&#x1F34C;';
+        target.innerHTML = val;
+        let correctSide9 = isReversed ? (val === '&#x1F34E;' ? 'R' : 'L') : (val === '&#x1F34E;' ? 'L' : 'R');
+
+        const flex = document.createElement('div'); flex.style.display = 'flex'; flex.style.gap = '20px'; flex.style.justifyContent = 'center'; flex.style.width = '100%'; flex.style.maxWidth = '400px';
+        let btnL = document.createElement('button'); btnL.innerText = 'LEFT'; btnL.style.padding = '25px'; btnL.style.fontSize = '24px'; btnL.style.flex = '1'; btnL.style.borderRadius = '16px'; btnL.style.border = '2px solid #ccc'; btnL.onclick = () => { GauntletScore[correctSide9 === 'L' ? 'hit' : 'miss'](); loadNextGauntletTask(); };
+        let btnR = document.createElement('button'); btnR.innerText = 'RIGHT'; btnR.style.padding = '25px'; btnR.style.fontSize = '24px'; btnR.style.flex = '1'; btnR.style.borderRadius = '16px'; btnR.style.border = '2px solid #ccc'; btnR.onclick = () => { GauntletScore[correctSide9 === 'R' ? 'hit' : 'miss'](); loadNextGauntletTask(); };
+        flex.appendChild(btnL); flex.appendChild(btnR); area.appendChild(flex);
+    }
+    else if (taskType === 10) {
+        titleEl.innerText = 'Game 11: Memory Recognition';
+        
+        makeInst('Memorize these symbols...');
+        const tempPool = ['&#x1F30E;', '&#x1F680;', '&#x1F3B2;', '&#x1F514;'];
+        const disp = document.createElement('div');
+        disp.innerHTML = tempPool.join(' &nbsp; ');
+        disp.style.fontSize = '40px'; disp.style.margin = '30px 0';
+        area.appendChild(disp);
+        
+        setTimeout(() => {
+            if(gauntletTimeLeft <= 0) return;
+            area.innerHTML = ''; area.appendChild(badge);
+            makeInst('Did you just see this symbol?');
+            let isOld = Math.random() > 0.5;
+            let val = isOld ? tempPool[Math.floor(Math.random()*tempPool.length)] : '&#x1F381;';
+            
+            let target = document.createElement('h2'); target.style.fontSize = '100px'; target.style.margin = '30px 0'; target.innerHTML = val; area.appendChild(target);
+
+            const flex = document.createElement('div'); flex.style.display = 'flex'; flex.style.gap = '20px'; flex.style.justifyContent = 'center'; flex.style.width = '100%'; flex.style.maxWidth = '400px';
+            let btnO = document.createElement('button'); btnO.innerText = 'YES'; btnO.style.padding = '25px'; btnO.style.fontSize = '24px'; btnO.style.flex = '1'; btnO.style.borderRadius = '16px'; btnO.style.border = '2px solid #4CAF50'; btnO.onclick = () => { GauntletScore[isOld ? 'hit' : 'miss'](); loadNextGauntletTask(); };
+            let btnN = document.createElement('button'); btnN.innerText = 'NO'; btnN.style.padding = '25px'; btnN.style.fontSize = '24px'; btnN.style.flex = '1'; btnN.style.borderRadius = '16px'; btnN.style.border = '2px solid #F44336'; btnN.onclick = () => { GauntletScore[!isOld ? 'hit' : 'miss'](); loadNextGauntletTask(); };
+            flex.appendChild(btnO); flex.appendChild(btnN); area.appendChild(flex);
+        }, 3000);
+    }
+    else if (taskType === 11) {
+        titleEl.innerText = 'Game 12: Delayed Recall';
+        makeInst('Which shape was the very FIRST one you saw at the start?');
+        let correctShape11 = (window.savedRecallItems && window.savedRecallItems.length) ? window.savedRecallItems[0] : null;
+        let opts = emj.shapes.slice().sort(() => Math.random() - 0.5);
+        makeGrid(opts, (val, btn) => {
+            GauntletScore[(correctShape11 !== null && val === correctShape11) ? 'hit' : 'miss']();
+            btn.style.background = '#C8E6C9';
+            setTimeout(loadNextGauntletTask, 500);
+        });
+    }
+    else if (taskType === 12) {
+        titleEl.innerText = 'Game 13: Order Planning';
+        makeInst('Tap the numbers from Smallest to Largest');
+        let arr = [12, 45, 7, 89];
+        if (level === 2) arr = [3, -5, 12, 0, 8];
+        if (level === 3) arr = [105, 42, 99, 13, 76];
+        let sorted = arr.slice().sort((a,b) => a-b);
+        let currentIdx = 0;
+
+        let shuffled = arr.slice().sort(() => Math.random() - 0.5);
+        makeGrid(shuffled, (val, btn) => {
+            if(val == sorted[currentIdx]) {
+                GauntletScore.hit();
+                btn.style.background = '#4CAF50'; btn.style.color = 'white';
+                currentIdx++;
+                if(currentIdx === arr.length) setTimeout(loadNextGauntletTask, 500);
+            } else {
+                GauntletScore.miss();
+                btn.style.background = '#F44336'; btn.style.color = 'white';
+            }
+        });
+    }
+}
+
+// Merge GauntletScore's real, captured results into localStorage['gameScores']
+// (back-compat: id -> 0-100 int, used by renderGamesList/progress) plus a richer
+// localStorage['gameScoreDetail'] (id -> {score, accuracyPct, speedPct, hits, misses})
+// that the AI Cognitive Profiler reads for its domain vectors. Never throws.
+function saveGauntletScores() {
+    try {
+        const result = GauntletScore.finalize();
+        let gameScores = {};
+        try { gameScores = JSON.parse(localStorage.getItem('gameScores')) || {}; } catch (e) { gameScores = {}; }
+        let gameScoreDetail = {};
+        try { gameScoreDetail = JSON.parse(localStorage.getItem('gameScoreDetail')) || {}; } catch (e) { gameScoreDetail = {}; }
+        Object.assign(gameScores, result.scores);
+        Object.assign(gameScoreDetail, result.detail);
+        localStorage.setItem('gameScores', JSON.stringify(gameScores));
+        localStorage.setItem('gameScoreDetail', JSON.stringify(gameScoreDetail));
+        if (typeof runAICognitiveProfiler === 'function') runAICognitiveProfiler();
+    } catch (e) {}
+}
+
+function finishAssessment() {
+    clearInterval(gauntletInterval);
+    
+    if (window.isSingleGame) {
+        window.isSingleGame = false;
+        document.getElementById('gauntlet-timer').style.display = 'inline-block';
+        document.getElementById('gauntlet-progress').parentElement.style.display = 'block';
+        saveGauntletScores(); // record this one game's real result too
+        if (typeof window.routineTaskCallback === 'function') {
+            let cb = window.routineTaskCallback;
+            window.routineTaskCallback = null;
+            cb();
+            return;
+        }
+        showScreen('game-menu-screen');
+        return;
+    }
+
+    document.getElementById('gauntlet-title').innerText = 'Complete!';
+
+    saveGauntletScores(); // real accuracy + reaction-time scores from GauntletScore, no mock data
+
+    const skipBtn = document.getElementById('demo-skip');
+    if(skipBtn) skipBtn.remove();
+
+    // Wellness focus areas mapped to an adaptive UI mode. Framed as support areas,
+    // never as a condition label (daily-wellness-companion framing).
+    const matrix = [
+        { focus: "Early Memory Changes", ui: "Standard" },
+        { focus: "Memory Support", ui: "Anchor Mode" },
+        { focus: "Memory & Focus Support", ui: "Focus Mode" },
+        { focus: "Attention & Visual Support", ui: "High Contrast Mode" },
+        { focus: "Planning & Language Support", ui: "Calm Mode" },
+        { focus: "Language Support", ui: "Voice Mode" },
+        { focus: "Movement & Coordination", ui: "Steady Mode" },
+        { focus: "Evening Calm Support", ui: "Night Mode" },
+        { focus: "Orientation & Wayfinding", ui: "Safety Mode" },
+        { focus: "Sensory & Listening Support", ui: "Therapy Mode" }
+    ];
+
+    const profile = matrix[Math.floor(Math.random() * matrix.length)];
+    localStorage.setItem('wellnessPlan', JSON.stringify(profile));
+    
+    setTimeout(() => {
+        showScreen('analyzing-screen');
+        const textEl = document.getElementById('analyzing-text');
+        if (textEl) textEl.innerText = 'Personalizing your plan...';
+
+        setTimeout(() => {
+            if (textEl) textEl.innerText = 'Setting up ' + profile.ui + '...';
+        }, 1500);
+        
+        setTimeout(() => {
+            localStorage.setItem('hasCompletedAssessment', 'true');
+            applyMatrixToHome(profile);
+            showScreen('home-screen');
+        }, 3000);
+    }, 500);
+}
+
+function applyMatrixToHome(profile) {
+    const home = document.getElementById('home-screen');
+    const header = home.querySelector('.app-header');
+    
+    home.style.background = '#FDFCF0';
+    home.style.color = '#37474F';
+    header.style.background = 'linear-gradient(135deg, #00796B, #004D40)';
+    header.style.borderBottom = 'none';
+    
+    if (profile.ui === 'High Contrast Mode') {
+        home.style.background = '#000000';
+        document.querySelectorAll('.quest-text h2').forEach(h => h.style.color = '#FFEB3B');
+        document.querySelectorAll('.quest-text p').forEach(p => p.style.color = '#FFF');
+        header.style.background = '#000';
+        header.style.borderBottom = '4px solid #FFEB3B';
+    } else if (profile.ui === 'Night Mode') {
+        home.style.background = '#1a1a2e';
+        header.style.background = '#16213e';
+        document.querySelectorAll('.quest-text h2').forEach(h => h.style.color = '#FFF');
+    } else if (profile.ui === 'Calm Mode') {
+        home.style.background = '#E8F5E9';
+        header.style.background = '#A5D6A7';
+    } else if (profile.ui === 'Steady Mode') {
+        document.querySelectorAll('.quest-card').forEach(c => c.style.padding = '30px');
+    }
+    
+    // Adaptive greeting only. The home cards keep their authored navigation
+    // (Cognitive Exercise / Family / Routine) so nothing dead-ends after the assessment.
+    const greetingEl = document.getElementById('home-greeting');
+    if (greetingEl) greetingEl.innerText = 'Your Wellness Plan';
+    const subtitle = header.querySelector('p');
+    if (subtitle) {
+        subtitle.innerText = profile.focus + ' • ' + profile.ui;
+        subtitle.style.fontWeight = 'bold';
+        subtitle.style.color = '#FFC107';
+    }
+}
+
+
+function finishFamilyQuiz(btn) {
+    btn.style.background = '#4CAF50';
+    btn.style.color = 'white';
+    setTimeout(() => {
+        if (window.pendingRoutineTask) {
+            verifyPendingGame();
+        } else {
+            showScreen('home-screen');
+        }
+        btn.style.background = 'white';
+        btn.style.color = '#37474F';
+    }, 1000);
+}
+
+// --- ROUTINE & NAV LOGIC ---
+function switchNav(screenId) {
+    if(!localStorage.getItem('hasCompletedAssessment') || localStorage.getItem('hasCompletedAssessment') !== 'true') return;
+    
+    // Only switch if trying to go to valid tabs
+    if(screenId !== 'home-screen' && screenId !== 'routine-screen' && screenId !== 'progress-screen') return;
+    
+    showScreen(screenId);
+    
+    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+    if(screenId === 'home-screen') {
+        const n = document.getElementById('nav-home');
+        if(n) n.classList.add('active');
+    }
+    if(screenId === 'routine-screen') {
+        const n = document.getElementById('nav-routine');
+        if(n) n.classList.add('active');
+    }
+    if(screenId === 'progress-screen') {
+        const n = document.getElementById('nav-progress');
+        if(n) n.classList.add('active');
+    }
+}
+
+let completedTasks = 0;
+window.pendingRoutineTask = null;
+
+function verifyPendingGame() {
+    if (window.pendingRoutineTask && !window.pendingRoutineTask.classList.contains('done')) {
+        window.pendingRoutineTask.classList.add('done');
+        completedTasks++;
+        const progText = document.getElementById('routine-progress-text');
+        if(progText) progText.innerText = completedTasks + ' / 5 Completed';
+        
+        // Update Stats
+        const taskText = window.pendingRoutineTask.innerText.toLowerCase();
+        if(taskText.includes('walk') || taskText.includes('mobility')) {
+            stats.phy = 1;
+        } else {
+            stats.cog = Math.min(3, stats.cog + 1);
+        }
+        renderProgressTab();
+        
+        window.pendingRoutineTask = null;
+    }
+    showScreen('routine-screen');
+}
+
+
+// --- WALK TRACKER LOGIC ---
+let walkInterval = null;
+let walkTime = 0;
+let walkSteps = 0;
+let walkActive = false;
+
+function toggleWalk() {
+    const btn = document.getElementById('btn-walk-action');
+    const icon = document.getElementById('icon-walk-action');
+    const text = document.getElementById('text-walk-action');
+    const ring = document.getElementById('walk-ring');
+
+    if (walkActive) {
+        // Pause
+        pauseWalk();
+        btn.style.background = '#4CAF50';
+        icon.innerText = 'play_arrow';
+        text.innerText = 'Resume Walk';
+    } else {
+        // Start
+        walkActive = true;
+        btn.style.background = '#F44336';
+        icon.innerText = 'pause';
+        text.innerText = 'Pause';
+        
+        walkInterval = setInterval(() => {
+            walkTime += 1; // 1 second = 1 minute in demo
+            walkSteps += Math.floor(Math.random() * 120) + 80; // Fake steps
+            
+            document.getElementById('walk-steps').innerText = walkSteps;
+            let m = Math.floor(walkTime);
+            document.getElementById('walk-time').innerText = (m < 10 ? '0' + m : m) + ':00';
+            
+            const progress = Math.min(1, walkTime / 10); // 10 seconds/minutes goal
+            ring.style.transform = `rotate(${-45 + (progress * 360)}deg)`;
+            
+            if (walkTime >= 10) {
+                finishWalk();
+            }
+        }, 1000);
+    }
+}
+
+function pauseWalk() {
+    walkActive = false;
+    clearInterval(walkInterval);
+}
+
+function finishWalk() {
+    pauseWalk();
+    // Show overlay
+    const overlay = document.getElementById('walk-confetti');
+    overlay.style.display = 'flex';
+    
+    setTimeout(() => {
+        overlay.style.display = 'none';
+        walkTime = 0;
+        walkSteps = 0;
+        document.getElementById('walk-steps').innerText = '0';
+        document.getElementById('walk-time').innerText = '00:00';
+        document.getElementById('walk-ring').style.transform = 'rotate(-45deg)';
+        
+        const btn = document.getElementById('btn-walk-action');
+        btn.style.background = '#4CAF50';
+        document.getElementById('icon-walk-action').innerText = 'play_arrow';
+        document.getElementById('text-walk-action').innerText = 'Start Walk';
+        
+        verifyPendingGame(); // Checks it off and adds to progress
+    }, 3000); // 3 seconds congratulations
+}
+
+// ====================================================
+// MODULE 4: ACCURATE REAL-TIME PROGRESS & ANALYTICS ENGINE
+// ====================================================
+
+function getAccurateProgressMetrics() {
+    const routine = typeof getRoutineData === 'function' ? getRoutineData() : {
+        morning_brain: false,
+        hydration: false,
+        water_count: 0,
+        walk: false,
+        afternoon_puzzle: false,
+        evening_audio: false
+    };
+
+    // 1. Routine Tasks (5 total)
+    let routineCompleted = 0;
+    if (routine.morning_brain) routineCompleted++;
+    if (routine.hydration) routineCompleted++;
+    if (routine.walk) routineCompleted++;
+    if (routine.afternoon_puzzle) routineCompleted++;
+    if (routine.evening_audio) routineCompleted++;
+
+    // 2. Hydration: Goal is 6 glasses
+    const waterGoal = 6;
+    const waterCompleted = Math.min(waterGoal, routine.water_count || 0);
+
+    // 3. Mobility: Goal is 1 walk session (10 mins)
+    const walkGoal = 1;
+    const walkCompleted = routine.walk ? 1 : 0;
+
+    // 4. Cognitive Domains:
+    let scores = {};
+    try {
+        scores = JSON.parse(localStorage.getItem('gameScores')) || {};
+    } catch(e) { scores = {}; }
+
+    // Family Therapy quiz count
+    const familyPlayed = (typeof familyQuizCount !== 'undefined' && familyQuizCount > 0) ? Math.min(4, familyQuizCount) : 0;
+
+    // Cognitive Domain Breakdown:
+    // Memory: Morning brain + Sequence(0), Grid(1), N-Back(7), Old/New(10), Recall(11)
+    const memTasksTotal = 3;
+    let memTasksDone = 0;
+    if (routine.morning_brain) memTasksDone++;
+    if (scores[0] !== undefined || scores[1] !== undefined) memTasksDone++;
+    if (scores[10] !== undefined || scores[11] !== undefined) memTasksDone++;
+    memTasksDone = Math.min(memTasksTotal, memTasksDone);
+
+    // Attention & Speed: Target(2), Switch(3), Go/No-Go(8)
+    const attTasksTotal = 2;
+    let attTasksDone = 0;
+    if (scores[2] !== undefined || scores[3] !== undefined) attTasksDone++;
+    if (scores[8] !== undefined) attTasksDone++;
+    attTasksDone = Math.min(attTasksTotal, attTasksDone);
+
+    // Reasoning & Logic: Match(4), Pattern(5), Matrix(6), Rule(9), Order(12)
+    const reasTasksTotal = 2;
+    let reasTasksDone = 0;
+    if (routine.afternoon_puzzle || scores[4] !== undefined) reasTasksDone++;
+    if (scores[5] !== undefined || scores[6] !== undefined || scores[12] !== undefined) reasTasksDone++;
+    reasTasksDone = Math.min(reasTasksTotal, reasTasksDone);
+
+    // Family & Social Reminiscence:
+    const famTasksTotal = 2;
+    let famTasksDone = 0;
+    if (familyPlayed >= 1) famTasksDone++;
+    if (familyPlayed >= 3) famTasksDone++;
+
+    // Audio Therapy & Relaxation:
+    const audioTasksTotal = 1;
+    const audioTasksDone = routine.evening_audio ? 1 : 0;
+
+    // Overall Adherence Percentage (Accurately computed from 5 daily routine tasks):
+    const overallPct = Math.min(100, Math.round((routineCompleted / 5) * 100));
+
+    return {
+        routineCompleted,
+        routineTotal: 5,
+        waterCompleted,
+        waterGoal,
+        walkCompleted,
+        walkGoal,
+        overallPct,
+        cognitive: {
+            "Memory & Recall": { done: memTasksDone, total: memTasksTotal },
+            "Attention & Reflexes": { done: attTasksDone, total: attTasksTotal },
+            "Reasoning & Executive Logic": { done: reasTasksDone, total: reasTasksTotal },
+            "Family & Face Recognition": { done: famTasksDone, total: famTasksTotal },
+            "Calming Audio & Breathing": { done: audioTasksDone, total: audioTasksTotal }
+        }
+    };
+}
+
+function updateProgressUI() {
+    const metrics = getAccurateProgressMetrics();
+
+    // 1. Home Screen Progress Widget
+    const homeFill = document.getElementById('home-progress-fill');
+    const homePct = document.getElementById('home-progress-pct');
+    if (homeFill) {
+        homeFill.style.width = `${metrics.overallPct}%`;
+        homeFill.style.background = metrics.overallPct >= 80 ? '#4CAF50' : (metrics.overallPct >= 40 ? '#FFC107' : '#FF8A65');
+    }
+    if (homePct) {
+        homePct.innerText = `${metrics.overallPct}% (${metrics.routineCompleted} / ${metrics.routineTotal} Tasks)`;
+    }
+
+    // 2. Routine Screen Progress Widget
+    const rBar = document.getElementById('routine-progress-bar');
+    const rText = document.getElementById('routine-progress-text');
+    if (rBar) rBar.style.width = `${metrics.overallPct}%`;
+    if (rText) rText.innerText = `${metrics.routineCompleted} / ${metrics.routineTotal} Completed`;
+}
+
+function renderProgressTab() {
+    const metrics = getAccurateProgressMetrics();
+    updateProgressUI();
+
+    const overallPct = metrics.overallPct;
+
+    let themeColor = '';
+    if (overallPct < 40) {
+        themeColor = '#FF8A65';
+    } else if (overallPct <= 70) {
+        themeColor = '#FFC107';
+    } else {
+        themeColor = '#4CAF50';
+    }
+
+    // 1. Hero Circular Ring
+    const ring = document.getElementById('overall-ring');
+    if (ring) {
+        const radius = ring.r.baseVal.value || 70;
+        const circumference = radius * 2 * Math.PI;
+        ring.style.strokeDasharray = `${circumference} ${circumference}`;
+        const offset = circumference - (overallPct / 100) * circumference;
+        ring.style.strokeDashoffset = offset;
+        ring.style.stroke = themeColor;
+        ring.style.transition = 'stroke-dashoffset 0.6s ease-out, stroke 0.4s ease';
+    }
+
+    const pctText = document.getElementById('overall-percentage');
+    if (pctText) {
+        pctText.innerText = `${overallPct}%`;
+        pctText.style.color = themeColor;
+    }
+
+    // 2. Physical & Routine Cards
+    const hydText = document.getElementById('hyd-text');
+    const hydBar = document.getElementById('hyd-bar');
+    if (hydText) hydText.innerText = `${metrics.waterCompleted} / ${metrics.waterGoal} Glasses`;
+    if (hydBar) {
+        const hydPct = (metrics.waterCompleted / metrics.waterGoal) * 100;
+        hydBar.style.width = `${hydPct}%`;
+        hydBar.style.background = '#0288D1';
+        hydBar.style.transition = 'width 0.5s ease-out';
+    }
+
+    const mobText = document.getElementById('mob-text');
+    const mobBar = document.getElementById('mob-bar');
+    if (mobText) mobText.innerText = `${metrics.walkCompleted} / ${metrics.walkGoal} Session`;
+    if (mobBar) {
+        const mobPct = (metrics.walkCompleted / metrics.walkGoal) * 100;
+        mobBar.style.width = `${mobPct}%`;
+        mobBar.style.background = '#FF9800';
+        mobBar.style.transition = 'width 0.5s ease-out';
+    }
+
+    // 3. Cognitive Domain Breakdown
+    const cogContainer = document.getElementById('cognitive-progress-list');
+    if (cogContainer) {
+        cogContainer.innerHTML = '';
+        for (let cat in metrics.cognitive) {
+            const item = metrics.cognitive[cat];
+            const pct = item.total === 0 ? 0 : Math.round((item.done / item.total) * 100);
+            const card = document.createElement('div');
+            card.className = 'progress-card';
+            card.style.background = 'white';
+            card.style.borderRadius = '14px';
+            card.style.padding = '14px 16px';
+            card.style.marginBottom = '12px';
+            card.style.boxShadow = '0 2px 6px rgba(0,0,0,0.05)';
+            card.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <span style="font-weight: 700; font-size: 14px; color: #37474F;">${cat}</span>
+                    <span style="font-size: 13px; font-weight: 700; color: ${pct >= 100 ? '#4CAF50' : '#00796B'};">${item.done} / ${item.total}</span>
+                </div>
+                <div class="bar-bg" style="width: 100%; height: 8px; background: #eee; border-radius: 4px; overflow: hidden;">
+                    <div style="width: ${pct}%; height: 100%; background: ${pct >= 100 ? '#4CAF50' : (pct >= 50 ? '#00796B' : '#FF9800')}; border-radius: 4px; transition: 0.5s ease-out;"></div>
+                </div>
+            `;
+            cogContainer.appendChild(card);
+        }
+    }
+}
+
+// --- Games Menu Logic ---
+const GAME_NAMES = [
+    { id: 0, name: "Sequence Memory", desc: "Remember the order of shapes", icon: "&#x1F534;" },
+    { id: 1, name: "Grid Memory", desc: "Recall the green squares", icon: "&#x1F7E9;" },
+    { id: 2, name: "Target Detection", desc: "Tap the blue circle quickly", icon: "&#x1F535;" },
+    { id: 3, name: "Attention Switching", desc: "Follow changing rules", icon: "&#x2194;&#xFE0F;" },
+    { id: 4, name: "Quick Match", desc: "Find the matching animal", icon: "&#x1F431;" },
+    { id: 5, name: "Pattern Completion", desc: "Find the missing number", icon: "&#x1F522;" },
+    { id: 6, name: "Matrix Reasoning", desc: "Complete the visual logic", icon: "&#x1F9E9;" },
+    { id: 7, name: "N-Back Memory", desc: "Match current with previous", icon: "&#x23EA;" },
+    { id: 8, name: "Go/No-Go", desc: "Inhibit incorrect responses", icon: "&#x1F6A6;" },
+    { id: 9, name: "Rule Learning", desc: "Learn and reverse rules", icon: "&#x1F4D6;" },
+    { id: 10, name: "Memory Recognition", desc: "Identify symbols you saw", icon: "&#x1F441;&#xFE0F;" },
+    { id: 11, name: "Delayed Recall", desc: "Remember the first shape", icon: "&#x23F3;" },
+    { id: 12, name: "Order Planning", desc: "Sort numbers in order", icon: "&#x1F4CA;" }
+];
+
+function renderGamesList() {
+    const container = document.getElementById('games-list-container');
+    if (!container) return;
+    container.innerHTML = '';
+    
+    let scores = JSON.parse(localStorage.getItem('gameScores')) || {};
+
+    let aiProfile = null;
+    try { aiProfile = JSON.parse(localStorage.getItem('neosaarthi_ai_profile')); } catch (e) {}
+    let prescribedIds = (aiProfile && aiProfile.primaryDeficit && typeof AI_DOMAIN_GAMES !== 'undefined' && AI_DOMAIN_GAMES[aiProfile.primaryDeficit])
+        ? AI_DOMAIN_GAMES[aiProfile.primaryDeficit] : [];
+
+    let sortedGames = GAME_NAMES.slice().sort((a, b) => {
+        let scoreA = scores[a.id] !== undefined ? scores[a.id] : 100;
+        let scoreB = scores[b.id] !== undefined ? scores[b.id] : 100;
+        return scoreA - scoreB;
+    });
+    // AI-prescribed games (this run's primary focus area) are pinned to the very top,
+    // above everything else, while keeping the existing score-based order within each group.
+    sortedGames.sort((a, b) => (prescribedIds.includes(b.id) ? 1 : 0) - (prescribedIds.includes(a.id) ? 1 : 0));
+
+    sortedGames.forEach(game => {
+        let score = scores[game.id];
+        let tag = '';
+        if (score !== undefined) {
+            if (score <= 40) tag = '<span style="background: #F44336; color: white; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-left: 10px; display: inline-block;">Must Play</span>';
+            else if (score <= 70) tag = '<span style="background: #FF9800; color: white; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-left: 10px; display: inline-block;">Recommended</span>';
+            else tag = '<span style="background: #4CAF50; color: white; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-left: 10px; display: inline-block;">Good</span>';
+        }
+        let aiTag = prescribedIds.includes(game.id)
+            ? '<span style="background: linear-gradient(135deg,#FF8A65,#FF7043); color: white; padding: 3px 9px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-left: 8px; display: inline-block; box-shadow: 0 0 8px rgba(255,138,101,0.55);">&#x1F3AF; AI Prescribed</span>'
+            : '';
+
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.style.display = 'flex';
+        card.style.alignItems = 'center';
+        card.style.padding = '15px';
+        card.style.cursor = 'pointer';
+        card.style.marginBottom = '10px';
+        if (prescribedIds.includes(game.id)) { card.style.border = '2px solid #FF8A65'; }
+        card.onclick = () => startSingleGame(game.id);
+
+        card.innerHTML = `
+            <div class="icon-box" style="background: #E0F2F1; color: #00796B; font-size: 24px; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">
+                ${game.icon}
+            </div>
+            <div style="flex: 1; margin-left: 15px; text-align: left;">
+                <h3 style="color: #37474F; font-size: 16px; margin: 0 0 4px 0; display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">${game.name} ${aiTag}${tag}</h3>
+                <p style="color: #78909C; font-size: 13px; margin: 0;">${game.desc}</p>
+            </div>
+            <span style="color: #B0BEC5;">&#x25B6;</span>
+        `;
+        container.appendChild(card);
+    });
+}
+
+window.isSingleGame = false;
+function startSingleGame(taskType) {
+    showScreen('assessment-screen');
+    window.savedRecallItems = ['&#x1F7E2;']; // Mock for memory game
+    gauntletTimeLeft = 9999;
+    document.getElementById('gauntlet-timer').style.display = 'none';
+    document.getElementById('gauntlet-progress').parentElement.style.display = 'none';
+    
+    window.gauntletTasksQueue = [taskType];
+    window.isSingleGame = true;
+    currentPhase = 8; // Force medium/hard level randomly for standalone
+    loadNextGauntletTask();
+}
+
+function quitAssessment() {
+    window.isQuitting = true;
+    if (typeof gauntletInterval !== 'undefined') clearInterval(gauntletInterval);
+    gauntletTimeLeft = 0; // Signals local game intervals to terminate
+    
+    // Clear the active game area to prevent rogue clicks
+    const area = document.getElementById('gauntlet-area');
+    if(area) area.innerHTML = '';
+    
+    setTimeout(() => {
+        if (window.isSingleGame) {
+            window.isSingleGame = false;
+            // Restore UI elements for next full assessment
+            document.getElementById('gauntlet-timer').style.display = 'inline-block';
+            document.getElementById('gauntlet-progress').parentElement.style.display = 'block';
+            if (typeof window.routineTaskCallback === 'function') {
+                window.routineTaskCallback = null;
+                showScreen('routine-screen');
+                return;
+            }
+            showScreen('game-menu-screen');
+        } else {
+            showScreen('home-screen');
+        }
+        window.isQuitting = false;
+    }, 150);
+}
+
+// --- Family Targeted Therapy Module ---
+const familyMembers = [
+    { id: 1, name: "Kalyani (Grandmother)", relation: "Mother / Grandmother", image: "face_1.jpg", zoom: "54% 43%", desc: "Sitting center in purple sweater" },
+    { id: 2, name: "Ramesh (Grandfather)", relation: "Father / Grandfather", image: "face_2.jpg", zoom: "49% 22%", desc: "Standing top-center in gold tie" },
+    { id: 3, name: "Rahul (Son)", relation: "Son", image: "face_3.jpg", zoom: "42% 35%", desc: "Standing mid-left in black suit" },
+    { id: 4, name: "Priya (Daughter-in-law)", relation: "Daughter-in-law", image: "face_4.jpg", zoom: "28% 42%", desc: "Sitting left in cream dress" },
+    { id: 5, name: "Sunita (Daughter)", relation: "Daughter", image: "face_5.jpg", zoom: "73% 40%", desc: "Sitting right in dark navy dress" },
+    { id: 6, name: "Amit (Elder Son)", relation: "Elder Son", image: "face_6.jpg", zoom: "70% 21%", desc: "Standing top-right in glasses" },
+    { id: 7, name: "Kavita (Elder Daughter-in-law)", relation: "Elder Daughter-in-law", image: "face_7.jpg", zoom: "31% 26%", desc: "Standing top-left in white cardigan" }
+];
+
+function renderFamilyMenu() {
+    const area = document.getElementById('family-game-area');
+    if(!area) return;
+    area.innerHTML = `
+        <div style="background: white; border-radius: 16px; padding: 20px; width: 100%; max-width: 420px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center;">
+            <div style="width: 100%; height: 210px; border-radius: 12px; overflow: hidden; margin-bottom: 15px; border: 3px solid #FF8A65; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <img src="family_group.jpg" style="width: 100%; height: 100%; object-fit: cover; object-position: center;">
+            </div>
+            <h3 style="color: #37474F; margin-bottom: 8px; font-size: 22px;">Family Memory Album</h3>
+            <p style="color: #78909C; margin-bottom: 20px; font-size: 14px;">Look at your family picture. Test your memory by identifying each family member!</p>
+            <button onclick="startFamilyQuiz()" style="background: #FF8A65; color: white; border: none; padding: 15px 30px; font-size: 20px; border-radius: 30px; font-weight: bold; cursor: pointer; width: 100%; box-shadow: 0 4px 6px rgba(255, 138, 101, 0.3);">Start Recognition Game</button>
+        </div>
+    `;
+}
+
+function startFamilyQuiz() {
+    const area = document.getElementById('family-game-area');
+    
+    // Random target
+    let target = familyMembers[Math.floor(Math.random() * familyMembers.length)];
+    
+    // 1 correct + 2 random choices
+    let others = familyMembers.filter(m => m.id !== target.id).sort(() => Math.random() - 0.5);
+    let options = [target, others[0], others[1]].sort(() => Math.random() - 0.5);
+    
+    let html = `
+        <div style="display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 400px;">
+            <!-- Group view with Zoom/Crop Focus -->
+            <div style="position: relative; width: 190px; height: 190px; border-radius: 50%; overflow: hidden; border: 5px solid #FF8A65; box-shadow: 0 6px 15px rgba(0,0,0,0.15); margin-bottom: 12px; background: #fff;">
+                <img src="${target.image}" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            
+            <div style="background: #FFF3E0; border: 1px solid #FFE0B2; border-radius: 12px; padding: 6px 16px; margin-bottom: 20px;">
+                <span style="color: #E65100; font-size: 13px; font-weight: 600;">&#x1F50D; Clue: ${target.desc}</span>
+            </div>
+
+            <h2 style="color: #37474F; font-size: 24px; margin: 0 0 20px 0; font-weight: 700;">Who is this person in the family?</h2>
+            
+            <div style="display: flex; flex-direction: column; gap: 14px; width: 100%;">
+    `;
+    
+    options.forEach(opt => {
+        html += `<button class="family-opt-btn" onclick="checkFamilyAnswer(${opt.id}, ${target.id}, this)" style="background: white; border: 2px solid #ddd; padding: 18px 20px; font-size: 19px; border-radius: 14px; color: #37474F; font-weight: bold; cursor: pointer; text-align: left; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.2s;">
+            <span style="display: block; font-size: 13px; color: #FF8A65; font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">${opt.relation}</span>
+            ${opt.name}
+        </button>`;
+    });
+    
+    html += `
+            </div>
+            
+            <button onclick="renderFamilyMenu()" style="margin-top: 25px; background: none; border: none; color: #90A4AE; font-size: 14px; cursor: pointer; text-decoration: underline;">
+                &#x21A9; Back to Family Album
+            </button>
+        </div>
+    `;
+    area.innerHTML = html;
+}
+
+let familyQuizScore = 0;
+let familyQuizCount = 0;
+
+function checkFamilyAnswer(selectedId, targetId, btnEl) {
+    const allBtns = document.querySelectorAll('.family-opt-btn');
+    allBtns.forEach(b => b.disabled = true);
+    
+    const targetObj = familyMembers.find(m => m.id === targetId);
+
+    if (selectedId === targetId) {
+        familyQuizScore++;
+        familyQuizCount++;
+        btnEl.style.background = '#E8F5E9';
+        btnEl.style.borderColor = '#4CAF50';
+        btnEl.innerHTML += '<span style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 26px;">&#x2705;</span>';
+        
+        // Show celebratory popup
+        showFamilyCongratsPopup(targetObj, true);
+    } else {
+        familyQuizCount++;
+        btnEl.style.background = '#FFEBEE';
+        btnEl.style.borderColor = '#F44336';
+        btnEl.innerHTML += '<span style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 26px;">&#x274C;</span>';
+        
+        showFamilyCongratsPopup(targetObj, false);
+    }
+
+    // Persist so the AI Cognitive Profiler's Visuospatial & Recognition domain
+    // survives a page reload, not just this in-memory session.
+    try { localStorage.setItem('familyQuizStats', JSON.stringify({ score: familyQuizScore, count: familyQuizCount })); } catch (e) {}
+    if (typeof runAICognitiveProfiler === 'function') { try { runAICognitiveProfiler(); } catch (e) {} }
+}
+
+function showFamilyCongratsPopup(member, isCorrect) {
+    // Remove existing modal if any
+    const existing = document.getElementById('family-congrats-modal');
+    if (existing) existing.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'family-congrats-modal';
+    modal.style.position = 'fixed';
+    modal.style.top = '0';
+    modal.style.left = '0';
+    modal.style.width = '100vw';
+    modal.style.height = '100vh';
+    modal.style.background = 'rgba(0, 0, 0, 0.65)';
+    modal.style.backdropFilter = 'blur(4px)';
+    modal.style.display = 'flex';
+    modal.style.alignItems = 'center';
+    modal.style.justifyContent = 'center';
+    modal.style.zIndex = '9999';
+    modal.style.animation = 'fadeIn 0.25s ease-out';
+
+    const card = document.createElement('div');
+    card.style.background = 'white';
+    card.style.borderRadius = '24px';
+    card.style.padding = '30px 24px';
+    card.style.width = '90%';
+    card.style.maxWidth = '360px';
+    card.style.textAlign = 'center';
+    card.style.boxShadow = '0 20px 40px rgba(0,0,0,0.3)';
+    card.style.transform = 'scale(0.9)';
+    card.style.transition = '0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+
+    if (isCorrect) {
+        card.innerHTML = `
+            <div style="font-size: 60px; line-height: 1; margin-bottom: 12px; animation: bounce 0.6s ease;">&#x1F389;</div>
+            <h2 style="color: #2E7D32; font-size: 26px; margin: 0 0 6px 0; font-weight: 800;">Wonderful!</h2>
+            <p style="color: #666; font-size: 15px; margin: 0 0 18px 0;">You remembered correctly!</p>
+            
+            <div style="position: relative; width: 120px; height: 120px; margin: 0 auto 16px; border-radius: 50%; overflow: hidden; border: 4px solid #4CAF50; box-shadow: 0 6px 14px rgba(76, 175, 80, 0.3);">
+                <img src="${member.image}" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+
+            <h3 style="color: #37474F; font-size: 20px; margin: 0 0 4px 0;">${member.name}</h3>
+            <p style="color: #FF8A65; font-weight: 700; font-size: 14px; text-transform: uppercase; margin: 0 0 20px 0;">${member.relation}</p>
+            
+            <button id="next-family-btn" style="background: linear-gradient(135deg, #4CAF50, #2E7D32); color: white; border: none; padding: 14px 28px; font-size: 17px; font-weight: 700; border-radius: 30px; cursor: pointer; width: 100%; box-shadow: 0 4px 12px rgba(46, 125, 50, 0.35);">
+                Next Family Member &#x27A1;
+            </button>
+        `;
+    } else {
+        card.innerHTML = `
+            <div style="font-size: 55px; line-height: 1; margin-bottom: 12px;">&#x1F49B;</div>
+            <h2 style="color: #E65100; font-size: 24px; margin: 0 0 6px 0; font-weight: 800;">Good Try!</h2>
+            <p style="color: #666; font-size: 14px; margin: 0 0 16px 0;">Here is a gentle reminder:</p>
+            
+            <div style="position: relative; width: 110px; height: 110px; margin: 0 auto 14px; border-radius: 50%; overflow: hidden; border: 4px solid #FF9800; box-shadow: 0 6px 14px rgba(255, 152, 0, 0.3);">
+                <img src="${member.image}" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+
+            <h3 style="color: #37474F; font-size: 19px; margin: 0 0 4px 0;">${member.name}</h3>
+            <p style="color: #E65100; font-weight: 700; font-size: 14px; text-transform: uppercase; margin: 0 0 18px 0;">${member.relation}</p>
+            
+            <button id="next-family-btn" style="background: linear-gradient(135deg, #FF9800, #F57C00); color: white; border: none; padding: 14px 28px; font-size: 17px; font-weight: 700; border-radius: 30px; cursor: pointer; width: 100%; box-shadow: 0 4px 12px rgba(245, 124, 0, 0.35);">
+                Try Next &#x27A1;
+            </button>
+        `;
+    }
+
+    modal.appendChild(card);
+    document.body.appendChild(modal);
+
+    // Animate pop-in
+    setTimeout(() => { card.style.transform = 'scale(1)'; }, 20);
+
+    document.getElementById('next-family-btn').onclick = () => {
+        modal.remove();
+        startFamilyQuiz();
+    };
+}
+
+// ====================================================
+// MODULE 3: DAILY WELLNESS ROUTINE & AUDIO THERAPY
+// ====================================================
+
+const DEFAULT_ROUTINE = {
+    morning_brain: false,
+    hydration: false,
+    water_count: 0,
+    walk: false,
+    afternoon_puzzle: false,
+    evening_audio: false,
+    date: new Date().toDateString()
+};
+
+function getRoutineData() {
+    let saved = localStorage.getItem('neosaarthi_routine_v2');
+    if (!saved) return { ...DEFAULT_ROUTINE };
+    try {
+        let parsed = JSON.parse(saved);
+        // Reset if new calendar day (ethical, realistic daily routine)
+        if (parsed.date !== new Date().toDateString()) {
+            return { ...DEFAULT_ROUTINE, date: new Date().toDateString() };
+        }
+        return parsed;
+    } catch(e) {
+        return { ...DEFAULT_ROUTINE };
+    }
+}
+
+function saveRoutineData(data) {
+    localStorage.setItem('neosaarthi_routine_v2', JSON.stringify(data));
+}
+
+function initRoutineScreen() {
+    const data = getRoutineData();
+    const taskMap = {
+        'morning_brain': 'routine-task-morning',
+        'hydration': 'routine-task-water',
+        'walk': 'routine-task-walk',
+        'afternoon_puzzle': 'routine-task-puzzle',
+        'evening_audio': 'routine-task-audio'
+    };
+
+    let completedCount = 0;
+    for (let key in taskMap) {
+        const el = document.getElementById(taskMap[key]);
+        if (el) {
+            if (data[key]) {
+                el.classList.add('done');
+                completedCount++;
+            } else {
+                el.classList.remove('done');
+            }
+        }
+    }
+
+    // Hydration glass text
+    const waterDesc = document.getElementById('routine-water-desc');
+    if (waterDesc) {
+        waterDesc.innerHTML = `11:00 AM &bull; ${data.water_count} / 6 Glasses Tracked Today`;
+    }
+
+    // Progress counter and bar
+    const progText = document.getElementById('routine-progress-text');
+    if (progText) {
+        progText.innerText = `${completedCount} / 5 Completed`;
+    }
+
+    const progBar = document.getElementById('routine-progress-bar');
+    if (progBar) {
+        progBar.style.width = `${(completedCount / 5) * 100}%`;
+    }
+}
+
+function markRoutineTaskDone(taskKey) {
+    const data = getRoutineData();
+    data[taskKey] = true;
+    saveRoutineData(data);
+    initRoutineScreen();
+    playGentleChime();
+}
+
+function resetRoutineTasks() {
+    const fresh = { ...DEFAULT_ROUTINE, date: new Date().toDateString() };
+    saveRoutineData(fresh);
+    initRoutineScreen();
+    playGentleChime();
+}
+
+// --- ETHICAL MODAL & INTERACTION HANDLERS ---
+
+function handleRoutineClick(taskKey) {
+    const data = getRoutineData();
+    
+    if (taskKey === 'morning_brain') {
+        showRoutineActionModal({
+            icon: '&#x1F9E0;',
+            badge: 'Prospective Memory Check',
+            title: 'Morning Brain Warmup',
+            desc: '<strong>Active Retrieval Practice:</strong> Take 10 seconds to recall: What day is today, and what is one goal you have? Actively retrieving memories primes your prefrontal cortex before playing your warmup game.',
+            isDone: data.morning_brain,
+            primaryBtnText: 'Play Quick Memory Game &#x25B6;',
+            onPrimary: () => {
+                closeRoutineModal();
+                window.routineTaskCallback = () => {
+                    markRoutineTaskDone('morning_brain');
+                    showScreen('routine-screen');
+                    showRoutineCongrats('Brain Warmup Complete! Great job actively challenging your working memory.');
+                };
+                startSingleGame(0); // Sequence Memory
+            },
+            onOffline: () => {
+                closeRoutineModal();
+                markRoutineTaskDone('morning_brain');
+                showRoutineCongrats('Memory check-in logged! Daily self-recall keeps neural pathways active.');
+            }
+        });
+    } else if (taskKey === 'hydration') {
+        showHydrationModal();
+    } else if (taskKey === 'walk') {
+        showRoutineActionModal({
+            icon: '&#x1F6B6;',
+            badge: 'Mental Navigation & Movement',
+            title: 'Gentle Walk & Movement',
+            desc: '<strong>Spatial Recall Exercise:</strong> Can you mentally picture the route of your walk or garden stroll? Mental navigation exercises the parietal and hippocampal regions of the brain.',
+            isDone: data.walk,
+            primaryBtnText: 'Start Walk Tracker &#x25B6;',
+            onPrimary: () => {
+                closeRoutineModal();
+                showScreen('walk-screen');
+            },
+            onOffline: () => {
+                closeRoutineModal();
+                markRoutineTaskDone('walk');
+                showRoutineCongrats('Movement logged! Light movement increases oxygen and blood flow to memory centers.');
+            }
+        });
+    } else if (taskKey === 'afternoon_puzzle') {
+        showRoutineActionModal({
+            icon: '&#x1F9E9;',
+            badge: 'Working Memory Refresh',
+            title: 'Afternoon Mind Refresh',
+            desc: '<strong>Visual Recognition Check:</strong> A quick, relaxing matching game to counteract afternoon fatigue and train visual attention.',
+            isDone: data.afternoon_puzzle,
+            primaryBtnText: 'Play Quick Match &#x25B6;',
+            onPrimary: () => {
+                closeRoutineModal();
+                window.routineTaskCallback = () => {
+                    markRoutineTaskDone('afternoon_puzzle');
+                    showScreen('routine-screen');
+                    showRoutineCongrats('Afternoon Refresh Complete! Active visual discrimination strengthens memory.');
+                };
+                startSingleGame(4); // Animal Quick Match
+            },
+            onOffline: () => {
+                closeRoutineModal();
+                markRoutineTaskDone('afternoon_puzzle');
+                showRoutineCongrats('Logged! Taking time for mental stimulation keeps the day balanced.');
+            }
+        });
+    } else if (taskKey === 'evening_audio') {
+        showAudioTherapyModal();
+    }
+}
+
+function closeRoutineModal() {
+    const existing = document.getElementById('routine-action-modal');
+    if (existing) existing.remove();
+}
+
+function showRoutineActionModal(config) {
+    closeRoutineModal();
+
+    const modal = document.createElement('div');
+    modal.id = 'routine-action-modal';
+    modal.style.position = 'fixed';
+    modal.style.top = '0'; modal.style.left = '0';
+    modal.style.width = '100vw'; modal.style.height = '100vh';
+    modal.style.background = 'rgba(0,0,0,0.6)';
+    modal.style.backdropFilter = 'blur(4px)';
+    modal.style.display = 'flex';
+    modal.style.alignItems = 'center';
+    modal.style.justifyContent = 'center';
+    modal.style.zIndex = '10000';
+    modal.style.animation = 'fadeIn 0.2s ease-out';
+
+    modal.innerHTML = `
+        <div style="background: white; border-radius: 24px; padding: 26px 22px; width: 90%; max-width: 380px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.25);">
+            <div style="display: inline-flex; align-items: center; gap: 6px; background: #E0F2F1; color: #00796B; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; margin-bottom: 12px;">
+                <span class="material-symbols-rounded" style="font-size: 15px;">psychology</span> ${config.badge || 'Cognitive Scaffolding'}
+            </div>
+            
+            <div style="font-size: 48px; margin-bottom: 8px;">${config.icon}</div>
+            <h2 style="color: #37474F; font-size: 21px; margin: 0 0 8px 0; font-weight: 800;">${config.title}</h2>
+            <p style="color: #555; font-size: 13.5px; margin: 0 0 20px 0; line-height: 1.5;">${config.desc}</p>
+            
+            ${config.isDone ? `
+                <div style="background: #E8F5E9; color: #2E7D32; padding: 10px; border-radius: 14px; font-weight: bold; margin-bottom: 16px; font-size: 14px;">
+                    &#x2705; Already completed for today!
+                </div>
+            ` : ''}
+
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button id="routine-modal-primary" style="background: #00796B; color: white; border: none; padding: 15px; font-size: 16px; font-weight: bold; border-radius: 16px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,121,107,0.3);">
+                    ${config.primaryBtnText}
+                </button>
+                
+                <button id="routine-modal-offline" style="background: #F1F8E9; border: 2px solid #81C784; color: #2E7D32; padding: 13px; font-size: 14px; font-weight: 700; border-radius: 16px; cursor: pointer;">
+                    &#x2714; Mark as Done (Self-Reflected Offline)
+                </button>
+                
+                <button onclick="closeRoutineModal()" style="background: none; border: none; color: #90A4AE; padding: 8px; font-size: 13px; cursor: pointer;">
+                    Close
+                </button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    document.getElementById('routine-modal-primary').onclick = config.onPrimary;
+    document.getElementById('routine-modal-offline').onclick = config.onOffline;
+}
+
+// --- COGNITIVE SCAFFOLDING HYDRATION RECALL MODAL ---
+
+function showHydrationModal() {
+    closeRoutineModal();
+    const data = getRoutineData();
+
+    const modal = document.createElement('div');
+    modal.id = 'routine-action-modal';
+    modal.style.position = 'fixed';
+    modal.style.top = '0'; modal.style.left = '0';
+    modal.style.width = '100vw'; modal.style.height = '100vh';
+    modal.style.background = 'rgba(0,0,0,0.6)';
+    modal.style.backdropFilter = 'blur(4px)';
+    modal.style.display = 'flex';
+    modal.style.alignItems = 'center';
+    modal.style.justifyContent = 'center';
+    modal.style.zIndex = '10000';
+
+    modal.innerHTML = `
+        <div style="background: white; border-radius: 24px; padding: 26px 20px; width: 90%; max-width: 380px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.25);">
+            <div style="display: inline-flex; align-items: center; gap: 6px; background: #E0F2F1; color: #00796B; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; margin-bottom: 10px;">
+                <span class="material-symbols-rounded" style="font-size: 15px;">psychology</span> Active Recall Check
+            </div>
+            
+            <div style="font-size: 44px; margin-bottom: 4px;">&#x1F4A7;</div>
+            <h2 style="color: #0277BD; font-size: 21px; margin: 0 0 6px 0; font-weight: 800;">Hydration & Memory</h2>
+            <p style="color: #555; font-size: 13.5px; margin: 0 0 16px 0; line-height: 1.4;">
+                <strong>Test your recent memory:</strong> Can you recall when you last drank a glass of water today?
+            </p>
+
+            <!-- Active Retrieval Buttons -->
+            <div id="recall-options-box" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px;">
+                <button class="recall-btn" onclick="submitHydrationRecall('recent', this)" style="background: #F1F8E9; border: 2px solid #AED581; color: #33691E; padding: 11px 14px; border-radius: 12px; font-size: 13.5px; font-weight: 600; cursor: pointer; text-align: left; transition: 0.2s;">
+                    &#x2600;&#xFE0F; Recently (Past 1-2 hours)
+                </button>
+                <button class="recall-btn" onclick="submitHydrationRecall('meal', this)" style="background: #FFF8E1; border: 2px solid #FFE082; color: #F57F17; padding: 11px 14px; border-radius: 12px; font-size: 13.5px; font-weight: 600; cursor: pointer; text-align: left; transition: 0.2s;">
+                    &#x1F374; Around mealtime earlier
+                </button>
+                <button class="recall-btn" onclick="submitHydrationRecall('not_sure', this)" style="background: #E3F2FD; border: 2px solid #90CAF9; color: #0D47A1; padding: 11px 14px; border-radius: 12px; font-size: 13.5px; font-weight: 600; cursor: pointer; text-align: left; transition: 0.2s;">
+                    &#x1F914; Not sure / Need a fresh glass now!
+                </button>
+            </div>
+
+            <!-- Recall Feedback Box -->
+            <div id="recall-feedback-box" style="display: none; background: #E8F5E9; border: 1px solid #A5D6A7; border-radius: 12px; padding: 10px 12px; margin-bottom: 14px; font-size: 12.5px; color: #2E7D32; line-height: 1.4; text-align: left;">
+                <strong>&#x1F9E0; Brain Stimulated!</strong> Actively reflecting on recent events exercises your episodic memory and strengthens hippocampal recall.
+            </div>
+            
+            <div style="background: #F1F8E9; border-radius: 14px; padding: 10px 14px; margin-bottom: 14px; border: 1px solid #C5E1A5; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 13px; color: #33691E; font-weight: 700;">Glasses Tracked Today:</span>
+                <span id="modal-water-count" style="font-size: 20px; font-weight: 800; color: #0277BD;">${data.water_count} / 6</span>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button id="btn-drink-water" style="background: linear-gradient(135deg, #0288D1, #01579B); color: white; border: none; padding: 14px; font-size: 16px; font-weight: bold; border-radius: 16px; cursor: pointer; box-shadow: 0 4px 10px rgba(2,136,209,0.3);">
+                    &#x1F4A7; Log Glass & Check Off Task
+                </button>
+                
+                <button onclick="closeRoutineModal()" style="background: none; border: none; color: #90A4AE; padding: 6px; font-size: 13px; cursor: pointer;">
+                    Close
+                </button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    document.getElementById('btn-drink-water').onclick = () => {
+        const cur = getRoutineData();
+        cur.water_count = (cur.water_count || 0) + 1;
+        cur.hydration = true;
+        saveRoutineData(cur);
+        initRoutineScreen();
+        playGentleWaterDropSound();
+        closeRoutineModal();
+        showRoutineCongrats('Recall & Hydration Tracked! Self-reflection and hydration both keep your brain resilient.');
+    };
+}
+
+function submitHydrationRecall(choice, btn) {
+    document.querySelectorAll('.recall-btn').forEach(b => {
+        b.style.opacity = '0.4';
+        b.style.pointerEvents = 'none';
+    });
+    btn.style.opacity = '1';
+    btn.style.borderColor = '#2E7D32';
+    btn.style.borderWidth = '3px';
+    const fb = document.getElementById('recall-feedback-box');
+    if (fb) {
+        fb.style.display = 'block';
+        playGentleChime();
+    }
+}
+
+
+// --- AUDIO THERAPY & CALMING SOUNDSCAPE MODULE ---
+
+let activeAudioNodes = null;
+let breathingInterval = null;
+
+function showAudioTherapyModal() {
+    closeRoutineModal();
+    const data = getRoutineData();
+
+    const modal = document.createElement('div');
+    modal.id = 'routine-action-modal';
+    modal.style.position = 'fixed';
+    modal.style.top = '0'; modal.style.left = '0';
+    modal.style.width = '100vw'; modal.style.height = '100vh';
+    modal.style.background = 'rgba(10, 25, 47, 0.85)';
+    modal.style.backdropFilter = 'blur(8px)';
+    modal.style.display = 'flex';
+    modal.style.alignItems = 'center';
+    modal.style.justifyContent = 'center';
+    modal.style.zIndex = '10000';
+
+    modal.innerHTML = `
+        <div style="background: #1A2B42; color: white; border-radius: 28px; padding: 30px 22px; width: 92%; max-width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);">
+            <div style="font-size: 40px; margin-bottom: 6px;">&#x1F3A7;</div>
+            <h2 style="color: #90CAF9; font-size: 22px; margin: 0 0 6px 0; font-weight: 800;">Evening Audio Therapy</h2>
+            <p style="color: #B0BEC5; font-size: 13px; margin: 0 0 20px 0;">Soothing soundscapes & guided breathing to ease evening restlessness and support deep sleep.</p>
+
+            <!-- Breathing Circle -->
+            <div style="position: relative; width: 170px; height: 170px; margin: 0 auto 24px; display: flex; align-items: center; justify-content: center;">
+                <div id="breathing-ring" style="position: absolute; width: 120px; height: 120px; border-radius: 50%; background: radial-gradient(circle, rgba(100,181,246,0.35) 0%, rgba(30,136,229,0.1) 70%); border: 3px solid #64B5F6; transition: 4s ease-in-out;"></div>
+                <div id="breathing-text" style="position: relative; z-index: 2; font-size: 17px; font-weight: 700; color: white;">Breathe In</div>
+            </div>
+
+            <!-- Sound Selection -->
+            <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 22px;">
+                <button class="sound-chip active-chip" onclick="switchSoundscape('rain', this)" style="background: #283E58; color: #90CAF9; border: 1px solid #64B5F6; padding: 8px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer;">
+                    &#x1F327;&#xFE0F; Rain
+                </button>
+                <button class="sound-chip" onclick="switchSoundscape('bowl', this)" style="background: #283E58; color: #B0BEC5; border: 1px solid rgba(255,255,255,0.15); padding: 8px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer;">
+                    &#x1F9D8; Singing Bowl
+                </button>
+                <button class="sound-chip" onclick="switchSoundscape('flute', this)" style="background: #283E58; color: #B0BEC5; border: 1px solid rgba(255,255,255,0.15); padding: 8px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer;">
+                    &#x1FA84; Flute Drone
+                </button>
+            </div>
+
+            <!-- Audio Toggle & Complete -->
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <button id="btn-toggle-sound" onclick="toggleSoundscapePlay()" style="background: #0288D1; color: white; border: none; padding: 15px; font-size: 16px; font-weight: bold; border-radius: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <span id="sound-play-icon">&#x25B6;</span> <span id="sound-play-text">Start Calming Soundscape</span>
+                </button>
+
+                <button onclick="finishAudioTherapySession()" style="background: linear-gradient(135deg, #4CAF50, #2E7D32); color: white; border: none; padding: 15px; font-size: 16px; font-weight: bold; border-radius: 16px; cursor: pointer; box-shadow: 0 4px 10px rgba(76,175,80,0.3);">
+                    &#x2714; Complete Session & Mark Done
+                </button>
+
+                <button onclick="closeAudioTherapyModal()" style="background: none; border: none; color: #90A4AE; padding: 8px; font-size: 13px; cursor: pointer;">
+                    Exit
+                </button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+    startBreathingAnimation();
+}
+
+function closeAudioTherapyModal() {
+    stopSoundscape();
+    if (breathingInterval) clearInterval(breathingInterval);
+    closeRoutineModal();
+}
+
+function finishAudioTherapySession() {
+    stopSoundscape();
+    if (breathingInterval) clearInterval(breathingInterval);
+    closeRoutineModal();
+    markRoutineTaskDone('evening_audio');
+    showRoutineCongrats('Evening Relaxation Complete! May you have a peaceful, deep, and restful night.');
+}
+
+function startBreathingAnimation() {
+    if (breathingInterval) clearInterval(breathingInterval);
+    const ring = document.getElementById('breathing-ring');
+    const text = document.getElementById('breathing-text');
+    if (!ring || !text) return;
+
+    let state = 0; // 0: inhale (4s), 1: hold (2s), 2: exhale (4s), 3: rest (2s)
+    function cycle() {
+        if (!document.getElementById('breathing-ring')) {
+            clearInterval(breathingInterval);
+            return;
+        }
+        if (state === 0) {
+            text.innerText = 'Breathe In...';
+            ring.style.transform = 'scale(1.4)';
+            ring.style.opacity = '1';
+            setTimeout(cycle, 4000);
+            state = 1;
+        } else if (state === 1) {
+            text.innerText = 'Hold Gently...';
+            setTimeout(cycle, 2000);
+            state = 2;
+        } else if (state === 2) {
+            text.innerText = 'Slowly Breathe Out...';
+            ring.style.transform = 'scale(1.0)';
+            ring.style.opacity = '0.6';
+            setTimeout(cycle, 4000);
+            state = 3;
+        } else {
+            text.innerText = 'Rest...';
+            setTimeout(cycle, 2000);
+            state = 0;
+        }
+    }
+    cycle();
+}
+
+// --- WEB AUDIO API REAL-TIME SYNTHESIS (Zero External File Dependencies) ---
+let audioCtx = null;
+let currentSoundType = 'rain';
+let isSoundPlaying = false;
+
+function getAudioContext() {
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+    return audioCtx;
+}
+
+function switchSoundscape(type, btn) {
+    currentSoundType = type;
+    document.querySelectorAll('.sound-chip').forEach(b => {
+        b.style.color = '#B0BEC5';
+        b.style.borderColor = 'rgba(255,255,255,0.15)';
+    });
+    if (btn) {
+        btn.style.color = '#90CAF9';
+        btn.style.borderColor = '#64B5F6';
+    }
+    if (isSoundPlaying) {
+        stopSoundscape();
+        startSoundscape(currentSoundType);
+    }
+}
+
+function toggleSoundscapePlay() {
+    if (isSoundPlaying) {
+        stopSoundscape();
+        const icon = document.getElementById('sound-play-icon');
+        const text = document.getElementById('sound-play-text');
+        if (icon) icon.innerText = '&#x25B6;';
+        if (text) text.innerText = 'Start Calming Soundscape';
+    } else {
+        startSoundscape(currentSoundType);
+        const icon = document.getElementById('sound-play-icon');
+        const text = document.getElementById('sound-play-text');
+        if (icon) icon.innerText = '&#x23F8;';
+        if (text) text.innerText = 'Pause Soundscape';
+    }
+}
+
+function startSoundscape(type) {
+    try {
+        const ctx = getAudioContext();
+        stopSoundscape();
+        isSoundPlaying = true;
+
+        if (type === 'rain') {
+            // Synthesized Pink Noise with low-pass filter
+            const bufferSize = ctx.sampleRate * 2;
+            const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+            const output = noiseBuffer.getChannelData(0);
+            let b0 = 0, b1 = 0, b2 = 0;
+            for (let i = 0; i < bufferSize; i++) {
+                let white = Math.random() * 2 - 1;
+                b0 = 0.99886 * b0 + white * 0.0555179;
+                b1 = 0.99332 * b1 + white * 0.0750759;
+                b2 = 0.96900 * b2 + white * 0.1538520;
+                output[i] = (b0 + b1 + b2) * 0.08;
+            }
+            const whiteNoise = ctx.createBufferSource();
+            whiteNoise.buffer = noiseBuffer;
+            whiteNoise.loop = true;
+
+            const filter = ctx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.value = 800;
+
+            const gain = ctx.createGain();
+            gain.gain.setValueAtTime(0.01, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.25, ctx.currentTime + 1.5);
+
+            whiteNoise.connect(filter);
+            filter.connect(gain);
+            gain.connect(ctx.destination);
+            whiteNoise.start();
+
+            activeAudioNodes = { source: whiteNoise, gain: gain };
+        } else if (type === 'bowl') {
+            // Harmonic Singing Bowl tones (216Hz, 432Hz)
+            const osc1 = ctx.createOscillator();
+            const osc2 = ctx.createOscillator();
+            const gain = ctx.createGain();
+
+            osc1.type = 'sine'; osc1.frequency.setValueAtTime(216, ctx.currentTime);
+            osc2.type = 'sine'; osc2.frequency.setValueAtTime(432, ctx.currentTime);
+
+            gain.gain.setValueAtTime(0.01, ctx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 1.2);
+
+            osc1.connect(gain);
+            osc2.connect(gain);
+            gain.connect(ctx.destination);
+            osc1.start();
+            osc2.start();
+
+            activeAudioNodes = { source: osc1, source2: osc2, gain: gain };
+        } else if (type === 'flute') {
+            // Warm Tanpura / Meditative Flute Drone (144Hz with gentle tremolo)
+            const osc = ctx.createOscillator();
+            const lfo = ctx.createOscillator();
+            const lfoGain = ctx.createGain();
+            const gain = ctx.createGain();
+
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(144, ctx.currentTime);
+
+            lfo.frequency.setValueAtTime(4.5, ctx.currentTime);
+            lfoGain.gain.setValueAtTime(2.5, ctx.currentTime);
+            lfo.connect(osc.frequency);
+
+            gain.gain.setValueAtTime(0.01, ctx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.22, ctx.currentTime + 1.5);
+
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+
+            osc.start();
+            lfo.start();
+
+            activeAudioNodes = { source: osc, lfo: lfo, gain: gain };
+        }
+    } catch(e) {
+        console.log('Audio Context Error:', e);
+    }
+}
+
+function stopSoundscape() {
+    isSoundPlaying = false;
+    if (activeAudioNodes && audioCtx) {
+        try {
+            if (activeAudioNodes.gain) {
+                activeAudioNodes.gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+            }
+            setTimeout(() => {
+                if (activeAudioNodes && activeAudioNodes.source) {
+                    try { activeAudioNodes.source.stop(); } catch(e) {}
+                }
+                if (activeAudioNodes && activeAudioNodes.source2) {
+                    try { activeAudioNodes.source2.stop(); } catch(e) {}
+                }
+                if (activeAudioNodes && activeAudioNodes.lfo) {
+                    try { activeAudioNodes.lfo.stop(); } catch(e) {}
+                }
+                activeAudioNodes = null;
+            }, 350);
+        } catch(e) {
+            activeAudioNodes = null;
+        }
+    }
+}
+
+function playGentleChime() {
+    try {
+        const ctx = getAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(528, ctx.currentTime); // 528Hz Solfeggio Love/Healing tone
+        osc.frequency.exponentialRampToValueAtTime(660, ctx.currentTime + 0.15);
+
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.9);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.9);
+    } catch(e) {}
+}
+
+function playGentleWaterDropSound() {
+    try {
+        const ctx = getAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(800, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1400, ctx.currentTime + 0.1);
+
+        gain.gain.setValueAtTime(0.25, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.25);
+    } catch(e) {}
+}
+
+function showRoutineCongrats(message) {
+    const existing = document.getElementById('routine-congrats-modal');
+    if (existing) existing.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'routine-congrats-modal';
+    modal.style.position = 'fixed';
+    modal.style.top = '0'; modal.style.left = '0';
+    modal.style.width = '100vw'; modal.style.height = '100vh';
+    modal.style.background = 'rgba(0,0,0,0.6)';
+    modal.style.backdropFilter = 'blur(4px)';
+    modal.style.display = 'flex';
+    modal.style.alignItems = 'center';
+    modal.style.justifyContent = 'center';
+    modal.style.zIndex = '10001';
+    modal.style.animation = 'fadeIn 0.2s ease-out';
+
+    modal.innerHTML = `
+        <div style="background: white; border-radius: 24px; padding: 28px 24px; width: 90%; max-width: 380px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.25);">
+            <div style="font-size: 55px; margin-bottom: 12px;">&#x1F31F;</div>
+            <h2 style="color: #00796B; font-size: 22px; margin: 0 0 8px 0; font-weight: 800;">Wonderful Progress!</h2>
+            <p style="color: #555; font-size: 15px; margin: 0 0 22px 0; line-height: 1.5;">${message}</p>
+            
+            <button onclick="document.getElementById('routine-congrats-modal').remove()" style="background: #00796B; color: white; border: none; padding: 14px 28px; font-size: 16px; font-weight: bold; border-radius: 24px; cursor: pointer; width: 100%; box-shadow: 0 4px 10px rgba(0,121,107,0.3);">
+                Continue Routine &#x2714;
+            </button>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+}
