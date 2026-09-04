@@ -1594,13 +1594,22 @@ let walkInactivityTimer= null;
 let walkMotionBound    = false;
 let walkGpsWatchId     = null;
 
-// Accelerometer state
-let walkLpX = 0, walkLpY = 0, walkLpZ = 0;
-let walkPrevMag = 0, walkPrevPrevMag = 0;
-let walkLastStepMs     = 0;
+// Gravity-isolation state — a heavy, slow-adapting low-pass filter tracks the true
+// gravity vector so it can be subtracted out, regardless of how the phone is tilted.
+let walkGravity = { x: 0, y: 0, z: 0 };
+let walkGravityReady = false;
 
-// Gait frequency filter state — accumulates step timestamps
-let walkStepTimestamps = [];          // last N step times (ms)
+// Vertical-acceleration peak/trough state (last 2 samples, for local-extrema detection)
+let walkPrevV = 0, walkPrevPrevV = 0;
+let walkAwaitingTrough = false;
+let walkPeakValue = 0, walkPeakTimeMs = 0;
+let walkLastStepMs = 0;
+
+// Cadence gate — a footfall is only credited as a step once WALK_CADENCE_GATE
+// consecutive footfalls land inside the human-walking frequency band in a row;
+// any interval outside that band discards the whole buffer.
+let walkCadenceBuffer = [];
+let walkCadenceLocked = false;
 
 // GPS state
 let walkGpsSpeed       = 0;          // m/s from GPS
@@ -1609,20 +1618,22 @@ let walkGpsLastLon     = null;
 let walkGpsLastMovedMs = 0;          // when GPS last confirmed movement
 
 // ── Constants ──────────────────────────────────────────────
-const WALK_LP_ALPHA     = 0.15;      // low-pass filter strength
-const WALK_THRESHOLD    = 1.8;       // m/s² peak magnitude threshold
-const WALK_DEBOUNCE_MS  = 320;       // minimum ms between steps
-const WALK_STRIDE_M     = 0.68;      // metres per step (elderly avg)
-const WALK_GOAL_SECS    = 600;       // 10-minute goal
-const WALK_ARC_LEN      = 678.6;     // SVG circle circumference (2π × 108)
+const WALK_GRAVITY_ALPHA   = 0.1;     // heavy low-pass to isolate true gravity (slow-adapting so a quick tilt can't fake a gravity shift)
+const WALK_VERTICAL_THRESH = 1.5;     // m/s² minimum peak-to-trough swing, in the gravity-aligned axis only, for a real footfall
+const WALK_PEAK_TIMEOUT_MS = 600;     // a peak must be followed by its trough within this window or it's discarded
+const WALK_MIN_STEP_MS     = 250;     // physically-impossible-to-repeat-faster-than floor (rejects double-counting one footfall)
+const WALK_CADENCE_MIN_HZ  = 1.0;
+const WALK_CADENCE_MAX_HZ  = 2.2;
+const WALK_CADENCE_MIN_MS  = 1000 / WALK_CADENCE_MAX_HZ; // ≈454ms — fastest allowed step interval
+const WALK_CADENCE_MAX_MS  = 1000 / WALK_CADENCE_MIN_HZ; // 1000ms — slowest allowed step interval
+const WALK_CADENCE_GATE    = 3;       // consecutive rhythmic footfalls required before any step is credited
+const WALK_STRIDE_M     = 0.68;       // metres per step (elderly avg)
+const WALK_GOAL_SECS    = 600;        // 10-minute goal
+const WALK_ARC_LEN      = 678.6;      // SVG circle circumference (2π × 108)
 
 // GPS movement threshold — must be moving faster than this to validate steps
 const GPS_SPEED_MIN_MS  = 0.3;       // 0.3 m/s ≈ very slow shuffle
 const GPS_GRACE_MS      = 4000;      // allow steps 4s after GPS last confirmed movement
-
-// Gait frequency range: valid walking = 1.2–2.5 steps/sec
-const GAIT_FREQ_MIN     = 1.2;
-const GAIT_FREQ_MAX     = 2.5;
 
 // ── Haversine distance (metres) ─────────────────────────────
 function haversineM(lat1, lon1, lat2, lon2) {
@@ -1667,22 +1678,6 @@ function isDeviceMoving() {
     return false;
 }
 
-// ── Gait frequency check ────────────────────────────────────
-// Returns true if recent step cadence is within human walking range
-function isWalkingGait() {
-    const now = performance.now();
-    // Keep only last 5 steps within 5 seconds
-    walkStepTimestamps = walkStepTimestamps.filter(t => now - t < 5000);
-    if (walkStepTimestamps.length < 2) return true; // not enough data, allow
-    const intervals = [];
-    for (let i = 1; i < walkStepTimestamps.length; i++) {
-        intervals.push(walkStepTimestamps[i] - walkStepTimestamps[i-1]);
-    }
-    const avgIntervalMs = intervals.reduce((a,b)=>a+b,0) / intervals.length;
-    const freq = 1000 / avgIntervalMs; // steps per second
-    return freq >= GAIT_FREQ_MIN && freq <= GAIT_FREQ_MAX;
-}
-
 // ── DOM update ──────────────────────────────────────────────
 function updateWalkUI() {
     const stepsEl = document.getElementById('walk-steps');
@@ -1709,31 +1704,61 @@ function setWalkStatus(msg, color) {
     if (hint) { hint.innerText = msg; hint.style.color = color || '#93C5FD'; }
 }
 
-let walkBaseMag = null;
+// ── Cadence gate ──────────────────────────
+// A confirmed peak-to-trough impact (a "footfall") only becomes a counted step once
+// WALK_CADENCE_GATE of them in a row land inside the human-walking frequency band
+// (1.0-2.2 Hz). One shake, one tilt-triggered blip, or an irregular jostle can produce
+// at most one or two footfalls before the timing fails this check and resets the
+// buffer to zero - so it can never accumulate into counted steps.
+function registerFootfall(now) {
+    if (walkCadenceBuffer.length > 0) {
+        const interval = now - walkCadenceBuffer[walkCadenceBuffer.length - 1];
 
-// ── Step recording ──────────────────────────────────────────
-function recordWalkStep(magDelta, timeSinceLast) {
-    // ANTI-CHEAT: Reject violent shaking (huge acceleration) or super fast tapping (< 250ms)
-    if (timeSinceLast < 250 || magDelta > 15) {
-        setWalkStatus('Shaking detected \u2014 steps paused', '#FFB74D');
-        return;
+        if (interval < WALK_MIN_STEP_MS) return; // can't physically be a distinct footfall this fast - ignore, keep rhythm intact
+
+        if (interval < WALK_CADENCE_MIN_MS || interval > WALK_CADENCE_MAX_MS) {
+            // Cadence broken - too fast, too slow, or too long a gap to be a human gait.
+            const wasLocked = walkCadenceLocked;
+            walkCadenceBuffer = [];
+            walkCadenceLocked = false;
+            if (wasLocked) setWalkStatus('Irregular motion \u2014 steps paused', '#FFB74D');
+        }
     }
 
+    walkCadenceBuffer.push(now);
+    if (walkCadenceBuffer.length > WALK_CADENCE_GATE) walkCadenceBuffer.shift();
+
+    if (!walkCadenceLocked) {
+        if (walkCadenceBuffer.length >= WALK_CADENCE_GATE) {
+            // Rhythm confirmed - credit the footfalls that already happened while we
+            // were busy confirming the pattern, then keep counting live from here.
+            walkCadenceLocked = true;
+            for (let i = 0; i < WALK_CADENCE_GATE; i++) recordWalkStep();
+        } else {
+            setWalkStatus('Confirming your walking rhythm… (' + walkCadenceBuffer.length + '/' + WALK_CADENCE_GATE + ')', '#93C5FD');
+        }
+    } else {
+        recordWalkStep();
+    }
+}
+
+// ── Step recording (called only after the cadence gate confirms a real gait) ──
+function recordWalkStep() {
     walkSteps++;
     walkLastStepMs = performance.now();
 
     if (!walkMoving && walkActive) {
         walkMoving = true;
         startWalkTicker();
-        setWalkStatus('Walking \u2714  Timer running', '#4CAF50');
     }
+    setWalkStatus('Walking \u2714  Timer running', '#4CAF50');
 
     clearTimeout(walkInactivityTimer);
     walkInactivityTimer = setTimeout(pauseWalkInactivity, 3000);
     updateWalkUI();
 }
 
-// ── Timer ───────────────────────────────────────────────────
+// ── Timer ─────────────────────────────
 function startWalkTicker() {
     if (walkInterval) clearInterval(walkInterval);
     walkInterval = setInterval(() => {
@@ -1752,42 +1777,73 @@ function pauseWalkInactivity() {
     setWalkStatus('Paused \u2014 timer stopped. Walk again to resume.', '#FFB74D');
 }
 
-// ── Accelerometer handler ───────────────────────────────────
+// ── Accelerometer handler - physics-based, tilt- and shake-proof step detection ──
 function handleWalkMotion(event) {
     if (!walkActive) return;
-    const acc = event.acceleration?.x != null ? event.acceleration : event.accelerationIncludingGravity;
-    if (!acc) return;
+    // accelerationIncludingGravity is what makes gravity-vector isolation possible;
+    // it's also far more widely supported across devices than gravity-free `acceleration`.
+    const acc = event.accelerationIncludingGravity;
+    if (!acc || acc.x == null) return;
 
     const rawX = acc.x || 0, rawY = acc.y || 0, rawZ = acc.z || 0;
 
-    // Low-pass filter to remove micro-vibrations
-    walkLpX = WALK_LP_ALPHA * rawX + (1 - WALK_LP_ALPHA) * walkLpX;
-    walkLpY = WALK_LP_ALPHA * rawY + (1 - WALK_LP_ALPHA) * walkLpY;
-    walkLpZ = WALK_LP_ALPHA * rawZ + (1 - WALK_LP_ALPHA) * walkLpZ;
+    // 1. GRAVITY VECTOR ISOLATION - a heavy, slow-adapting low-pass filter (alpha=0.1)
+    //    tracks the true gravity vector. Because it adapts slowly, a quick wrist tilt
+    //    shifts the RAW reading immediately but barely moves this filtered estimate -
+    //    which is exactly what stops "tilting the phone" from registering as a step.
+    if (!walkGravityReady) {
+        walkGravity.x = rawX; walkGravity.y = rawY; walkGravity.z = rawZ;
+        walkGravityReady = true;
+    } else {
+        walkGravity.x = WALK_GRAVITY_ALPHA * rawX + (1 - WALK_GRAVITY_ALPHA) * walkGravity.x;
+        walkGravity.y = WALK_GRAVITY_ALPHA * rawY + (1 - WALK_GRAVITY_ALPHA) * walkGravity.y;
+        walkGravity.z = WALK_GRAVITY_ALPHA * rawZ + (1 - WALK_GRAVITY_ALPHA) * walkGravity.z;
+    }
 
-    const mag = Math.sqrt(walkLpX**2 + walkLpY**2 + walkLpZ**2);
+    // 2. LINEAR (USER) ACCELERATION - subtract the isolated gravity vector from the
+    //    raw signal, leaving only the acceleration caused by the body's own movement.
+    const linX = rawX - walkGravity.x;
+    const linY = rawY - walkGravity.y;
+    const linZ = rawZ - walkGravity.z;
+
+    // 3. VERTICAL PROJECTION - dot the linear acceleration with the *unit* gravity
+    //    vector to isolate just its component along "down": the true up/down bounce
+    //    of a walking gait, independent of how the phone is tilted or rotated in the
+    //    hand. Rotations and lateral shakes are largely orthogonal to gravity and
+    //    mostly cancel out of this dot product instead of registering as motion.
+    const gMag = Math.sqrt(walkGravity.x ** 2 + walkGravity.y ** 2 + walkGravity.z ** 2) || 1;
+    const unitGx = walkGravity.x / gMag, unitGy = walkGravity.y / gMag, unitGz = walkGravity.z / gMag;
+    const verticalAccel = (linX * unitGx) + (linY * unitGy) + (linZ * unitGz);
+
     const now = performance.now();
 
-    // Dynamically track baseline (accounts for gravity if present)
-    if (walkBaseMag === null) walkBaseMag = mag;
-    walkBaseMag = 0.05 * mag + 0.95 * walkBaseMag;
+    // 4. PEAK-TO-TROUGH IMPACT ANALYSIS - real walking is a rhythmic wave: a positive
+    //    vertical peak (the foot lifting) must be followed closely by a negative
+    //    trough (the foot striking the ground). A single spike from a shake produces
+    //    a peak, or a trough, but essentially never a matched, correctly-signed pair.
+    const isPeak   = walkPrevV > walkPrevPrevV && walkPrevV > verticalAccel;
+    const isTrough = walkPrevV < walkPrevPrevV && walkPrevV < verticalAccel;
 
-    const magDelta = walkPrevMag - walkBaseMag;
-
-    // Local peak detection
-    const isPeak = walkPrevMag > walkPrevPrevMag && walkPrevMag > mag;
-    // Step must be distinctly above baseline (filters out light hand trembling)
-    const isSignificant = magDelta > 1.2;
-    
-    const timeSinceLast = now - walkLastStepMs;
-    const debounceOk = timeSinceLast >= WALK_DEBOUNCE_MS;
-
-    walkPrevPrevMag = walkPrevMag;
-    walkPrevMag     = mag;
-
-    if (isPeak && isSignificant && debounceOk) {
-        recordWalkStep(magDelta, timeSinceLast);
+    if (!walkAwaitingTrough && isPeak && walkPrevV > 0) {
+        walkAwaitingTrough = true;
+        walkPeakValue = walkPrevV;
+        walkPeakTimeMs = now;
+    } else if (walkAwaitingTrough) {
+        if (now - walkPeakTimeMs > WALK_PEAK_TIMEOUT_MS) {
+            walkAwaitingTrough = false; // trough never arrived in time - not a real step
+        } else if (isTrough && walkPrevV < 0) {
+            walkAwaitingTrough = false;
+            const impact = walkPeakValue - walkPrevV; // full peak-to-trough swing, m/s²
+            if (impact > WALK_VERTICAL_THRESH) {
+                // 5. CADENCE GATE - only a rhythmic sequence of these impacts is
+                //    actually credited as steps. See registerFootfall().
+                registerFootfall(now);
+            }
+        }
     }
+
+    walkPrevPrevV = walkPrevV;
+    walkPrevV     = verticalAccel;
 }
 
 
@@ -1871,9 +1927,16 @@ function finishWalk() {
     setTimeout(() => {
         if (overlay) overlay.style.display = 'none';
         walkActiveSecs = 0; walkSteps = 0;
-        walkStepTimestamps = []; walkGpsSpeed = 0;
+        walkGpsSpeed = 0;
         walkGpsLastLat = null; walkGpsLastLon = null;
         walkGpsLastMovedMs = 0;
+        // Reset step-detection state for the next session (fresh gravity estimate,
+        // cleared cadence gate) rather than carrying stale readings forward.
+        walkGravity = { x: 0, y: 0, z: 0 };
+        walkGravityReady = false;
+        walkPrevV = 0; walkPrevPrevV = 0;
+        walkAwaitingTrough = false;
+        walkCadenceBuffer = []; walkCadenceLocked = false;
         updateWalkUI();
         const arc = document.getElementById('walk-arc');
         if (arc) arc.style.strokeDashoffset = WALK_ARC_LEN;
