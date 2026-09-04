@@ -39,3 +39,24 @@ function recordTaskScore(correct, total, timeTakenMs) {
   loadNextGauntletTask();
 }
 
+
+// CMT_feat(game1):_Sequence_Mem
+
+function startSequenceMemory(diff) {
+  const count = Math.min(2 + diff, 6);
+  const shapes = ['circle','square','triangle','star','diamond','hexagon'];
+  const seq = Array.from({ length: count }, () => shapes[Math.floor(Math.random() * shapes.length)]);
+  sequenceMemoryAnswer = [...seq];
+  let i = 0;
+  const flashNext = () => {
+    if (i >= seq.length) { setTimeout(enableSequenceRecall, 800); return; }
+    showShapeFlash(seq[i++]);
+    setTimeout(flashNext, elderlyTimer(1200));
+  };
+  flashNext();
+}
+function checkSequenceMemory(userSeq) {
+  const correct = userSeq.every((s, i) => s === sequenceMemoryAnswer[i]) ? sequenceMemoryAnswer.length : 0;
+  recordTaskScore(correct, sequenceMemoryAnswer.length, Date.now() - taskStartTime);
+}
+
