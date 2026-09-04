@@ -83,3 +83,18 @@ function prioritizeHomeCards(profile) {
   return cardOrder[weakest] || ['game-menu-screen', 'family-screen', 'routine-screen'];
 }
 
+
+// CMT_feat(ai-ui):_Implement_ap
+
+function applyUIMode(mode) {
+  document.body.dataset.uiMode = MODE_LABELS[mode].toLowerCase().replace(' ', '-');
+  if (mode === UI_MODES.SCAFFOLDING) {
+    document.querySelectorAll('.scaffolding-badge').forEach(el => el.style.display = 'flex');
+    document.querySelectorAll('.btn-primary').forEach(b => b.style.minHeight = '64px');
+    showCognitiveCue('Let us start with something familiar today.');
+  } else {
+    document.querySelectorAll('.scaffolding-badge').forEach(el => el.style.display = 'none');
+  }
+  updateProgressUI();
+}
+
