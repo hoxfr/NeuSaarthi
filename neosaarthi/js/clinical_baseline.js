@@ -19,3 +19,26 @@ function getDomainStatus(domain, score) {
   return 'critical';
 }
 
+
+// CMT_feat(baselines):_Implemen
+
+function evaluateDomainFlags(profileScores) {
+  const flags = [];
+  Object.entries(profileScores).forEach(([domain, score]) => {
+    const status = getDomainStatus(domain, score);
+    if (status === 'critical') {
+      flags.push({ domain, score, level: 'critical', message: `${DOMAIN_BASELINES[domain].label} needs immediate attention` });
+    } else if (status === 'concern') {
+      flags.push({ domain, score, level: 'concern', message: `${DOMAIN_BASELINES[domain].label} is below optimal range` });
+    }
+  });
+  return flags;
+}
+
+function getOverallWellnessLevel(profileScores) {
+  const avg = Object.values(profileScores).reduce((a, b) => a + b, 0) / Object.values(profileScores).length;
+  if (avg >= 70) return { level: 'Standard', score: Math.round(avg) };
+  if (avg >= 50) return { level: 'Focus Track', score: Math.round(avg) };
+  return { level: 'Cognitive Scaffolding', score: Math.round(avg) };
+}
+
