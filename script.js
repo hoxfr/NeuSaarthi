@@ -1,4 +1,4 @@
-let stats = { cog: 0, hyd: 0, phy: 0 };
+﻿let stats = { cog: 0, hyd: 0, phy: 0 };
 const langData = {
     "en": { 
         label: "English", 
@@ -1577,24 +1577,113 @@ function verifyPendingGame() {
 }
 
 
-// --- REAL-TIME ACCELEROMETER WALK TRACKER LOGIC ---
-let walkInterval = null;
-let walkActiveSecs = 0;
-let walkSteps = 0;
-let walkActive = false;
-let walkMoving = false;
-let walkInactivityTimer = null;
-let walkLastStepMs = 0;
+
+// ============================================================
+// WALK TRACKER — GPS + Accelerometer Sensor Fusion
+// Steps only count when GPS confirms real physical movement.
+// Shaking/vibrating the phone while stationary = REJECTED.
+// ============================================================
+
+// ── State ──────────────────────────────────────────────────
+let walkInterval       = null;
+let walkActiveSecs     = 0;
+let walkSteps          = 0;
+let walkActive         = false;
+let walkMoving         = false;
+let walkInactivityTimer= null;
+let walkMotionBound    = false;
+let walkGpsWatchId     = null;
+
+// Accelerometer state
 let walkLpX = 0, walkLpY = 0, walkLpZ = 0;
 let walkPrevMag = 0, walkPrevPrevMag = 0;
-let walkMotionBound = false;
+let walkLastStepMs     = 0;
 
-const WALK_LOW_PASS_ALPHA = 0.15;
-const WALK_STEP_THRESHOLD = 1.8; // m/s^2
-const WALK_DEBOUNCE_MS = 320;
-const WALK_STRIDE_M = 0.68;
-const WALK_GOAL_SECS = 600; // 10 mins
+// Gait frequency filter state — accumulates step timestamps
+let walkStepTimestamps = [];          // last N step times (ms)
 
+// GPS state
+let walkGpsSpeed       = 0;          // m/s from GPS
+let walkGpsLastLat     = null;
+let walkGpsLastLon     = null;
+let walkGpsLastMovedMs = 0;          // when GPS last confirmed movement
+
+// ── Constants ──────────────────────────────────────────────
+const WALK_LP_ALPHA     = 0.15;      // low-pass filter strength
+const WALK_THRESHOLD    = 1.8;       // m/s² peak magnitude threshold
+const WALK_DEBOUNCE_MS  = 320;       // minimum ms between steps
+const WALK_STRIDE_M     = 0.68;      // metres per step (elderly avg)
+const WALK_GOAL_SECS    = 600;       // 10-minute goal
+const WALK_ARC_LEN      = 678.6;     // SVG circle circumference (2π × 108)
+
+// GPS movement threshold — must be moving faster than this to validate steps
+const GPS_SPEED_MIN_MS  = 0.3;       // 0.3 m/s ≈ very slow shuffle
+const GPS_GRACE_MS      = 4000;      // allow steps 4s after GPS last confirmed movement
+
+// Gait frequency range: valid walking = 1.2–2.5 steps/sec
+const GAIT_FREQ_MIN     = 1.2;
+const GAIT_FREQ_MAX     = 2.5;
+
+// ── Haversine distance (metres) ─────────────────────────────
+function haversineM(lat1, lon1, lat2, lon2) {
+    const R = 6371000;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2)**2 +
+              Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLon/2)**2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+// ── GPS handler ─────────────────────────────────────────────
+function onWalkGpsUpdate(pos) {
+    const { latitude: lat, longitude: lon, speed } = pos.coords;
+
+    // Update GPS speed (may be null on some devices)
+    if (speed != null) {
+        walkGpsSpeed = speed;
+    }
+
+    // Calculate displacement since last GPS point
+    if (walkGpsLastLat !== null) {
+        const dist = haversineM(walkGpsLastLat, walkGpsLastLon, lat, lon);
+        // If moved more than 1.5 metres between GPS updates → real movement
+        if (dist > 1.5 || walkGpsSpeed >= GPS_SPEED_MIN_MS) {
+            walkGpsLastMovedMs = performance.now();
+        }
+    }
+
+    walkGpsLastLat = lat;
+    walkGpsLastLon = lon;
+}
+
+// ── Check: is device currently moving? ─────────────────────
+function isDeviceMoving() {
+    // GPS speed is reliable (if available)
+    if (walkGpsSpeed >= GPS_SPEED_MIN_MS) return true;
+    // Grace window: still moving if GPS said so within last 4 s
+    if (walkGpsLastMovedMs && (performance.now() - walkGpsLastMovedMs) < GPS_GRACE_MS) return true;
+    // No GPS at all (indoor / no fix) — allow steps through (best-effort)
+    if (walkGpsLastLat === null) return true;
+    return false;
+}
+
+// ── Gait frequency check ────────────────────────────────────
+// Returns true if recent step cadence is within human walking range
+function isWalkingGait() {
+    const now = performance.now();
+    // Keep only last 5 steps within 5 seconds
+    walkStepTimestamps = walkStepTimestamps.filter(t => now - t < 5000);
+    if (walkStepTimestamps.length < 2) return true; // not enough data, allow
+    const intervals = [];
+    for (let i = 1; i < walkStepTimestamps.length; i++) {
+        intervals.push(walkStepTimestamps[i] - walkStepTimestamps[i-1]);
+    }
+    const avgIntervalMs = intervals.reduce((a,b)=>a+b,0) / intervals.length;
+    const freq = 1000 / avgIntervalMs; // steps per second
+    return freq >= GAIT_FREQ_MIN && freq <= GAIT_FREQ_MAX;
+}
+
+// ── DOM update ──────────────────────────────────────────────
 function updateWalkUI() {
     const stepsEl = document.getElementById('walk-steps');
     if (stepsEl) stepsEl.innerText = walkSteps;
@@ -1607,145 +1696,145 @@ function updateWalkUI() {
     const timeEl = document.getElementById('walk-time');
     if (timeEl) timeEl.innerText = `${m}:${s}`;
 
-    const progress = Math.min(1, walkActiveSecs / WALK_GOAL_SECS);
-    const ring = document.getElementById('walk-ring');
-    if (ring) ring.style.transform = `rotate(${-45 + (progress * 360)}deg)`;
+    // Update SVG arc (stroke-dashoffset) — no rotation, content stays upright
+    const arc = document.getElementById('walk-arc');
+    if (arc) {
+        const progress = Math.min(1, walkActiveSecs / WALK_GOAL_SECS);
+        arc.style.strokeDashoffset = WALK_ARC_LEN * (1 - progress);
+    }
 }
 
+function setWalkStatus(msg, color) {
+    const hint = document.getElementById('walk-status-hint');
+    if (hint) { hint.innerText = msg; hint.style.color = color || '#93C5FD'; }
+}
+
+// ── Step recording ──────────────────────────────────────────
 function recordWalkStep() {
+    // SENSOR FUSION GATE: reject if GPS says we are stationary
+    if (!isDeviceMoving()) {
+        setWalkStatus('Stationary \u2014 walk outdoors to count steps', '#FFB74D');
+        return;
+    }
+
+    // GAIT FREQUENCY GATE: reject shakes (too fast or too slow)
+    walkStepTimestamps.push(performance.now());
+    if (!isWalkingGait()) {
+        setWalkStatus('Move detected but not walking gait \u2014 keep walking!', '#FFB74D');
+        return;
+    }
+
     walkSteps++;
     walkLastStepMs = performance.now();
 
-    // If movement was paused, resume timer
     if (!walkMoving && walkActive) {
         walkMoving = true;
-        startActiveWalkTicker();
-        const hint = document.getElementById('walk-status-hint');
-        if (hint) {
-            hint.innerText = "Walking actively... Timer running";
-            hint.style.color = "#4CAF50";
-        }
+        startWalkTicker();
+        setWalkStatus('Walking \u2714  Timer running', '#4CAF50');
     }
 
-    // Reset 3-second inactivity watchdog
     clearTimeout(walkInactivityTimer);
-    walkInactivityTimer = setTimeout(() => {
-        pauseWalkDueToInactivity();
-    }, 3000);
-
+    walkInactivityTimer = setTimeout(pauseWalkInactivity, 3000);
     updateWalkUI();
 }
 
-function pauseWalkDueToInactivity() {
-    if (!walkActive) return;
-    walkMoving = false;
-    clearInterval(walkInterval);
-    walkInterval = null;
-
-    const hint = document.getElementById('walk-status-hint');
-    if (hint) {
-        hint.innerText = "Paused — timer stopped (walk to resume)";
-        hint.style.color = "#FFB74D";
-    }
-}
-
-function startActiveWalkTicker() {
+// ── Timer ───────────────────────────────────────────────────
+function startWalkTicker() {
     if (walkInterval) clearInterval(walkInterval);
     walkInterval = setInterval(() => {
         if (!walkActive || !walkMoving) return;
         walkActiveSecs++;
         updateWalkUI();
-
-        if (walkActiveSecs >= WALK_GOAL_SECS) {
-            finishWalk();
-        }
+        if (walkActiveSecs >= WALK_GOAL_SECS) finishWalk();
     }, 1000);
 }
 
-function handleWalkDeviceMotion(event) {
+function pauseWalkInactivity() {
     if (!walkActive) return;
+    walkMoving = false;
+    clearInterval(walkInterval);
+    walkInterval = null;
+    setWalkStatus('Paused \u2014 timer stopped. Walk again to resume.', '#FFB74D');
+}
 
+// ── Accelerometer handler ───────────────────────────────────
+function handleWalkMotion(event) {
+    if (!walkActive) return;
     const acc = event.acceleration?.x != null ? event.acceleration : event.accelerationIncludingGravity;
     if (!acc) return;
 
-    const rawX = acc.x || 0;
-    const rawY = acc.y || 0;
-    const rawZ = acc.z || 0;
+    const rawX = acc.x || 0, rawY = acc.y || 0, rawZ = acc.z || 0;
 
-    // Low-pass filter
-    walkLpX = WALK_LOW_PASS_ALPHA * rawX + (1 - WALK_LOW_PASS_ALPHA) * walkLpX;
-    walkLpY = WALK_LOW_PASS_ALPHA * rawY + (1 - WALK_LOW_PASS_ALPHA) * walkLpY;
-    walkLpZ = WALK_LOW_PASS_ALPHA * rawZ + (1 - WALK_LOW_PASS_ALPHA) * walkLpZ;
+    // Low-pass filter to remove vibration/shake noise
+    walkLpX = WALK_LP_ALPHA * rawX + (1 - WALK_LP_ALPHA) * walkLpX;
+    walkLpY = WALK_LP_ALPHA * rawY + (1 - WALK_LP_ALPHA) * walkLpY;
+    walkLpZ = WALK_LP_ALPHA * rawZ + (1 - WALK_LP_ALPHA) * walkLpZ;
 
-    const mag = Math.sqrt(walkLpX * walkLpX + walkLpY * walkLpY + walkLpZ * walkLpZ);
+    const mag = Math.sqrt(walkLpX**2 + walkLpY**2 + walkLpZ**2);
     const now = performance.now();
 
-    // Peak detection
-    const isPeak = (walkPrevMag > walkPrevPrevMag && walkPrevMag > mag && walkPrevMag > WALK_STEP_THRESHOLD);
+    // Local peak detection
+    const isPeak = walkPrevMag > walkPrevPrevMag && walkPrevMag > mag && walkPrevMag > WALK_THRESHOLD;
     const debounceOk = (now - walkLastStepMs) >= WALK_DEBOUNCE_MS;
 
     walkPrevPrevMag = walkPrevMag;
-    walkPrevMag = mag;
+    walkPrevMag     = mag;
 
-    if (isPeak && debounceOk) {
-        recordWalkStep();
-    }
+    if (isPeak && debounceOk) recordWalkStep();
 }
 
+// ── iOS 13+ permission ──────────────────────────────────────
 async function requestMotionPermissionIfNeeded() {
     if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
-        try {
-            const res = await DeviceMotionEvent.requestPermission();
-            return res === 'granted';
-        } catch (e) {
-            console.warn('DeviceMotion permission:', e);
-            return false;
-        }
+        try { return (await DeviceMotionEvent.requestPermission()) === 'granted'; }
+        catch(e) { return false; }
     }
     return true;
 }
 
+// ── Start / Pause toggle ────────────────────────────────────
 async function toggleWalk() {
-    const btn = document.getElementById('btn-walk-action');
+    const btn  = document.getElementById('btn-walk-action');
     const icon = document.getElementById('icon-walk-action');
     const text = document.getElementById('text-walk-action');
-    const hint = document.getElementById('walk-status-hint');
 
     if (walkActive) {
-        // Pause session manually
         pauseWalk();
-        if (btn) btn.style.background = '#4CAF50';
+        if (btn)  btn.style.background = '#4CAF50';
         if (icon) icon.innerText = 'play_arrow';
         if (text) text.innerText = 'Resume Walk';
-        if (hint) {
-            hint.innerText = "Walk paused";
-            hint.style.color = "#93C5FD";
-        }
+        setWalkStatus('Walk paused', '#93C5FD');
     } else {
-        // Start session
         await requestMotionPermissionIfNeeded();
 
+        // Start GPS tracking (anti-cheat)
+        if (!walkGpsWatchId && navigator.geolocation) {
+            walkGpsWatchId = navigator.geolocation.watchPosition(
+                onWalkGpsUpdate,
+                () => { /* GPS unavailable — fallback to accel-only, indoor mode */ },
+                { enableHighAccuracy: true, maximumAge: 1000, timeout: 5000 }
+            );
+        }
+
+        // Start accelerometer
         if (!walkMotionBound) {
-            window.addEventListener('devicemotion', handleWalkDeviceMotion, { passive: true });
+            window.addEventListener('devicemotion', handleWalkMotion, { passive: true });
             walkMotionBound = true;
         }
 
-        walkActive = true;
-        walkMoving = false;
-        if (btn) btn.style.background = '#F44336';
+        walkActive  = true;
+        walkMoving  = false;
+        if (btn)  btn.style.background = '#F44336';
         if (icon) icon.innerText = 'pause';
         if (text) text.innerText = 'Pause';
-        if (hint) {
-            hint.innerText = "Start walking — timer counts only while moving";
-            hint.style.color = "#93C5FD";
-        }
+        setWalkStatus('Start walking \u2014 timer counts only while moving', '#93C5FD');
         updateWalkUI();
     }
 }
 
 function pauseWalk() {
-    walkActive = false;
-    walkMoving = false;
+    walkActive  = false;
+    walkMoving  = false;
     clearInterval(walkInterval);
     walkInterval = null;
     clearTimeout(walkInactivityTimer);
@@ -1753,40 +1842,41 @@ function pauseWalk() {
 
 function finishWalk() {
     pauseWalk();
+
+    // Stop GPS watch
+    if (walkGpsWatchId) {
+        navigator.geolocation.clearWatch(walkGpsWatchId);
+        walkGpsWatchId = null;
+    }
+
     const overlay = document.getElementById('walk-confetti');
     if (overlay) overlay.style.display = 'flex';
 
-    // Save real session history
+    // Save real session to localStorage
     try {
         const hist = JSON.parse(localStorage.getItem('mobilityHistory') || '[]');
-        hist.push({
-            ts: Date.now(),
-            steps: walkSteps,
-            activeSecs: walkActiveSecs,
-            distanceKm: ((walkSteps * WALK_STRIDE_M) / 1000).toFixed(2)
-        });
+        hist.push({ ts: Date.now(), steps: walkSteps, activeSecs: walkActiveSecs,
+                    distanceKm: ((walkSteps * WALK_STRIDE_M) / 1000).toFixed(2) });
         localStorage.setItem('mobilityHistory', JSON.stringify(hist));
     } catch(e) {}
 
     setTimeout(() => {
         if (overlay) overlay.style.display = 'none';
-        walkActiveSecs = 0;
-        walkSteps = 0;
+        walkActiveSecs = 0; walkSteps = 0;
+        walkStepTimestamps = []; walkGpsSpeed = 0;
+        walkGpsLastLat = null; walkGpsLastLon = null;
+        walkGpsLastMovedMs = 0;
         updateWalkUI();
-
-        const btn = document.getElementById('btn-walk-action');
-        if (btn) btn.style.background = '#4CAF50';
+        const arc = document.getElementById('walk-arc');
+        if (arc) arc.style.strokeDashoffset = WALK_ARC_LEN;
+        const btn  = document.getElementById('btn-walk-action');
+        if (btn)  btn.style.background = '#4CAF50';
         const icon = document.getElementById('icon-walk-action');
         if (icon) icon.innerText = 'play_arrow';
         const text = document.getElementById('text-walk-action');
         if (text) text.innerText = 'Start Walk';
-        const hint = document.getElementById('walk-status-hint');
-        if (hint) {
-            hint.innerText = "Active pedometer: Timer pauses automatically when stationary";
-            hint.style.color = "#93C5FD";
-        }
-
-        verifyPendingGame(); // Checks it off in daily routine
+        setWalkStatus('Active pedometer \u2014 GPS + motion fusion, auto-pause when still', '#93C5FD');
+        verifyPendingGame();
     }, 3000);
 }
 
