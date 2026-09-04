@@ -1213,8 +1213,9 @@ function startSaarthiListening() {
             if (st) st.innerText = "Voice input isn't available on this browser — try a quick-tap prompt below.";
             return;
         }
+        const L = getSaarthiLang();
         saarthiRecognition = new SR();
-        saarthiRecognition.lang = 'en-IN';
+        saarthiRecognition.lang = L.recognitionLang || 'en-IN';
         saarthiRecognition.interimResults = true;
         saarthiRecognition.continuous = false;
         saarthiRecognition.onresult = function (ev) {
@@ -1241,15 +1242,18 @@ function listenForYesNo(onYes, onNo) {
         const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (!SR) return;
         stopSaarthiListening();
+        const L = getSaarthiLang();
         saarthiRecognition = new SR();
-        saarthiRecognition.lang = 'en-IN';
+        saarthiRecognition.lang = L.recognitionLang || 'en-IN';
         saarthiRecognition.interimResults = false;
         saarthiRecognition.continuous = false;
         saarthiRecognition.onresult = function (ev) {
             try {
                 const said = ev.results[ev.results.length - 1][0].transcript.toLowerCase();
-                if (/\b(yes|yeah|yep|sure|okay|ok|haan)\b/.test(said)) onYes();
-                else if (/\b(no|nope|nah|nahi)\b/.test(said)) onNo();
+                const yesRegex = L.yesWords || /\b(yes|yeah|yep|sure|okay|ok|haan)\b/;
+                const noRegex = L.noWords || /\b(no|nope|nah|nahi)\b/;
+                if (yesRegex.test(said)) onYes();
+                else if (noRegex.test(said)) onNo();
             } catch (e) {}
         };
         saarthiRecognition.onerror = function () {};
@@ -1277,8 +1281,10 @@ function speakSaarthi(text, onEnd) {
     try {
         if (!window.speechSynthesis) { if (typeof onEnd === 'function') onEnd(); return; }
         window.speechSynthesis.cancel();
+        const L = getSaarthiLang();
+        const targetLangs = L.voiceLangs || ['en-IN', 'en-GB', 'en-US'];
         const u = new SpeechSynthesisUtterance(text);
-        u.lang = 'en-IN'; u.rate = 0.88; u.pitch = 1.05; u.volume = 1;
+        u.lang = targetLangs[0]; u.rate = 0.88; u.pitch = 1.05; u.volume = 1;
         let finished = false;
         const finish = function () { if (finished) return; finished = true; if (typeof onEnd === 'function') { try { onEnd(); } catch (e) {} } };
         u.onend = finish;
@@ -1287,7 +1293,12 @@ function speakSaarthi(text, onEnd) {
         const speakNow = function () {
             try {
                 const voices = window.speechSynthesis.getVoices();
-                const v = voices.find(function (v) { return v.lang === 'en-IN'; }) || voices.find(function (v) { return v.lang && v.lang.indexOf('en') === 0; });
+                let v = null;
+                for (let i = 0; i < targetLangs.length; i++) {
+                    v = voices.find(function (v) { return v.lang === targetLangs[i]; });
+                    if (v) break;
+                }
+                if (!v) v = voices.find(function (v) { return v.lang && v.lang.indexOf(targetLangs[0].split('-')[0]) === 0; });
                 if (v) u.voice = v;
                 window.speechSynthesis.speak(u);
             } catch (e) { finish(); }
@@ -1300,6 +1311,7 @@ function speakSaarthi(text, onEnd) {
 // --- NLP intent router: broad cognitive-companion knowledge base ---
 function classifySaarthiIntent(text) {
     const t = (text || '').toLowerCase();
+    if (/talk (to me )?in hindi|speak (in )?hindi|switch( to)? hindi/i.test(t)) return 'switch_hindi';
     if (/my score|my (test )?result|test result|wellness score|how (was|did) i (do|perform)|how am i doing|my progress|my performance/.test(t)) return 'score';
     if (/routine|\btask\b|today'?s (schedule|plan)|what should i do|remind/.test(t)) return 'routine';
     if (/family|photo|album|picture|remember my|who is in my/.test(t)) return 'family';
@@ -1320,6 +1332,31 @@ function classifySaarthiIntent(text) {
 // layers spoken "yes"/"no" on top of the buttons, which always remain the fallback.
 function buildSaarthiReply(intent, rawText) {
     try {
+        if (intent === 'switch_hindi') {
+            const goHindi = function () {
+                stopSaarthiListening(); SaarthiUI.state = 'idle'; SaarthiUI.hidePill();
+                if (typeof changeLanguage === 'function') changeLanguage('hi');
+                SaarthiUI.showPillText('नमस्ते! मैंने हिंदी में बोलना शुरू कर दिया है।');
+                // speakSaarthi in Hindi requires proper lang configuration. We will just speak it.
+                // saarthi's speakSaarthi uses getSaarthiLang but the voice is set up there.
+                // For now, let's just use speakSaarthi wrapper.
+                speakSaarthi('नमस्ते! मैंने हिंदी में बोलना शुरू कर दिया है।', function () { SaarthiUI.settleIdle(); });
+            };
+            const goEnglish = function () {
+                stopSaarthiListening(); SaarthiUI.hideActions();
+                const ack = 'Okay, I will continue in English.';
+                SaarthiUI.showPillText(ack);
+                speakSaarthi(ack, function () { SaarthiUI.settleIdle(); });
+            };
+            return {
+                text: "Yes, I can. Do you want to switch me to Hindi?",
+                choices: [
+                    { label: '&#x2705; Yes, switch to Hindi', primary: true, onSelect: goHindi },
+                    { label: '&#x274C; No, stay in English', onSelect: goEnglish }
+                ],
+                voice: { yes: goHindi, no: goEnglish }
+            };
+        }
         if (intent === 'score') {
             const profile = (typeof runAICognitiveProfiler === 'function') ? runAICognitiveProfiler() : null;
             let text;
