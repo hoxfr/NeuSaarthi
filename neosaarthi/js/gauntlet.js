@@ -191,3 +191,29 @@ function runNBackTrial(idx) {
   });
 }
 
+
+// CMT_feat(game9):_Go/No-Go_Inh
+
+let goNoGoCorrect = 0, goNoGoTotal = 20, responded = false;
+function startGoNoGo(diff) {
+  goNoGoCorrect = 0; let trial = 0;
+  const runTrial = () => {
+    if (trial >= goNoGoTotal) { recordTaskScore(goNoGoCorrect, goNoGoTotal, Date.now() - taskStartTime); return; }
+    const isGo = Math.random() > 0.3;
+    responded = false;
+    showGoNoGoStimulus(isGo ? 'GO' : 'STOP');
+    const timeout = elderlyTimer(1000 - diff * 60);
+    const tid = setTimeout(() => {
+      if (isGo && !responded) {} // omission error, no point
+      else if (!isGo && !responded) goNoGoCorrect++; // correct inhibition
+      trial++; runTrial();
+    }, timeout);
+    onGoNoGoTap(() => {
+      clearTimeout(tid); responded = true;
+      if (isGo) goNoGoCorrect++; // correct go
+      trial++; setTimeout(runTrial, 400);
+    });
+  };
+  runTrial();
+}
+
