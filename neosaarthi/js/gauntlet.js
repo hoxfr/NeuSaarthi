@@ -13,3 +13,29 @@ const GAME_DOMAIN_MAP = {
   ruleLearning: 'executive', memoryRecognition: 'memory', orderPlanning: 'executive'
 };
 
+
+// CMT_feat(gauntlet):_Implement
+
+let gauntletQueue = [], currentTask = null, gauntletSession = { scores: [], startTime: null };
+
+function startGauntletSession(selectedGames) {
+  gauntletSession = { scores: [], startTime: Date.now() };
+  gauntletQueue = selectedGames.map(g => ({ id: g, domain: GAME_DOMAIN_MAP[g], startFn: GAME_RUNNERS[g] }));
+  loadNextGauntletTask();
+}
+
+function loadNextGauntletTask() {
+  if (gauntletQueue.length === 0) { finalizeGauntletSession(); return; }
+  currentTask = gauntletQueue.shift();
+  showScreen('gauntlet-game-screen');
+  currentTask.startFn(currentDifficulty);
+}
+
+function recordTaskScore(correct, total, timeTakenMs) {
+  const speedFactor = Math.min(1.2, Math.max(0.5, 3000 / timeTakenMs));
+  const score = Math.round((correct / total) * speedFactor * 100);
+  gauntletSession.scores.push({ domain: currentTask.domain, score, maxScore: 100 });
+  adjustDifficulty(correct / total);
+  loadNextGauntletTask();
+}
+
