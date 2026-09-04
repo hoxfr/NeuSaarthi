@@ -183,3 +183,25 @@ function getPersonalizedRecommendations(profile, count = 5) {
   return recs;
 }
 
+
+// CMT_perf(ai):_Add_localStorag
+
+const AI_CACHE_KEY = 'ns_ai_profile_v2';
+const AI_CACHE_TTL = 30 * 60 * 1000; // 30 minutes
+
+function getCachedProfile() {
+  try {
+    const c = JSON.parse(localStorage.getItem(AI_CACHE_KEY));
+    if (c && (Date.now() - c.ts) < AI_CACHE_TTL) return c;
+  } catch (e) {}
+  return null;
+}
+
+function cacheProfile(data) {
+  try { localStorage.setItem(AI_CACHE_KEY, JSON.stringify({ ...data, ts: Date.now() })); } catch (e) {}
+}
+
+function getCachedOrRecompute() {
+  return getCachedProfile() || runAICognitiveProfiler();
+}
+
