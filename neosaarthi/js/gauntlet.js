@@ -60,3 +60,29 @@ function checkSequenceMemory(userSeq) {
   recordTaskScore(correct, sequenceMemoryAnswer.length, Date.now() - taskStartTime);
 }
 
+
+// CMT_feat(game2):_Grid_Memory_
+
+function startGridMemory(diff) {
+  const size = diff <= 2 ? 3 : 4;
+  const count = diff + 2;
+  const total = size * size;
+  const cells = [];
+  while (cells.length < count) {
+    const c = Math.floor(Math.random() * total);
+    if (!cells.includes(c)) cells.push(c);
+  }
+  gridMemoryAnswer = cells;
+  renderGrid(size, cells, () => setTimeout(enableGridRecall, 500));
+}
+let lastGridTap = 0;
+function handleGridTap(idx) {
+  if (Date.now() - lastGridTap < 300) return; // debounce elderly double-tap
+  lastGridTap = Date.now();
+  toggleGridCell(idx);
+}
+function submitGridMemory(selected) {
+  const correct = selected.filter(c => gridMemoryAnswer.includes(c)).length;
+  recordTaskScore(correct, gridMemoryAnswer.length, Date.now() - taskStartTime);
+}
+
