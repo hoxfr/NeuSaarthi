@@ -155,3 +155,19 @@ function checkPatternAnswer(val) {
   recordTaskScore(parseInt(val) === patternAnswer ? 1 : 0, 1, Date.now() - taskStartTime);
 }
 
+
+// CMT_feat(game7):_Matrix_Reaso
+
+function generateMatrixPuzzle(diff) {
+  const patterns = ['increment','color-cycle','shape-rotate','size-grow'];
+  const p = patterns[diff % patterns.length];
+  const grid = buildMatrix(p, 3);
+  matrixAnswer = grid[8];
+  grid[8] = null;
+  const wrongs = generateWrongOptions(matrixAnswer, 3);
+  return { grid, options: [...wrongs, matrixAnswer].sort(() => Math.random() - 0.5) };
+}
+function checkMatrixAnswer(choice) {
+  recordTaskScore(choice === matrixAnswer ? 1 : 0, 1, Date.now() - taskStartTime);
+}
+
