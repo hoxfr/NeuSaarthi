@@ -245,6 +245,8 @@ function changeLanguage(langCode, btnElement = null) {
     const skipBtn = document.getElementById('demo-skip');
     if(skipBtn) skipBtn.innerText = gl.skip;
     
+    if (typeof renderAiCareTrackBanner === 'function') renderAiCareTrackBanner();
+
     if (btnElement) {
         document.querySelectorAll('.lang-card').forEach(card => card.classList.remove('active-lang'));
         btnElement.classList.add('active-lang');
@@ -739,6 +741,72 @@ function buildAiCaregiverSummary(deficitKey, strengthKey, gap) {
     } catch (e) { return 'AI insights are being calibrated based on recent activity.'; }
 }
 
+const AI_BANNER_I18N = {
+    en: {
+        badge: 'AI Care Plan Active',
+        trackPrefix: 'AI Focus Track: ',
+        desc: 'Calibrated to your recent assessment profile.',
+        btn: 'View AI Analysis',
+        domains: { memory: 'Memory & Recall', attention: 'Attention & Focus', executive: 'Reasoning & Planning', visuospatial: 'Visual Recognition', speed: 'Response Speed' }
+    },
+    hi: {
+        badge: 'AI केयर प्लान सक्रिय',
+        trackPrefix: 'AI फोकस ट्रैक: ',
+        desc: 'आपके हालिया मूल्यांकन प्रोफाइल के अनुसार तैयार।',
+        btn: 'AI विश्लेषण देखें',
+        domains: { memory: 'स्मृति और याददाश्त', attention: 'ध्यान और एकाग्रता', executive: 'तर्क और योजना', visuospatial: 'दृश्य पहचान', speed: 'प्रतिक्रिया गति' }
+    },
+    as: {
+        badge: "AI কেয়াৰ প্লেন সক্ৰিয়",
+        trackPrefix: "AI ফ'কাচ ট্ৰেক: ",
+        desc: 'আপোনাৰ শেহতীয়া মূল্যাঙ্কন অনুসৰি সামঞ্জস্য কৰা হৈছে।',
+        btn: 'AI বিশ্লেষণ চাওক',
+        domains: { memory: 'স্মৃতি আৰু মনত ৰখা', attention: 'মনোযোগ আৰু একাগ্ৰতা', executive: 'যুক্তি আৰু পৰিকল্পনা', visuospatial: 'দৃশ্য চিনাক্তকৰণ', speed: 'প্ৰতিক্ৰিয়াৰ গতি' }
+    },
+    bn: {
+        badge: 'AI কেয়ার প্ল্যান সক্রিয়',
+        trackPrefix: 'AI ফোকাস ট্র্যাক: ',
+        desc: 'আপনার সাম্প্রতিক মূল্যায়ন প্রোফাইল অনুযায়ী ক্যালিব্রেট করা।',
+        btn: 'AI বিশ্লেষণ দেখুন',
+        domains: { memory: 'স্মৃতি ও স্মরণশক্তি', attention: 'মনোযোগ ও একাগ্রতা', executive: 'যুক্তি ও পরিকল্পনা', visuospatial: 'দৃশ্যমান সনাক্তকরণ', speed: 'প্রতিক্রিয়া गति' }
+    },
+    mni: {
+        badge: 'AI Care Plan চত্থরি',
+        trackPrefix: 'AI Focus Track: ',
+        desc: 'অদোমগী অনৌবা এসেসমেন্ট প্রোফাইলদা য়ুমফম ওল্লি।',
+        btn: 'AI Analysis য়েংবীয়ু',
+        domains: { memory: 'নীংশিংবা', attention: 'পুন্সি চংবা', executive: 'ৱাখল খনবগী মপাঙ্গল', visuospatial: 'উবদা মশক খঙবা', speed: 'য়াংনা পাউখুম পীবগী খোঙজেল' }
+    },
+    ne: {
+        badge: 'AI केयर प्लान सक्रिय',
+        trackPrefix: 'AI फोकस ट्रयाक: ',
+        desc: 'तपाईंको भर्खरको मूल्याङ्कन अनुसार तयार गरिएको।',
+        btn: 'AI विश्लेषण हेर्नुहोस्',
+        domains: { memory: 'स्मरणशक्ति र याद', attention: 'ध्यान र एकाग्रता', executive: 'तर्क र योजना', visuospatial: 'दृश्य पहिचान', speed: 'प्रतिक्रिया गति' }
+    },
+    kha: {
+        badge: 'AI Care Plan Trei Kam',
+        trackPrefix: 'AI Focus Track: ',
+        desc: 'La pynbeit katkum ka jingbishar ba dang shen.',
+        btn: 'Peit ia ka AI Analysis',
+        domains: { memory: 'Jingkynmaw', attention: 'Jingshai Jingmut', executive: 'Jingpyrkhat & Jingthaw Lad', visuospatial: 'Jingithuh Dur', speed: 'Jingspeed ban leh' }
+    },
+    mz: {
+        badge: 'AI Care Plan a Nung',
+        trackPrefix: 'AI Focus Track: ',
+        desc: 'I endikna hnuhnung ber atanga ruahman.',
+        btn: 'AI Analysis En Rawh',
+        domains: { memory: 'Hriatrengna', attention: 'Ngaihtuahna Pekna', executive: 'Ngaihtuahna & Ruahmanna', visuospatial: 'Hmuh Hriatna', speed: 'Tihchakna' }
+    },
+    nag: {
+        badge: 'AI Care Plan Chalu Ase',
+        trackPrefix: 'AI Focus Track: ',
+        desc: 'Apun laga recent assessment profile hisab te thik kora ase.',
+        btn: 'AI Analysis Sai Lobi',
+        domains: { memory: 'Yaad Kora', attention: 'Dhyan Diya', executive: 'Bhabona & Planning', visuospatial: 'Sobi Sina', speed: 'Speed' }
+    }
+};
+
 // --- DYNAMIC UI: Home Screen "AI Personalized Care Track" banner ---
 // Targets the #ai-care-track-banner / #ai-plan-title / #ai-plan-desc / #ai-plan-date
 // markup in index.html. Hidden until we actually have a profile to show.
@@ -748,14 +816,41 @@ function renderAiCareTrackBanner() {
         if (!banner) return;
         let profile = null;
         try { profile = JSON.parse(localStorage.getItem('neosaarthi_ai_profile')); } catch (e) {}
-        if (!profile || !profile.primaryDeficitLabel) { banner.style.display = 'none'; return; }
+        if (!profile || (!profile.primaryDeficit && !profile.primaryDeficitLabel)) { banner.style.display = 'none'; return; }
 
         banner.style.display = 'block';
+
+        const activeLang = (typeof currentLang !== 'undefined' && currentLang) ? currentLang : 'en';
+        const loc = AI_BANNER_I18N[activeLang] || AI_BANNER_I18N['en'];
+
+        let defKey = profile.primaryDeficit;
+        if (!defKey && profile.primaryDeficitLabel) {
+            for (const k in AI_DOMAIN_LABEL) {
+                if (AI_DOMAIN_LABEL[k] === profile.primaryDeficitLabel) { defKey = k; break; }
+            }
+        }
+
+        const domainText = (defKey && loc.domains && loc.domains[defKey])
+            ? loc.domains[defKey]
+            : (profile.primaryDeficitLabel || 'Memory & Recall');
+
+        const badgeEl = document.getElementById('ai-plan-badge');
         const titleEl = document.getElementById('ai-plan-title');
+        const descEl = document.getElementById('ai-plan-desc');
+        const btnTextEl = document.getElementById('ai-plan-btn-text');
         const dateEl = document.getElementById('ai-plan-date');
-        if (titleEl) titleEl.innerText = 'AI Focus Track: ' + profile.primaryDeficitLabel;
+
+        if (badgeEl) badgeEl.innerText = loc.badge;
+        if (titleEl) titleEl.innerText = loc.trackPrefix + domainText;
+        if (descEl) descEl.innerText = loc.desc;
+        if (btnTextEl) btnTextEl.innerText = loc.btn;
+
         if (dateEl) {
-            try { dateEl.innerText = new Date(profile.generatedAt).toLocaleDateString(); } catch (e) {}
+            try {
+                const d = profile.generatedAt ? new Date(profile.generatedAt) : new Date();
+                const localeMap = { hi: 'hi-IN', as: 'as-IN', bn: 'bn-IN', ne: 'ne-NP', mni: 'en-IN', kha: 'en-IN', mz: 'en-IN', nag: 'en-IN', en: 'en-IN' };
+                dateEl.innerText = d.toLocaleDateString(localeMap[activeLang] || 'en-IN');
+            } catch (e) {}
         }
     } catch (e) {}
 }
