@@ -1178,9 +1178,11 @@ const SaarthiUI = {
 // intent. Buttons own their full lifecycle (hide pill / settle / speak ack) so each
 // intent doesn't have to repeat that plumbing.
 function makeYesNoChoices(navScreen, onNav) {
+    const L = getSaarthiLang();
+    const T = L.t || SAARTHI_I18N.en.t;
     const goYes = function () {
         stopSaarthiListening();
-        SaarthiUI.state = 'idle'; // set before showScreen() so its mic-visibility check applies the normal per-screen rule
+        SaarthiUI.state = 'idle';
         SaarthiUI.hidePill();
         showScreen(navScreen);
         if (typeof onNav === 'function') { try { onNav(); } catch (e) {} }
@@ -1188,14 +1190,14 @@ function makeYesNoChoices(navScreen, onNav) {
     const goNo = function () {
         stopSaarthiListening();
         SaarthiUI.hideActions();
-        const ack = 'Okay, staying right here.';
+        const ack = typeof T.stayHere === 'function' ? T.stayHere() : 'Okay, staying right here.';
         SaarthiUI.showPillText(ack);
         speakSaarthi(ack, function () { SaarthiUI.settleIdle(); });
     };
     return {
         choices: [
-            { label: '&#x2705; Yes, take me there', primary: true, onSelect: goYes },
-            { label: '&#x274C; No, stay here', onSelect: goNo }
+            { label: '&#x2705; ' + (L.labels && L.labels.yes ? L.labels.yes : 'Yes'), primary: true, onSelect: goYes },
+            { label: '&#x274C; ' + (L.labels && L.labels.no ? L.labels.no : 'No'), onSelect: goNo }
         ],
         voice: { yes: goYes, no: goNo }
     };
@@ -1312,16 +1314,30 @@ function speakSaarthi(text, onEnd) {
 function classifySaarthiIntent(text) {
     const t = (text || '').toLowerCase();
     if (/talk (to me )?in hindi|speak (in )?hindi|switch( to)? hindi/i.test(t)) return 'switch_hindi';
-    if (/my score|my (test )?result|test result|wellness score|how (was|did) i (do|perform)|how am i doing|my progress|my performance/.test(t)) return 'score';
-    if (/routine|\btask\b|today'?s (schedule|plan)|what should i do|remind/.test(t)) return 'routine';
-    if (/family|photo|album|picture|remember my|who is in my/.test(t)) return 'family';
-    if (/\blonely\b|\bbored\b|\bboring\b|nothing to do|feel(ing)? alone/.test(t)) return 'lonely';
-    if (/anxious|restless|help me sleep|can'?t sleep|i'?m tired|feel (tired|anxious|restless|stressed)|relax|\bcalm\b|breath(e|ing)|sound(scape)?|\bmusic\b/.test(t)) return 'relax';
-    if (/\bemergency\b|call someone|call for help|need help (now|immediately)|send help|i need help\b/.test(t)) return 'emergency';
-    if (/what is (neosaarthi|this app)|what does this app do|how does this (app )?help|about (this app|neosaarthi)/.test(t)) return 'about';
-    if (/improve my memory|why (should i |do i need to )?play (games|the games)|cognitive scaffolding|brain (exercise|training)|neuroplasticity/.test(t)) return 'cognitive';
-    if (/why (is )?water|why do i need to walk|why (should i )?walk|hydration|drink(ing)? water/.test(t)) return 'wellness';
+    
+    const L = getSaarthiLang();
+    const intents = L.intents || SAARTHI_I18N.en.intents;
+    
+    if (intents.score && intents.score.test(t)) return 'score';
+    if (intents.routine && intents.routine.test(t)) return 'routine';
+    if (intents.family && intents.family.test(t)) return 'family';
+    if (intents.lonely && intents.lonely.test(t)) return 'lonely';
+    if (intents.relax && intents.relax.test(t)) return 'relax';
+    if (intents.emergency && intents.emergency.test(t)) return 'emergency';
+    if (intents.about && intents.about.test(t)) return 'about';
+    if (intents.cognitive && intents.cognitive.test(t)) return 'cognitive';
+    if (intents.wellness && intents.wellness.test(t)) return 'wellness';
+    if (intents.who && intents.who.test(t)) return 'who';
+    if (intents.thanks && intents.thanks.test(t)) return 'thanks';
+    if (intents.how && intents.how.test(t)) return 'how';
+    if (intents.greet && intents.greet.test(t)) return 'greet';
+    
+    // Fallbacks
+    if (/my score|my (test )?result|test result|wellness score/.test(t)) return 'score';
+    if (/routine|\btask\b/.test(t)) return 'routine';
+    if (/family|photo|album|picture/.test(t)) return 'family';
     if (/^(hi|hello|hey|namaste)\b|good (morning|afternoon|evening)|how are you|how'?s your day|who are you|who (made|built|created) you|what('?s| is) your name|thank(s| you)|shukriya/.test(t)) return 'smalltalk';
+
     return 'offtopic';
 }
 
@@ -1332,14 +1348,14 @@ function classifySaarthiIntent(text) {
 // layers spoken "yes"/"no" on top of the buttons, which always remain the fallback.
 function buildSaarthiReply(intent, rawText) {
     try {
+        const L = getSaarthiLang();
+        const T = L.t || SAARTHI_I18N.en.t;
+
         if (intent === 'switch_hindi') {
             const goHindi = function () {
                 stopSaarthiListening(); SaarthiUI.state = 'idle'; SaarthiUI.hidePill();
                 if (typeof changeLanguage === 'function') changeLanguage('hi');
                 SaarthiUI.showPillText('नमस्ते! मैंने हिंदी में बोलना शुरू कर दिया है।');
-                // speakSaarthi in Hindi requires proper lang configuration. We will just speak it.
-                // saarthi's speakSaarthi uses getSaarthiLang but the voice is set up there.
-                // For now, let's just use speakSaarthi wrapper.
                 speakSaarthi('नमस्ते! मैंने हिंदी में बोलना शुरू कर दिया है।', function () { SaarthiUI.settleIdle(); });
             };
             const goEnglish = function () {
@@ -1363,13 +1379,14 @@ function buildSaarthiReply(intent, rawText) {
             if (profile && profile.primaryDeficitLabel) {
                 const vals = Object.keys(profile.user).map(function (k) { return profile.user[k]; });
                 const overall = Math.round(vals.reduce(function (a, b) { return a + b; }, 0) / vals.length);
-                text = 'Your overall wellness score is ' + overall + ' percent. ' + profile.strengthDomainLabel +
-                       ' is your strongest area, and ' + profile.primaryDeficitLabel + ' could use a little more practice.';
+                const strLbl = L.domainLabels && L.domainLabels[profile.strengthDomain] ? L.domainLabels[profile.strengthDomain] : profile.strengthDomainLabel;
+                const defLbl = L.domainLabels && L.domainLabels[profile.primaryDeficit] ? L.domainLabels[profile.primaryDeficit] : profile.primaryDeficitLabel;
+                text = T.scoreKnown(overall, strLbl, defLbl);
             } else {
-                text = "You haven't finished an assessment yet, but you're welcome to play any game whenever you like.";
+                text = T.scoreUnknown();
             }
             const yn = makeYesNoChoices('progress-screen');
-            return { text: text + ' Would you like me to take you there now?', choices: yn.choices, voice: yn.voice };
+            return { text: text + (T.takeThere ? T.takeThere() : ' Would you like me to take you there now?'), choices: yn.choices, voice: yn.voice };
         }
         if (intent === 'routine') {
             let remaining = 5;
@@ -1377,24 +1394,23 @@ function buildSaarthiReply(intent, rawText) {
                 const d = (typeof getRoutineData === 'function') ? getRoutineData() : null;
                 if (d) remaining = ['morning_brain', 'hydration', 'walk', 'afternoon_puzzle', 'evening_audio'].filter(function (k) { return !d[k]; }).length;
             } catch (e) {}
-            const text = remaining > 0
-                ? ('You have ' + remaining + ' ' + (remaining === 1 ? 'activity' : 'activities') + ' left in today\'s routine.')
-                : "You've completed today's whole routine — wonderful work!";
+            const text = remaining > 0 ? T.routineRemaining(remaining) : T.routineDone();
             const yn = makeYesNoChoices('routine-screen');
-            return { text: text + ' Would you like me to take you there now?', choices: yn.choices, voice: yn.voice };
+            return { text: text + (T.takeThere && remaining > 0 ? T.takeThere() : ''), choices: remaining > 0 ? yn.choices : null, voice: remaining > 0 ? yn.voice : null };
         }
         if (intent === 'family') {
-            let names = 'your loved ones';
+            let names = L.labels && L.labels.familyAlbum ? L.labels.familyAlbum : 'your loved ones';
             try {
                 if (typeof familyMembers !== 'undefined' && familyMembers.length) {
                     const firstNames = familyMembers.map(function (m) { return m.name.split(' ')[0]; });
+                    const andWord = L.labels && L.labels.and ? L.labels.and : 'and';
                     names = firstNames.length > 1
-                        ? (firstNames.slice(0, -1).join(', ') + ' and ' + firstNames[firstNames.length - 1])
+                        ? (firstNames.slice(0, -1).join(', ') + ' ' + andWord + ' ' + firstNames[firstNames.length - 1])
                         : firstNames[0];
                 }
             } catch (e) {}
             const yn = makeYesNoChoices('family-screen');
-            return { text: 'Your family album has photos of your loved ones including ' + names + '. Would you like to practice your face recognition game?', choices: yn.choices, voice: yn.voice };
+            return { text: T.family(names), choices: yn.choices, voice: yn.voice };
         }
         if (intent === 'lonely') {
             const goFamily = function () {
@@ -1408,56 +1424,55 @@ function buildSaarthiReply(intent, rawText) {
             };
             const justChat = function () {
                 stopSaarthiListening(); SaarthiUI.hideActions();
-                const ack = "I'm here for you anytime you want to talk.";
+                const ack = T.lonelyChatAck ? T.lonelyChatAck() : "I'm here for you anytime you want to talk.";
                 SaarthiUI.showPillText(ack);
                 speakSaarthi(ack, function () { SaarthiUI.settleIdle(); });
             };
             return {
-                text: "I am right here with you! Would you like to practice identifying your family in the photo album, or shall we listen to some relaxing bamboo flute music together?",
+                text: T.lonely(),
                 choices: [
-                    { label: '&#x1F46A; Family Album', primary: true, onSelect: goFamily },
-                    { label: '&#x1F3B6; Relaxing Music', onSelect: goMusic },
-                    { label: '&#x1F4AC; Just chat', onSelect: justChat }
+                    { label: '&#x1F46A; ' + (L.labels && L.labels.familyAlbum ? L.labels.familyAlbum : 'Family Album'), primary: true, onSelect: goFamily },
+                    { label: '&#x1F3B6; ' + (L.labels && L.labels.relaxingMusic ? L.labels.relaxingMusic : 'Relaxing Music'), onSelect: goMusic },
+                    { label: '&#x1F4AC; ' + (L.labels && L.labels.justChat ? L.labels.justChat : 'Just chat'), onSelect: justChat }
                 ]
             };
         }
         if (intent === 'relax') {
             const yn = makeYesNoChoices('routine-screen', function () { if (typeof showAudioTherapyModal === 'function') { try { showAudioTherapyModal(); } catch (e) {} } });
-            return { text: 'Take a slow, deep breath with me. Everything is peaceful. Would you like me to start your evening calming soundscape and breathing guide?', choices: yn.choices, voice: yn.voice };
+            return { text: T.relax(), choices: yn.choices, voice: yn.voice };
         }
         if (intent === 'emergency') {
             const yn = makeYesNoChoices('sos-screen');
-            return { text: 'If you are feeling unwell or need immediate help, I can open your emergency SOS Alert right away. Would you like me to open SOS?', choices: yn.choices, voice: yn.voice };
+            return { text: T.emergency(), choices: yn.choices, voice: yn.voice };
         }
         if (intent === 'about') {
-            return { text: "NeoSaarthi is your daily cognitive wellness companion. It exercises your memory through gentle brain games, keeps you hydrated, and helps you stay connected with your loved ones.", choices: null };
+            return { text: T.about(), choices: null };
         }
         if (intent === 'cognitive') {
-            return { text: "Daily active recall, regular gentle walking, and staying mentally engaged stimulate your brain's neuroplasticity. We focus on exercising your memory, not replacing it.", choices: null };
+            return { text: T.cognitive(), choices: null };
         }
         if (intent === 'wellness') {
-            return { text: "Drinking water prevents sudden fatigue and keeps your brain alert, while a ten-minute walk boosts oxygen and blood flow to your memory centers.", choices: null };
+            return { text: T.wellness(), choices: null };
         }
-        if (intent === 'smalltalk') {
-            const t = (rawText || '').toLowerCase();
-            if (/who are you|who (made|built|created) you|what('?s| is) your name/.test(t)) {
-                return { text: "I am Saarthi, your personal cognitive wellness companion, built by Team NeoSaarthi to support your daily memory, health, and happiness.", choices: null };
-            }
-            if (/thank|shukriya/.test(t)) {
-                return { text: "You are most welcome! Always happy to be by your side.", choices: null };
-            }
-            if (/how are you|how'?s your day/.test(t)) {
-                return { text: "I am doing great, thank you for asking! I'm here and ready to help you with your daily routine or games.", choices: null };
-            }
+        if (intent === 'who') {
+            return { text: T.identity ? T.identity() : T.about(), choices: null };
+        }
+        if (intent === 'thanks') {
+            return { text: T.thanks ? T.thanks() : 'You are welcome.', choices: null };
+        }
+        if (intent === 'how') {
+            return { text: T.howAreYou ? T.howAreYou() : 'I am doing well, thank you!', choices: null };
+        }
+        if (intent === 'smalltalk' || intent === 'greet') {
             let timeGreet = 'Hello';
             try {
                 const hour = new Date().getHours();
-                timeGreet = hour < 12 ? 'Good morning' : (hour < 17 ? 'Good afternoon' : 'Good evening');
+                timeGreet = hour < 12 ? (T.timeGreet ? T.timeGreet.morning : 'Good morning') : (hour < 17 ? (T.timeGreet ? T.timeGreet.afternoon : 'Good afternoon') : (T.timeGreet ? T.timeGreet.evening : 'Good evening'));
             } catch (e) {}
-            return { text: 'Namaste! ' + timeGreet + '. It is wonderful to talk with you today. How are you feeling?', choices: null };
+            return { text: T.greeting ? T.greeting(timeGreet) : 'Hello! How are you?', choices: null };
         }
-        // Out-of-scope: a gentle, elderly-friendly boundary rather than silence or a robotic error.
-        return { text: "I am sorry, but I am specifically designed to assist you with your cognitive exercises, daily wellness, and family memories. Is there something about your routine or games I can help you with today?", choices: null };
+        
+        return { text: T.offtopic ? T.offtopic() : "I am sorry, but I am specifically designed to assist you with your cognitive exercises, daily wellness, and family memories.", choices: null };
     } catch (e) {
         return { text: 'I had a little trouble with that — please try again.', choices: null };
     }
