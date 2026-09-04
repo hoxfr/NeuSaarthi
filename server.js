@@ -24,12 +24,33 @@ const FAST2SMS_KEY = process.env.FAST2SMS_KEY || '';
 const SARVAM_API_KEY = process.env.SARVAM_API_KEY || 'sk_vwdpeqy0_kAUcIsDfqfeLlAPagRhXpvNA';
 const PORT = process.env.PORT || 3000;
 
-function callSarvamChat(prompt, chatHistory = []) {
+function callSarvamChat(prompt, chatHistory = [], context = {}) {
     return new Promise((resolve, reject) => {
+        const scoreInfo = context && context.score ? context.score : "No assessment completed yet.";
+        const routineInfo = context && context.routine ? context.routine : "Daily routine in progress.";
+        const familyInfo = context && context.family ? context.family : "Photos of family members available.";
+
+        const systemPrompt = "You are Saarthi (सारथी), an affectionate, warm, patient, and polite daily cognitive wellness companion for an Indian elder/grandparent (part of the NeoSaarthi app).\n\n" +
+            "STRICT CLINICAL & COMPANION RULES:\n" +
+            "1. NEVER tell the user to 'consult a doctor', 'see a physician', or visit a hospital. This is NOT a medical pathology or hospital test. This is an elder-friendly daily cognitive wellness and brain game companion.\n" +
+            "2. NEVER diagnose or use clinical/medical words like 'Dementia', 'Alzheimer\'s', 'Diagnosis', 'Medication', or 'Pills'. Use terms like 'वेलनेस स्कोर' (Wellness Score), 'संज्ञानात्मक वेलनेस', 'दिमागी खेल' (Brain Games).\n" +
+            "3. When the user asks about their test report, score, results, performance, or 'mere test report batao':\n" +
+            "   - Use the REAL APP DATA provided below.\n" +
+            "   - If they have a score, tell them their exact score warmly (e.g., 'आपका कुल वेलनेस स्कोर [X]% है...').\n" +
+            "   - If they have not taken a test yet, say warmly that they haven't completed an assessment yet, but can play any game whenever they like.\n" +
+            "   - Under NO CIRCUMSTANCES tell them to consult a doctor for this report!\n" +
+            "4. When the user asks about routine, reminders, or tasks, use the routine data below.\n" +
+            "5. When the user asks about family or photos, use the family data below.\n\n" +
+            "CURRENT LIVE USER APP DATA:\n" +
+            "- Cognitive Assessment/Score: " + scoreInfo + "\n" +
+            "- Daily Routine Status: " + routineInfo + "\n" +
+            "- Family Album: " + familyInfo + "\n\n" +
+            "Always reply in warm, respectful, natural spoken Hindi (Devanagari script) in 1 to 2 short sentences.";
+
         const messages = [
             {
                 role: 'system',
-                content: 'You are Saarthi (सारथी), an affectionate, warm, patient, and polite daily cognitive wellness companion for an Indian elder/grandparent (part of the NeoSaarthi app). Always reply in warm, simple, natural conversational Hindi (Devanagari script). Keep your replies concise (1 to 2 short sentences). Encourage their memory, hydration, light walking, family connections, and peaceful mind. Never diagnose or use clinical terms like Dementia or Alzheimer\'s. If they ask about their score, routine, or family, encourage them warmly.'
+                content: systemPrompt
             }
         ];
         
@@ -44,7 +65,7 @@ function callSarvamChat(prompt, chatHistory = []) {
         const postData = JSON.stringify({
             model: 'sarvam-105b-conversations',
             messages: messages,
-            temperature: 0.3
+            temperature: 0.2
         });
 
         const req = https.request('https://api.sarvam.ai/v1/chat/completions', {
@@ -177,7 +198,7 @@ const server = http.createServer(async (req, res) => {
         req.on('data', chunk => body += chunk);
         req.on('end', async () => {
             try {
-                const { prompt, history } = JSON.parse(body || '{}');
+                const { prompt, history, context } = JSON.parse(body || '{}');
                 if (!prompt) {
                     res.writeHead(400, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({ success: false, message: 'Prompt is required' }));
@@ -185,7 +206,7 @@ const server = http.createServer(async (req, res) => {
                 }
 
                 console.log('[Sarvam AI] Hindi query:', prompt);
-                const hindiReply = await callSarvamChat(prompt, history);
+                const hindiReply = await callSarvamChat(prompt, history, context);
                 console.log('[Sarvam AI] Hindi reply:', hindiReply);
 
                 let audioBase64 = null;

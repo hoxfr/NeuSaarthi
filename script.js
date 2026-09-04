@@ -1319,12 +1319,18 @@ function classifySaarthiIntent(text) {
     const L = getSaarthiLang();
     const intents = L.intents || SAARTHI_I18N.en.intents;
     
+    // Comprehensive multi-lingual & Hinglish intents
     if (intents.score && intents.score.test(t)) return 'score';
+    if (/score|result|report|रिपोट|रिपोर्ट|नतीजा|स्कोर|परिणाम|मूल्यांकन|assessment|test/i.test(t)) return 'score';
     if (intents.routine && intents.routine.test(t)) return 'routine';
+    if (/routine|task|schedule|plan|दिनचर्या|रूटीन|टास्क|काम|गतिविधि|activity|activities/i.test(t)) return 'routine';
     if (intents.family && intents.family.test(t)) return 'family';
+    if (/family|photo|album|picture|परिवार|फोटो|एल्बम|तस्वीर|प्रियजन/i.test(t)) return 'family';
     if (intents.lonely && intents.lonely.test(t)) return 'lonely';
     if (intents.relax && intents.relax.test(t)) return 'relax';
+    if (/anxious|restless|help me sleep|can'?t sleep|tired|stress|relax|calm|breath|music|शांत|आराम|संगीत|तनाव|सांस/i.test(t)) return 'relax';
     if (intents.emergency && intents.emergency.test(t)) return 'emergency';
+    if (/emergency|sos|help|मदद|आपातकाल/i.test(t)) return 'emergency';
     if (intents.about && intents.about.test(t)) return 'about';
     if (intents.cognitive && intents.cognitive.test(t)) return 'cognitive';
     if (intents.wellness && intents.wellness.test(t)) return 'wellness';
@@ -1333,10 +1339,6 @@ function classifySaarthiIntent(text) {
     if (intents.how && intents.how.test(t)) return 'how';
     if (intents.greet && intents.greet.test(t)) return 'greet';
     
-    // Fallbacks
-    if (/my score|my (test )?result|test result|wellness score/.test(t)) return 'score';
-    if (/routine|\btask\b/.test(t)) return 'routine';
-    if (/family|photo|album|picture/.test(t)) return 'family';
     if (/^(hi|hello|hey|namaste)\b|good (morning|afternoon|evening)|how are you|how'?s your day|who are you|who (made|built|created) you|what('?s| is) your name|thank(s| you)|shukriya/.test(t)) return 'smalltalk';
 
     return 'offtopic';
@@ -1554,6 +1556,42 @@ function playSarvamAudio(base64Audio, fallbackText, onFinish) {
     }
 }
 
+function getSaarthiAppContext() {
+    let scoreContext = "No cognitive assessment completed yet. User is welcome to play any game.";
+    try {
+        const profile = (typeof runAICognitiveProfiler === 'function') ? runAICognitiveProfiler() : null;
+        if (profile && profile.primaryDeficitLabel) {
+            const vals = Object.keys(profile.user).map(function (k) { return profile.user[k]; });
+            const overall = Math.round(vals.reduce(function (a, b) { return a + b; }, 0) / vals.length);
+            scoreContext = "Overall cognitive wellness score is " + overall + "%. Strongest domain is " + profile.strengthDomainLabel + " and area needing practice is " + profile.primaryDeficitLabel + ".";
+        }
+    } catch (e) {}
+
+    let routineContext = "All activities in today's routine completed!";
+    try {
+        const d = (typeof getRoutineData === 'function') ? getRoutineData() : null;
+        if (d) {
+            const remaining = ['morning_brain', 'hydration', 'walk', 'afternoon_puzzle', 'evening_audio'].filter(function (k) { return !d[k]; });
+            if (remaining.length > 0) {
+                routineContext = "User has " + remaining.length + " activities remaining in today's routine (" + remaining.join(', ') + ").";
+            }
+        }
+    } catch (e) {}
+
+    let familyContext = "Family album has photos of loved ones.";
+    try {
+        if (typeof familyMembers !== 'undefined' && familyMembers.length) {
+            familyContext = "Family album includes loved ones: " + familyMembers.map(function (m) { return m.name; }).join(', ') + ".";
+        }
+    } catch (e) {}
+
+    return {
+        score: scoreContext,
+        routine: routineContext,
+        family: familyContext
+    };
+}
+
 function processSaarthiQuery(text) {
     try {
         const t = (text || '').trim();
@@ -1583,7 +1621,11 @@ function processSaarthiQuery(text) {
             fetch('/api/sarvam-chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prompt: t, history: window.sarvamChatHistory })
+                body: JSON.stringify({
+                    prompt: t,
+                    history: window.sarvamChatHistory,
+                    context: getSaarthiAppContext()
+                })
             })
             .then(res => res.json())
             .then(data => {
