@@ -446,10 +446,13 @@ function applyAllPageTranslations(langCode) {
     if (document.getElementById('family-menu-title')) document.getElementById('family-menu-title').innerText = loc.family.title;
     if (document.getElementById('family-menu-desc')) document.getElementById('family-menu-desc').innerText = loc.family.desc;
 
-    // Refresh dynamic widgets
-    if (typeof applyAllPageTranslations === 'function') applyAllPageTranslations(langCode);
-    if (typeof renderAiComparisonCard === 'function') renderAiComparisonCard();
-    if (typeof renderProgressTab === 'function') renderProgressTab();
+    // Refresh dynamic widgets safely
+    try {
+        if (typeof renderAiCareTrackBanner === 'function') renderAiCareTrackBanner();
+        if (typeof renderAiComparisonCard === 'function') renderAiComparisonCard();
+    } catch (e) {
+        console.warn("Dynamic widget refresh warning:", e);
+    }
 }
 
 function changeLanguage(langCode, btnElement = null) {
@@ -504,11 +507,16 @@ function changeLanguage(langCode, btnElement = null) {
     const skipBtn = document.getElementById('demo-skip');
     if(skipBtn) skipBtn.innerText = gl.skip;
     
-    if (typeof applyAllPageTranslations === 'function') applyAllPageTranslations(langCode);
+    try {
+        if (typeof applyAllPageTranslations === 'function') applyAllPageTranslations(langCode);
+    } catch (e) {
+        console.warn("applyAllPageTranslations warning in changeLanguage:", e);
+    }
 
-    if (btnElement) {
+    const activeBtn = btnElement || document.querySelector(`.lang-card[onclick*="'${langCode}'"]`);
+    if (activeBtn) {
         document.querySelectorAll('.lang-card').forEach(card => card.classList.remove('active-lang'));
-        btnElement.classList.add('active-lang');
+        activeBtn.classList.add('active-lang');
     }
 }
 
@@ -645,45 +653,66 @@ function resetLanguage() {
 }
 
 function showScreen(screenId) {
-    document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
-    
-    if (typeof applyAllPageTranslations === 'function') {
-        applyAllPageTranslations(typeof currentLang !== 'undefined' ? currentLang : 'en');
-    }
-
-    if (screenId === 'game-menu-screen') {
-        if(typeof renderGamesList === 'function') renderGamesList();
-        document.getElementById(screenId).style.display = 'block';
-    } else if (screenId === 'home-screen') {
-        if(typeof updateProgressUI === 'function') updateProgressUI();
-        if(typeof renderAiCareTrackBanner === 'function') renderAiCareTrackBanner();
-        document.getElementById(screenId).style.display = 'block';
-    } else if (screenId === 'family-screen') {
-        if(typeof renderFamilyMenu === 'function') renderFamilyMenu();
-        document.getElementById(screenId).style.display = 'block';
-    } else if (screenId === 'routine-screen') {
-        if(typeof initRoutineScreen === 'function') initRoutineScreen();
-        document.getElementById(screenId).style.display = 'block';
-    } else {
+    try {
+        document.querySelectorAll('.screen').forEach(s => {
+            s.style.display = 'none';
+            s.classList.remove('active');
+        });
+        
         const el = document.getElementById(screenId);
-        if(el) el.style.display = 'flex';
-    }
+        if (el) {
+            if (['game-menu-screen', 'home-screen', 'family-screen', 'routine-screen'].includes(screenId)) {
+                el.style.display = 'block';
+            } else {
+                el.style.display = 'flex';
+            }
+            el.classList.add('active');
+        }
 
-    const nav = document.querySelector('.bottom-nav');
-    if (nav) {
-        if (['home-screen', 'progress-screen', 'routine-screen'].includes(screenId)) {
-            nav.style.display = 'flex';
-        } else {
-            nav.style.display = 'none';
+        try {
+            if (typeof applyAllPageTranslations === 'function') {
+                applyAllPageTranslations(typeof currentLang !== 'undefined' ? currentLang : 'en');
+            }
+        } catch (transErr) {
+            console.warn("Translation warning in showScreen:", transErr);
+        }
+
+        try {
+            if (screenId === 'game-menu-screen') {
+                if (typeof renderGamesList === 'function') renderGamesList();
+            } else if (screenId === 'home-screen') {
+                if (typeof updateProgressUI === 'function') updateProgressUI();
+                if (typeof renderAiCareTrackBanner === 'function') renderAiCareTrackBanner();
+            } else if (screenId === 'family-screen') {
+                if (typeof renderFamilyMenu === 'function') renderFamilyMenu();
+            } else if (screenId === 'routine-screen') {
+                if (typeof initRoutineScreen === 'function') initRoutineScreen();
+            } else if (screenId === 'progress-screen') {
+                if (typeof renderProgressTab === 'function') renderProgressTab();
+                if (typeof renderAiComparisonCard === 'function') renderAiComparisonCard();
+            }
+        } catch (widgetErr) {
+            console.warn("Screen specific widget warning:", widgetErr);
+        }
+
+        const nav = document.querySelector('.bottom-nav');
+        if (nav) {
+            if (['home-screen', 'progress-screen', 'routine-screen'].includes(screenId)) {
+                nav.style.display = 'flex';
+            } else {
+                nav.style.display = 'none';
+            }
+        }
+
+        if (typeof updateSaarthiMicVisibility === 'function') updateSaarthiMicVisibility(screenId);
+    } catch (critErr) {
+        console.error("showScreen critical recovery for " + screenId, critErr);
+        const fallback = document.getElementById(screenId);
+        if (fallback) {
+            fallback.style.display = 'block';
+            fallback.classList.add('active');
         }
     }
-
-    if (screenId === 'progress-screen') {
-        if(typeof renderProgressTab === 'function') renderProgressTab();
-        if(typeof renderAiComparisonCard === 'function') renderAiComparisonCard();
-    }
-
-    if (typeof updateSaarthiMicVisibility === 'function') updateSaarthiMicVisibility(screenId);
 }
 
 window.onload = () => {
@@ -3190,7 +3219,7 @@ function renderProgressTab() {
     // 1. Hero Circular Ring
     const ring = document.getElementById('overall-ring');
     if (ring) {
-        const radius = ring.r.baseVal.value || 70;
+        const radius = (ring.r && ring.r.baseVal && ring.r.baseVal.value) ? ring.r.baseVal.value : 70;
         const circumference = radius * 2 * Math.PI;
         ring.style.strokeDasharray = `${circumference} ${circumference}`;
         const offset = circumference - (overallPct / 100) * circumference;
