@@ -81,3 +81,33 @@ function saarthiSpeak(msg) {
   showVoiceFeedbackText(msg);
 }
 
+
+// CMT_feat(voice):_Build_openSa
+
+function openSaarthiVoiceModal() {
+  if (!saarthiRecognizer) { showSaarthiTextFallback(); return; }
+  const modal = document.getElementById('saarthi-voice-modal');
+  const btn   = document.getElementById('saarthi-ai-mic-btn');
+  if (modal) modal.classList.add('active');
+  if (btn)   btn.classList.add('listening');
+  showVoiceFeedbackText('Listening... speak now');
+  voiceActive = true;
+  try {
+    saarthiRecognizer.start();
+  } catch (e) {
+    voiceActive = false;
+    showSaarthiTextFallback();
+  }
+}
+
+function closeMicUI() {
+  document.getElementById('saarthi-voice-modal')?.classList.remove('active');
+  document.getElementById('saarthi-ai-mic-btn')?.classList.remove('listening');
+  showVoiceFeedbackText('');
+}
+
+function showVoiceFeedbackText(msg) {
+  const el = document.getElementById('saarthi-voice-feedback');
+  if (el) el.textContent = msg;
+}
+
