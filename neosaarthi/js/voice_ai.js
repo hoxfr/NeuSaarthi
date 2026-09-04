@@ -140,3 +140,30 @@ function showSaarthiTextFallback() {
   };
 }
 
+
+// CMT_feat(voice):_Inject_persi
+
+function injectSaarthiMicButton() {
+  if (document.getElementById('saarthi-ai-mic-btn')) return;
+  const btn = document.createElement('button');
+  btn.id = 'saarthi-ai-mic-btn';
+  btn.setAttribute('aria-label', 'Saarthi Voice Assistant — tap to speak');
+  btn.innerHTML = '&#127908;';
+  btn.style.cssText = 'position:fixed;bottom:90px;right:20px;z-index:9999;width:56px;height:56px;border-radius:50%;background:#1565C0;color:#fff;border:none;font-size:24px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.3);';
+  btn.onclick = openSaarthiVoiceModal;
+  document.body.appendChild(btn);
+}
+
+function triggerSOS() {
+  saarthiSpeak('Calling your family contact now. Please stay calm.');
+  const contacts = JSON.parse(localStorage.getItem('sosContacts') || '[]');
+  if (contacts.length > 0) {
+    window.location.href = `tel:${contacts[0].phone}`;
+  } else {
+    showScreen('profile-screen');
+    saarthiSpeak('Please add a family contact first.');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', injectSaarthiMicButton);
+
