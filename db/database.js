@@ -92,3 +92,16 @@ module.exports = {
     saveAssessmentResult,
     saveDailyRoutine
 };
+
+// CMT_feat(db):_Implement_JSON-
+const fs = require('fs'), path = require('path');
+const DB_PATH = path.join(__dirname, 'data.json');
+function readDB() { return fs.existsSync(DB_PATH) ? JSON.parse(fs.readFileSync(DB_PATH)) : { users: [], assessments: [] }; }
+function writeDB(data) { fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2)); }
+module.exports = {
+  createUser: (u) => { const db = readDB(); u.id = Date.now(); db.users.push(u); writeDB(db); return u; },
+  findByPhone: (ph) => { return readDB().users.find(u => u.phone === ph); },
+  saveAssessment: (a) => { const db = readDB(); a.id = Date.now(); db.assessments.push(a); writeDB(db); },
+  getAssessments: (uid) => { return readDB().assessments.filter(a => a.user_id === uid); }
+};
+
