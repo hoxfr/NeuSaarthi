@@ -7,16 +7,25 @@ const langData = {
         login: { title: "Welcome", sub: "Enter details to continue", phone: "Phone Number (Required)*", email: "Email ID (Optional)", btn: "Send OTP" },
         otp: { title: "Verify Phone", sub: "OTP sent to your number", btn: "Verify & Secure" },
         role: { title: "Who is using this?", sub: "We will adapt the experience for you.", self_title: "Set up for myself", self_desc: "I want to maintain a healthy routine.", loved_title: "Set up for a loved one", loved_desc: "I am managing care for a family member." },
-        home: { greeting: "Good Morning", btn1: "Play Game", btn2: "Family", btn3: "Routine", btn4: "SOS Alert" }
-    },
-    "as": { 
-        label: "Assamese (অসমীয়া)", 
-        changeLang: "ভাষা সলনি কৰক",
-        landing: { greeting: "স্বাগতম", next: "পৰৱৰ্তী" },
-        login: { title: "স্বাগতম", sub: "আগবাঢ়িবলৈ সবিশেষ দিয়ক", phone: "ফোন নম্বৰ (প্ৰয়োজনীয়)*", email: "ইমেইল (বৈকল্পিক)", btn: "OTP পঠিয়াওক" },
-        otp: { title: "ফোন প্ৰমাণিত কৰক", sub: "আপোনাৰ নম্বৰলৈ OTP পঠিওৱা হৈছে", btn: "প্ৰমাণিত কৰক" },
-        role: { title: "কোনে ব্যৱহাৰ কৰিছে?", sub: "আমি আপোনাৰ বাবে অভিজ্ঞতা সলনি কৰিম।", self_title: "মোৰ বাবে ছেট আপ কৰক", self_desc: "মই এটা সুস্থ ৰুটিন বজাই ৰাখিব বিচাৰো।", loved_title: "প্ৰিয়জনৰ বাবে ছেট আপ কৰক", loved_desc: "মই পৰিয়ালৰ সদস্যৰ বাবে যতন পৰিচালনা কৰি আছো।" },
-        home: { greeting: "সুপ্ৰভাত", btn1: "খেল খেলক", btn2: "পৰিয়াল", btn3: "ৰুটিন", btn4: "জৰুৰীকালীন" }
+        home: { greeting: "Good Morning", btn1: "Play Game", btn2: "Family", btn3: "Routine", btn4: "SOS Alert" },
+        gauntlet: {
+            level_easy: "Level 1: Easy", level_med: "Level 2: Medium", level_hard: "Level 3: Hard",
+            skip: "Skip to Results", analyzing: "Analyzing your interactions...",
+            btn_left: "LEFT", btn_right: "RIGHT", btn_match: "MATCH!", btn_yes: "YES", btn_no: "NO",
+            g0_title: "Game 1: Sequence Memory", g0_watch: "Watch the sequence...", g0_tap: "Tap the sequence in order:",
+            g1_title: "Game 2: Grid Memory", g1_rem: "Remember the green squares", g1_tap: "Tap the squares that were green",
+            g2_title: "Game 3: Target Detection", g2_inst: "Tap the Blue Circle (&#x1F535;) as soon as it appears!",
+            g3_title: "Game 4: Attention Switching", g3_even_odd: "If EVEN tap Left, If ODD tap Right", g3_red_blue: "If RED tap Left, If BLUE tap Right",
+            g4_title: "Game 5: Quick Match", g4_inst: "Find the matching animal:",
+            g5_title: "Game 6: Pattern Completion", g5_inst: "What number comes next?",
+            g6_title: "Game 7: Matrix Reasoning", g6_inst: "Complete the logic:",
+            g7_title: "Game 8: N-Back Memory", g7_inst: "Tap Match if the current shape is EXACTLY the same as the PREVIOUS shape.",
+            g8_title: "Game 9: Go/No-Go", g8_inst: "Tap GREEN (&#x1F7E2;). DO NOT tap RED (&#x1F534;).",
+            g9_title: "Game 10: Rule Learning", g9_rule: "Rule: Apple Left, Banana Right", g9_rev_rule: "Reverse Rule: Apple Right, Banana Left",
+            g10_title: "Game 11: Memory Recognition", g10_memo: "Memorize these symbols...", g10_see: "Did you just see this symbol?",
+            g11_title: "Game 12: Delayed Recall", g11_inst: "Which shape was the very FIRST one you saw at the start?",
+            g12_title: "Game 13: Order Planning", g12_inst: "Tap the numbers from Smallest to Largest"
+        }
     },
     "hi": { 
         label: "Hindi (हिंदी)", 
@@ -25,7 +34,79 @@ const langData = {
         login: { title: "स्वागत है", sub: "जारी रखने के लिए विवरण दर्ज करें", phone: "फोन नंबर (आवश्यक)*", email: "ईमेल (वैकल्पिक)", btn: "OTP भेजें" },
         otp: { title: "फोन सत्यापित करें", sub: "आपके नंबर पर OTP भेजा गया", btn: "सत्यापित करें" },
         role: { title: "इसका उपयोग कौन कर रहा है?", sub: "हम आपके लिए अनुभव को अनुकूलित करेंगे।", self_title: "मेरे लिए सेट अप करें", self_desc: "मैं एक स्वस्थ दिनचर्या बनाए रखना चाहता हूँ।", loved_title: "प्रियजन के लिए सेट अप करें", loved_desc: "मैं परिवार के सदस्य की देखभाल प्रबंधित कर रहा हूँ।" },
-        home: { greeting: "नमस्ते", btn1: "खेल खेलें", btn2: "परिवार", btn3: "दिनचर्या", btn4: "आपातकालीन" }
+        home: { greeting: "नमस्ते", btn1: "खेल खेलें", btn2: "परिवार", btn3: "दिनचर्या", btn4: "आपातकालीन" },
+        gauntlet: {
+            level_easy: "स्तर 1: आसान", level_med: "स्तर 2: मध्यम", level_hard: "स्तर 3: कठिन",
+            skip: "परिणाम देखें", analyzing: "आपके प्रदर्शन का विश्लेषण हो रहा है...",
+            btn_left: "बायाँ", btn_right: "दायाँ", btn_match: "समान है!", btn_yes: "हाँ", btn_no: "नहीं",
+            g0_title: "खेल 1: क्रम स्मृति", g0_watch: "क्रम को ध्यान से देखें...", g0_tap: "क्रम के अनुसार आकारों को दबाएं:",
+            g1_title: "खेल 2: ग्रिड स्मृति", g1_rem: "हरे खानों को याद रखें", g1_tap: "हरे रंग वाले खानों को दबाएं",
+            g2_title: "खेल 3: लक्ष्य पहचान", g2_inst: "नीला गोला (&#x1F535;) दिखते ही तुरंत दबाएं!",
+            g3_title: "खेल 4: ध्यान परिवर्तन", g3_even_odd: "सम (EVEN) है तो बायाँ, विषम (ODD) है तो दायाँ", g3_red_blue: "लाल (&#x1F534;) है तो बायाँ, नीला (&#x1F535;) है तो दायाँ",
+            g4_title: "खेल 5: त्वरित मिलान", g4_inst: "समान जानवर को खोजें:",
+            g5_title: "खेल 6: पैटर्न पूरा करें", g5_inst: "अगला नंबर कौन सा आएगा?",
+            g6_title: "खेल 7: तार्किक पहेली", g6_inst: "तर्क को पूरा करें:",
+            g7_title: "खेल 8: पिछली आकृति याद रखें", g7_inst: "अगर वर्तमान आकार पिछले आकार जैसा ही है तो 'समान है!' दबाएं।",
+            g8_title: "खेल 9: संयम और नियंत्रण", g8_inst: "हरे (&#x1F7E2;) को दबाएं। लाल (&#x1F534;) को मत दबाएं।",
+            g9_title: "खेल 10: नियम पालन", g9_rule: "नियम: सेब बायाँ, केला दायाँ", g9_rev_rule: "उल्टा नियम: सेब दायाँ, केला बायाँ",
+            g10_title: "खेल 11: स्मृति पहचान", g10_memo: "इन प्रतीकों को याद रखें...", g10_see: "क्या आपने अभी यह प्रतीक देखा था?",
+            g11_title: "खेल 12: विलंबित स्मरण", g11_inst: "शुरुआत में आपने सबसे पहला आकार कौन सा देखा था?",
+            g12_title: "खेल 13: क्रमबद्ध योजना", g12_inst: "संख्याओं को सबसे छोटे से सबसे बड़े क्रम में दबाएं"
+        }
+    },
+    "as": { 
+        label: "Assamese (অসমীয়া)", 
+        changeLang: "ভাষা সলনি কৰক",
+        landing: { greeting: "স্বাগতম", next: "পৰৱৰ্তী" },
+        login: { title: "স্বাগতম", sub: "আগবাঢ়িবলৈ সবিশেষ দিয়ক", phone: "ফোন নম্বৰ (প্ৰয়োজনীয়)*", email: "ইমেইল (বৈকল্পিক)", btn: "OTP পঠিয়াওক" },
+        otp: { title: "ফোন প্ৰমাণিত কৰক", sub: "আপোনাৰ নম্বৰলৈ OTP পঠিওৱা হৈছে", btn: "প্ৰমাণিত কৰক" },
+        role: { title: "কোনে ব্যৱহাৰ কৰিছে?", sub: "আমি আপোনাৰ বাবে অভিজ্ঞতা সলনি কৰিম।", self_title: "মোৰ বাবে ছেট আপ কৰক", self_desc: "মই এটা সুস্থ ৰুটিন বজাই ৰাখিব বিচাৰো।", loved_title: "প্ৰিয়জনৰ বাবে ছেট আপ কৰক", loved_desc: "মই পৰিয়ালৰ সদস্যৰ বাবে যতন পৰিচালনা কৰি আছো।" },
+        home: { greeting: "সুপ্ৰভাত", btn1: "খেল খেলক", btn2: "পৰিয়াল", btn3: "ৰুটিন", btn4: "জৰুৰীকালীন" },
+        gauntlet: {
+            level_easy: "স্তৰ ১: সহজ", level_med: "স্তৰ ২: মধ্যম", level_hard: "স্তৰ ৩: কঠিন",
+            skip: "ফলাফল চাওক", analyzing: "আপোনাৰ প্ৰদৰ্শন বিশ্লেষণ কৰা হৈছে...",
+            btn_left: "বাওঁফালে", btn_right: "সোঁফালে", btn_match: "মিলে!", btn_yes: "হয়", btn_no: "নহয়",
+            g0_title: "খেল ১: অনুক্ৰম স্মৃতি", g0_watch: "ক্ৰমটো মন দি চাওক...", g0_tap: "ক্ৰম অনুসাৰে স্পৰ্শ কৰক:",
+            g1_title: "খেল ২: গ্ৰিড স্মৃতি", g1_rem: "সেউজীয়া বাকচবোৰ মনত ৰাখক", g1_tap: "সেউজীয়া আছিল সেইবোৰত স্পৰ্শ কৰক",
+            g2_title: "খেল ৩: লক্ষ্য চিনাক্তকৰণ", g2_inst: "নীলা বৃত্তটো (&#x1F535;) দেখাৰ লগে লগে স্পৰ্শ কৰক!",
+            g3_title: "খেল ৪: মনোযোগ পৰিৱৰ্তন", g3_even_odd: "যুগ্ম হ'লে বাওঁফালে, অযুগ্ম হ'লে সোঁফালে", g3_red_blue: "ৰঙা হ'লে বাওঁফালে, নীলা হ'লে সোঁফালে",
+            g4_title: "খেল ৫: ক্ষিপ্ৰ মিল", g4_inst: "একে ধৰণৰ প্ৰাণীটো বিচাৰক:",
+            g5_title: "খেল ৬: পেটাৰ্ণ সম্পূৰ্ণ কৰক", g5_inst: "ইয়াৰ পিছত কোনটো সংখ্যা আহিব?",
+            g6_title: "খেল ৭: তৰ্কসংগত সাঁথৰ", g6_inst: "যুক্তি সম্পূৰ্ণ কৰক:",
+            g7_title: "খেল ৮: পূৰ্বৰ আকৃতি মনত ৰাখক", g7_inst: "বৰ্তমানৰ আকৃতিটো পূৰ্বৰ সৈতে একে হ'লে 'মিলে!' স্পৰ্শ কৰক।",
+            g8_title: "খেল ৯: নিয়ন্ত্ৰণ পৰীক্ষা", g8_inst: "সেউজীয়াত (&#x1F7E2;) স্পৰ্শ কৰক। ৰঙাত (&#x1F534;) নকৰিব।",
+            g9_title: "খেল ১০: নিয়ম শিকা", g9_rule: "নিয়ম: আপেল বাওঁফালে, কল সোঁফালে", g9_rev_rule: "বিপৰীত নিয়ম: আপেল সোঁফালে, কল বাওঁফালে",
+            g10_title: "খেল ১১: স্মৃতি চিনাক্তকৰণ", g10_memo: "এই চিহ্নবোৰ মনত ৰাখক...", g10_see: "আপুনি এইমাত্র এই চিহ্নটো দেখিছিল নেকি?",
+            g11_title: "খেল ১২: পলমকৈ মনত পেলোৱা", g11_inst: "আৰম্ভণিতে আপুনি প্ৰথমে কোনটো আকৃতি দেখিছিল?",
+            g12_title: "খেল ১৩: ক্ৰম পৰিকল্পনা", g12_inst: "আটাইতকৈ সৰুৰ পৰা ডাঙৰলৈ সংখ্যাবোৰ স্পৰ্শ কৰক"
+        }
+    },
+    "bn": { 
+        label: "Bengali (বাংলা)", 
+        changeLang: "ভাষা পরিবর্তন করুন",
+        landing: { greeting: "স্বাগতম", next: "পরবর্তী" },
+        login: { title: "স্বাগতম", sub: "এগিয়ে যেতে বিবরণ দিন", phone: "ফোন নম্বর (প্রয়োজনীয়)*", email: "ইমেইল (ঐচ্ছিক)", btn: "OTP পাঠান" },
+        otp: { title: "ফোন যাচাই করুন", sub: "আপনার নম্বরে OTP পাঠানো হয়েছে", btn: "যাচাই করুন" },
+        role: { title: "কে এটি ব্যবহার করছেন?", sub: "আমরা আপনার জন্য অভিজ্ঞতা সাজাব।", self_title: "আমার জন্য সেট আপ করুন", self_desc: "আমি একটি স্বাস্থ্যকর রুটিন রাখতে চাই।", loved_title: "প্রিয়জনের জন্য সেট আপ করুন", loved_desc: "আমি পরিবারের সদস্যের যত্ন নিচ্ছি।" },
+        home: { greeting: "শুভ সকাল", btn1: "খেলা খেলুন", btn2: "পরিবার", btn3: "রুটিন", btn4: "জরুরি" },
+        gauntlet: {
+            level_easy: "লেভেল ১: সহজ", level_med: "লেভেল ২: মাঝারি", level_hard: "লেভেল ৩: কঠিন",
+            skip: "ফলাফল দেখুন", analyzing: "আপনার পারফরম্যান্স বিশ্লেষণ করা হচ্ছে...",
+            btn_left: "বাম", btn_right: "ডান", btn_match: "একই!", btn_yes: "হ্যাঁ", btn_no: "না",
+            g0_title: "খেলা ১: অনুক্রম স্মৃতি", g0_watch: "ক্রমটি মনোযোগ দিয়ে দেখুন...", g0_tap: "ক্রম অনুসারে ট্যাপ করুন:",
+            g1_title: "খেলা ২: গ্রিড স্মৃতি", g1_rem: "সবুজ বাক্সগুলি মনে রাখুন", g1_tap: "যেগুলো সবুজ ছিল সেগুলি ট্যাপ করুন",
+            g2_title: "খেলা ৩: লক্ষ্য সনাক্তকরণ", g2_inst: "নীল বৃত্তটি (&#x1F535;) দেখতে পেলেই দ্রুত ট্যাপ করুন!",
+            g3_title: "খেলা ৪: মনোযোগ পরিবর্তন", g3_even_odd: "জোড় হলে বামে, বিজোড় হলে ডানে", g3_red_blue: "লাল হলে বামে, নীল হলে ডানে",
+            g4_title: "খেলা ৫: দ্রুত মিল", g4_inst: "একই প্রাণীটি খুঁজুন:",
+            g5_title: "খেলা ৬: প্যাটার্ন সম্পূর্ণ করুন", g5_inst: "এরপর কোন সংখ্যাটি আসবে?",
+            g6_title: "খেলা ৭: লজিক ধাঁধা", g6_inst: "যুক্তিটি পূরণ করুন:",
+            g7_title: "খেলা ৮: পূর্ববর্তী আকৃতি", g7_inst: "বর্তমান আকারটি আগেরটির সাথে হুবহু মিললে 'একই!' চাপুন।",
+            g8_title: "খেলা ৯: আত্মনিয়ন্ত্রণ পরীক্ষা", g8_inst: "সবুজ (&#x1F7E2;) ট্যাপ করুন। লাল (&#x1F534;) ট্যাপ করবেন না।",
+            g9_title: "খেলা ১০: নিয়ম অনুসরণ", g9_rule: "নিয়ম: আপেল বামে, কলা ডানে", g9_rev_rule: "বিপরীত নিয়ম: আপেল ডানে, কলা বামে",
+            g10_title: "খেলা ১১: স্মৃতি সনাক্তকরণ", g10_memo: "এই প্রতীকগুলো মনে রাখুন...", g10_see: "আপনি কি এইমাত্র এই প্রতীকটি দেখেছিলেন?",
+            g11_title: "খেলা ১২: দীর্ঘমেয়াদী স্মৃতি", g11_inst: "শুরুতে আপনি সর্বপ্রথম কোন আকৃতিটি দেখেছিলেন?",
+            g12_title: "খেলা ১৩: ক্রম সাজানো", g12_inst: "সবচেয়ে ছোট থেকে বড় ক্রমে সংখ্যাগুলো ট্যাপ করুন"
+        }
     },
     "mni": { 
         label: "Manipuri (ꯃꯤꯇꯩꯂꯣꯟ)",
@@ -34,16 +115,89 @@ const langData = {
         login: { title: "ꯈꯨꯔꯨꯝꯖꯔꯤ", sub: "ꯃꯈꯥ ꯆꯠꯊꯅꯕꯥ ꯑꯀꯨꯞꯄꯥ ꯃꯔꯣꯜ ꯍꯥꯞꯆꯤꯟꯕꯤꯌꯨ", phone: "ꯐꯣꯟ ꯅꯝꯕꯔ (ꯃꯊꯧ ꯇꯥꯕꯥ)*", email: "ꯏꯃꯦꯜ (ꯑꯄꯥꯝꯕ)", btn: "OTP ꯊꯥꯕꯤꯌꯨ" },
         otp: { title: "ꯐꯣꯟ ꯌꯦꯡꯁꯤꯟꯕꯤꯌꯨ", sub: "ꯅꯍꯥꯛꯀꯤ ꯅꯝꯕꯔꯗꯥ OTP ꯊꯥꯈ꯭ꯔꯦ", btn: "ꯌꯦꯡꯁꯤꯟꯕꯤꯌꯨ" },
         role: { title: "ꯃꯁꯤ ꯀꯅꯥꯅꯥ ꯁꯤꯖꯤꯟꯅꯔꯤꯕꯅꯣ?", sub: "ꯑꯩꯈꯣꯌꯅꯥ ꯅꯍꯥꯛꯀꯤꯗꯃꯛ ꯑꯦꯛꯁꯄꯤꯔꯤꯌꯦꯟꯁ ꯑꯗꯨ ꯁꯦꯝꯒꯅꯤ꯫", self_title: "ꯏꯁꯥꯒꯤꯗꯃꯛ ꯁꯦꯠ ꯑꯞ ꯇꯧꯕꯤꯌꯨ", self_desc: "ꯑꯩꯅꯥ ꯍꯛꯆꯥꯡ ꯐꯕꯥ ꯔꯨꯇꯤꯟ ꯑꯃꯥ ꯊꯝꯅꯤꯡꯏ꯫", loved_title: "ꯅꯨꯡꯁꯤꯔꯕꯥ ꯃꯤꯑꯣꯏ ꯑꯃꯒꯤꯗꯃꯛ ꯁꯦꯠ ꯑꯞ ꯇꯧꯕꯤꯌꯨ", loved_desc: "ꯑꯩꯅꯥ ꯏꯃꯨꯡꯒꯤ ꯃꯤꯑꯣꯏ ꯑꯃꯒꯤ ꯌꯦꯡꯁꯤꯟꯕꯒꯤ ꯊꯕꯛ ꯇꯧꯔꯤ꯫" },
-        home: { greeting: "ꯈꯨꯔꯨꯝꯖꯔꯤ", btn1: "ꯁꯥꯟꯅꯕ", btn2: "ꯏꯃꯨꯡ", btn3: "ꯊꯧꯔꯝ", btn4: "ꯆꯦꯛꯁꯤꯟ" }
+        home: { greeting: "ꯈꯨꯔꯨꯝꯖꯔꯤ", btn1: "ꯁꯥꯟꯅꯕ", btn2: "ꯏꯃꯨꯡ", btn3: "ꯊꯧꯔꯝ", btn4: "ꯆꯦꯛꯁꯤꯟ" },
+        gauntlet: {
+            level_easy: "ꯊꯥꯛ ১: ꯂꯥꯏꯕ", level_med: "ꯊꯥꯛ ২: ꯃꯌꯥꯏ ꯑꯣꯏꯕ", level_hard: "ꯊꯥꯛ ৩: ꯑꯀꯟꯕ",
+            skip: "ꯐꯜ ꯌꯦꯡꯕ", analyzing: "ꯅꯍꯥꯛꯀꯤ ꯊꯕꯛ ꯌꯦꯡꯁꯤꯟꯂꯤ...",
+            btn_left: "ꯂꯦꯡꯕ", btn_right: "ꯌꯦꯠ", btn_match: "ꯃꯥꯟꯅꯩ!", btn_yes: "ꯍꯣꯌ", btn_no: "ꯅꯠꯇꯦ",
+            g0_title: "ꯁꯥꯟꯅꯕ ১: ꯃꯊꯪ-ꯃꯅꯥꯎ ꯅꯤꯡꯁꯤꯡꯕ", g0_watch: "ꯃꯊꯪ-ꯃꯅꯥꯎ ꯑꯗꯨ ꯌꯦꯡꯕꯤꯌꯨ...", g0_tap: "ꯃꯊꯪ-ꯃꯅꯥꯎ ꯑꯣꯏꯅꯥ ꯅꯝꯕꯤꯌꯨ:",
+            g1_title: "ꯁꯥꯟꯅꯕ ২: ꯒ꯭ꯔꯤꯗ ꯅꯤꯡꯁꯤꯡꯕ", g1_rem: "ꯑꯁꯪꯕ ꯁꯦꯜꯁꯤꯡ ꯅꯤꯡꯁꯤꯡꯕꯤꯌꯨ", g1_tap: "ꯑꯁꯪꯕ ꯑꯣꯏꯔꯝꯕ ꯁꯦꯜꯁꯤꯡꯗꯥ ꯅꯝꯕꯤꯌꯨ",
+            g2_title: "ꯁꯥꯟꯅꯕ ৩: ꯄꯥꯟꯗꯝ ꯈꯪꯗꯣꯛꯄ", g2_inst: "ꯍꯤꯒꯣꯛ (&#x1F535;) ꯎꯕꯥ ꯃꯇꯝꯗꯥ ꯌꯥꯡꯅꯥ ꯅꯝꯕꯤꯌꯨ!",
+            g3_title: "ꯁꯥꯟꯅꯕ ৪: ꯋꯥꯈꯜ ꯍꯣꯡꯗꯣꯛꯄ", g3_even_odd: "ꯌꯨꯒ꯭ꯃ ꯑꯣꯏꯔꯒꯥ ꯂꯦꯡꯕ, ꯑꯌꯨꯒ꯭ꯃ ꯑꯣꯏꯔꯒꯥ ꯌꯦꯠ", g3_red_blue: "ꯑꯉꯥꯡꯕ ꯑꯣꯏꯔꯒꯥ ꯂꯦꯡꯕ, ꯍꯤꯒꯣꯛ ꯑꯣꯏꯔꯒꯥ ꯌꯦꯠ",
+            g4_title: "ꯁꯥꯟꯅꯕ ৫: ꯌꯥꯡꯅꯥ ꯃꯥꯟꯅꯍꯟꯕ", g4_inst: "ꯃꯥꯟꯅꯕꯥ ꯁꯥ ꯑꯗꯨ ꯊꯤꯕꯤꯌꯨ:",
+            g5_title: "ꯁꯥꯟꯅꯕ ৬: ꯃꯊꯪ ꯃꯅꯥꯎ ꯃꯄꯨꯡ ꯐꯥꯍꯟꯕ", g5_inst: "ꯃꯊꯪꯗꯥ ꯀꯔꯤ ꯃꯁꯤꯡ ꯂꯥꯛꯀꯅꯤ?",
+            g6_title: "ꯁꯥꯟꯅꯕ ৭: ꯂꯣꯖꯤꯛ ꯃꯄꯨꯡ ꯐꯥꯍꯟꯕ", g6_inst: "ꯂꯣꯖꯤꯛ ꯑꯗꯨ ꯃꯄꯨꯡ ꯐꯥꯍꯟꯕꯤꯌꯨ:",
+            g7_title: "ꯁꯥꯟꯅꯕ ৮: ꯃꯃꯥꯡꯒꯤ ꯃꯑꯣꯡ ꯅꯤꯡꯁꯤꯡꯕ", g7_inst: "ꯍꯧꯖꯤꯛꯀꯤ ꯃꯑꯣꯡ ꯃꯃꯥꯡꯒꯤꯒꯥ ꯃꯥꯟꯅꯔꯕꯗꯤ 'ꯃꯥꯟꯅꯩ!' ꯅꯝꯕꯤꯌꯨ꯫",
+            g8_title: "ꯁꯥꯟꯅꯕ ৯: ꯆꯦꯛꯁꯤꯟ ꯊꯧꯔꯥꯡ", g8_inst: "ꯑꯁꯪꯕꯗꯥ (&#x1F7E2;) ꯅꯝꯕꯤꯌꯨ꯫ ꯑꯉꯥꯡꯕꯗꯥ (&#x1F534;) ꯅꯝꯒꯅꯨ꯫",
+            g9_title: "ꯁꯥꯟꯅꯕ ১০: ꯅꯤꯌꯝ ꯇꯝꯕ", g9_rule: "ꯅꯤꯌꯝ: ꯁꯦꯕ ꯂꯦꯡꯕ, ꯂꯐꯣꯏ ꯌꯦꯠ", g9_rev_rule: "ꯅꯣꯡꯂꯩ: ꯁꯦꯕ ꯌꯦꯠ, ꯂꯐꯣꯏ ꯂꯦꯡꯕ",
+            g10_title: "ꯁꯥꯟꯅꯕ ১১: ꯅꯤꯡꯁꯤꯡ ꯈꯪꯗꯣꯛꯄ", g10_memo: "ꯃꯁꯤꯒꯤ ꯈꯨꯗꯝꯁꯤꯡ ꯑꯁꯤ ꯅꯤꯡꯁꯤꯡꯕꯤꯌꯨ...", g10_see: "ꯅꯍꯥꯛꯅꯥ ꯍꯟꯗꯛ ꯃꯁꯤ ꯎꯈ꯭ꯔꯕ꯭ꯔꯥ?",
+            g11_title: "ꯁꯥꯟꯅꯕ ১২: ꯑꯍꯥꯟꯕ ꯅꯤꯡꯁꯤꯡꯕ", g11_inst: "ꯑꯍꯥꯟꯕꯗꯥ ꯅꯍꯥꯛꯅꯥ ꯈ꯭ꯕꯥꯏꯗꯒꯤ ꯑꯍꯥꯟꯕ ꯎꯈꯤꯕ ꯃꯑꯣꯡ ꯑꯗꯨ ꯀꯔꯤꯅꯣ?",
+            g12_title: "ꯁꯥꯟꯅꯕ ১৩: ꯃꯊꯪ-ꯃꯅꯥꯎ ꯊꯧꯔꯥꯡ", g12_inst: "ꯈ꯭ꯕꯥꯏꯗꯒꯤ ꯑꯄꯤꯛꯄꯗꯒꯤ ꯑꯆꯧꯕꯥ ꯃꯁꯤꯡꯗꯥ ꯅꯝꯕꯤꯌꯨ"
+        }
+    },
+    "ne": { 
+        label: "Nepali (नेपाली)", 
+        changeLang: "भाषा बदल्नुहोस्",
+        landing: { greeting: "नमस्ते", next: "अर्को" },
+        login: { title: "स्वागत छ", sub: "जारी राख्न विवरण दिनुहोस्", phone: "फोन नम्बर (आवश्यक)*", email: "इमेल (वैकल्पिक)", btn: "OTP पठाउनुहोस्" },
+        otp: { title: "फोन प्रमाणीकरण", sub: "तपाईंको नम्बरमा OTP पठाइयो", btn: "प्रमाणीकरण गर्नुहोस्" },
+        role: { title: "यो कसले प्रयोग गर्दैछ?", sub: "हामी तपाईंको लागि अनुभव अनुकूलित गर्नेछौं।", self_title: "मेरो लागि सेट अप गर्नुहोस्", self_desc: "म स्वस्थ दिनचर्या कायम राख्न चाहन्छु।", loved_title: "प्रियजनको लागि सेट अप गर्नुहोस्", loved_desc: "म परिवारको सदस्यको हेरचाह गर्दैछु।" },
+        home: { greeting: "शुभ प्रभात", btn1: "खेल खेल्नुहोस्", btn2: "परिवार", btn3: "दिनचर्या", btn4: "आपतकालीन" },
+        gauntlet: {
+            level_easy: "तह १: सजिलो", level_med: "तह २: मध्यम", level_hard: "तह ३: गाह्रो",
+            skip: "नतिजा हेर्नुहोस्", analyzing: "तपाईंको प्रदर्शन विश्लेषण गरिँदैछ...",
+            btn_left: "बायाँ", btn_right: "दायाँ", btn_match: "मिल्छ!", btn_yes: "हो", btn_no: "होइन",
+            g0_title: "खेल १: क्रम स्मरण", g0_watch: "क्रम ध्यान दिएर हेर्नुहोस्...", g0_tap: "क्रम अनुसार ट्याप गर्नुहोस्:",
+            g1_title: "खेल २: ग्रिड स्मरण", g1_rem: "हरियो वर्गहरू सम्झनुहोस्", g1_tap: "हरियो भएका वर्गहरूमा ट्याप गर्नुहोस्",
+            g2_title: "खेल ३: लक्ष्य पहिचान", g2_inst: "नीलो वृत्त (&#x1F535;) देखिने बित्तिकै तुरुन्त ट्याप गर्नुहोस्!",
+            g3_title: "खेल ४: ध्यान परिवर्तन", g3_even_odd: "जोड भए बायाँ, बिजोर भए दायाँ", g3_red_blue: "रातो भए बायाँ, नीलो भए दायाँ",
+            g4_title: "खेल ५: छिटो मिलाउने", g4_inst: "मिल्दोजुल्दो जनावर खोज्नुहोस्:",
+            g5_title: "खेल ६: ढाँचा पूरा गर्नुहोस्", g5_inst: "अर्को नम्बर कुन आउँछ?",
+            g6_title: "खेल ७: तार्किक तर्क", g6_inst: "तर्क पूरा गर्नुहोस्:",
+            g7_title: "खेल ८: अघिल्लो आकार स्मरण", g7_inst: "यदि हालको आकार अघिल्लो आकार जस्तै छ भने 'मिल्छ!' ट्याप गर्नुहोस्।",
+            g8_title: "खेल ९: नियन्त्रण परीक्षण", g8_inst: "हरियो (&#x1F7E2;) मा ट्याप गर्नुहोस्। रातो (&#x1F534;) मा ट्याप नगर्नुहोस्।",
+            g9_title: "खेल १०: नियम सिकाइ", g9_rule: "नियम: स्याउ बायाँ, केरा दायाँ", g9_rev_rule: "उल्टो नियम: स्याउ दायाँ, केरा बायाँ",
+            g10_title: "खेल ११: स्मरण पहिचान", g10_memo: "यी प्रतीकहरू सम्झनुहोस्...", g10_see: "के तपाईंले भर्खरै यो प्रतीक देख्नुभएको थियो?",
+            g11_title: "खेल १२: स्मरण पुनरावलोकन", g11_inst: "सुरुमा तपाईंले सबैभन्दा पहिले कुन आकार देख्नुभएको थियो?",
+            g12_title: "खेल १३: क्रमबद्ध योजना", g12_inst: "सबैभन्दा सानोबाट ठूलो क्रममा नम्बरहरू ट्याप गर्नुहोस्"
+        }
+    },
+    "kha": { 
+        label: "Khasi (Ka Ktien Khasi)", 
+        changeLang: "Pynkylla Ktien",
+        landing: { greeting: "Khublei", next: "Budge" },
+        login: { title: "Khublei", sub: "Thep ki jingtip ban bteng", phone: "Number Phone*", email: "Email ID", btn: "Phah OTP" },
+        otp: { title: "Pynskhem Phone", sub: "La phah OTP sha u number", btn: "Pynskhem" },
+        role: { title: "Mano ba pyndonkam?", sub: "Ngin pyniahap na ka bynta jong phi.", self_title: "Na ka bynta ialade", self_desc: "Nga kwah ban ri ia ka jingkoit jingkhiah.", loved_title: "Na ka bynta ba ieit", loved_desc: "Nga sumar ia uba ha iing." },
+        home: { greeting: "Khublei mynstep", btn1: "Lehkai Game", btn2: "Iing", btn3: "Rukom Trei", btn4: "Khyllah Ding" }
+    },
+    "mz": { 
+        label: "Mizo (Mizo ṭawng)", 
+        changeLang: "Ṭawng Thlakna",
+        landing: { greeting: "Chibai", next: "A dawt" },
+        login: { title: "Chibai", sub: "Hma sawn zel turin chhu lut rawh", phone: "Phone Number*", email: "Email ID", btn: "OTP Thawn rawh" },
+        otp: { title: "Phone Nemngheh", sub: "I number-ah OTP kan thawn e", btn: "Nemngheh rawh" },
+        role: { title: "Tunge hmang dawn?", sub: "I tan kan siamrem ang.", self_title: "Keima tan", self_desc: "Hrisel taka awm ka duh.", loved_title: "Chhungte tan", loved_desc: "Ka chhungte enkawlna atan a ni." },
+        home: { greeting: "Chibai zing chibai", btn1: "Game Khelh", btn2: "Chhungkua", btn3: "Nitintih", btn4: "Chhiatrupna" }
+    },
+    "nag": { 
+        label: "Nagamese (Nagamiz)", 
+        changeLang: "Bhasa Bodli Kora",
+        landing: { greeting: "Bhal Ase", next: "Agete" },
+        login: { title: "Bhal Ase", sub: "Agete jabole details dabi", phone: "Phone Number*", email: "Email ID", btn: "OTP Pathabi" },
+        otp: { title: "Phone Check Kora", sub: "Tumar number te OTP pathaise", btn: "Check Kora" },
+        role: { title: "Kune use korise?", sub: "Ami tumar karone bhal bonabo.", self_title: "Nijer karone", self_desc: "Bhal routine thakibo mon ase.", loved_title: "Ghor manu karone", loved_desc: "Ghor manu ke help korise." },
+        home: { greeting: "Bhal Morning", btn1: "Game Khela", btn2: "Family", btn3: "Daily Kaam", btn4: "Emergency" }
     }
-    // Note: Other languages omitted in this snippet for brevity but should follow same structure
 };
 
 let currentLang = 'en';
 
 function changeLanguage(langCode, btnElement = null) {
     currentLang = langCode;
+    try { localStorage.setItem('appLang', currentLang); } catch (e) {}
     const data = langData[langCode] || langData['en'];
+    const gl = (data && data.gauntlet) || langData['en'].gauntlet;
     
     if (langCode === 'mni') {
         document.body.classList.add('font-manipuri');
@@ -83,6 +237,13 @@ function changeLanguage(langCode, btnElement = null) {
     if(document.getElementById('btn-sos')) document.getElementById('btn-sos').innerText = data.home.btn4;
     
     if(document.getElementById('change-lang-text')) document.getElementById('change-lang-text').innerText = data.changeLang;
+
+    // Analyzing Screen
+    if(document.getElementById('analyzing-text')) document.getElementById('analyzing-text').innerText = gl.analyzing;
+
+    // Skip Button
+    const skipBtn = document.getElementById('demo-skip');
+    if(skipBtn) skipBtn.innerText = gl.skip;
     
     if (btnElement) {
         document.querySelectorAll('.lang-card').forEach(card => card.classList.remove('active-lang'));
@@ -272,8 +433,15 @@ window.onload = () => {
         // Strict Flow Routing based on offline state
         if(isAuth && hasRole) {
             if (hasRole === 'self' && !hasAssessed) {
-                // Intercept them if they closed app before finishing assessment
-                showScreen('welcome-screen');
+                // Intercept them if they closed app before finishing assessment.
+                // If they specifically refreshed/reopened mid-gauntlet, offer to resume
+                // instead of silently losing their progress.
+                const snap = getAssessmentSnapshot();
+                if (snap) {
+                    showResumeAssessmentPrompt(snap);
+                } else {
+                    showScreen('welcome-screen');
+                }
             } else {
                 showScreen('home-screen');
             }
@@ -382,8 +550,91 @@ window.GauntletScore = (function () {
     }
     function reset() { try { current = null; for (const k in detail) delete detail[k]; } catch (e) {} }
 
-    return { begin: begin, prompted: prompted, hit: hit, miss: miss, commit: commit, finalize: finalize, reset: reset };
+    // For assessment persistence (see saveAssessmentSnapshot): snapshot the finalized
+    // per-game results so far, and restore them after a refresh mid-assessment.
+    // Deliberately does NOT call commit(): this is invoked right after begin() for a
+    // brand-new task (see saveAssessmentSnapshot), so `current` must stay untouched
+    // for that task's hit()/miss() calls to keep working. `detail` already reflects
+    // everything finalized before this task started - that's all a snapshot needs.
+    function serialize() { try { return JSON.parse(JSON.stringify(detail)); } catch (e) { return {}; } }
+    function hydrate(savedDetail) {
+        try {
+            for (const k in detail) delete detail[k];
+            for (const k in (savedDetail || {})) detail[k] = savedDetail[k];
+        } catch (e) {}
+    }
+
+    return { begin: begin, prompted: prompted, hit: hit, miss: miss, commit: commit, finalize: finalize, reset: reset, serialize: serialize, hydrate: hydrate };
 })();
+
+// --- ASSESSMENT PERSISTENCE ---
+// A refresh mid-assessment used to lose everything (in-memory state only). Snapshot
+// enough to fully resume at the current task, with the timer and all previously
+// scored games intact, using sessionStorage (scoped to this browser session - it
+// won't resurrect a stale assessment days later, since the tab/window closing clears it).
+const ASSESSMENT_SNAPSHOT_KEY = 'assessmentInProgress';
+const ASSESSMENT_SNAPSHOT_MAX_AGE_MS = 2 * 60 * 60 * 1000; // 2 hours
+
+function saveAssessmentSnapshot(currentTaskType) {
+    try {
+        if (window.isSingleGame) return; // only the real 13-game assessment needs this, not solo practice
+        sessionStorage.setItem(ASSESSMENT_SNAPSHOT_KEY, JSON.stringify({
+            v: 1,
+            savedAt: Date.now(),
+            // The current task was interrupted, not completed - put it back at the
+            // front of the queue to resume so it's re-played (not skipped) on return.
+            remainingQueue: [currentTaskType].concat(window.gauntletTasksQueue),
+            currentPhase: currentPhase,
+            gauntletTimeLeft: gauntletTimeLeft,
+            savedRecallItems: window.savedRecallItems || [],
+            scoreDetail: GauntletScore.serialize()
+        }));
+    } catch (e) {}
+}
+
+function getAssessmentSnapshot() {
+    try {
+        const raw = sessionStorage.getItem(ASSESSMENT_SNAPSHOT_KEY);
+        if (!raw) return null;
+        const snap = JSON.parse(raw);
+        if (!snap || snap.v !== 1 || !Array.isArray(snap.remainingQueue) || !snap.remainingQueue.length) return null;
+        if (!snap.savedAt || (Date.now() - snap.savedAt) > ASSESSMENT_SNAPSHOT_MAX_AGE_MS) return null;
+        return snap;
+    } catch (e) { return null; }
+}
+
+function clearAssessmentSnapshot() {
+    try { sessionStorage.removeItem(ASSESSMENT_SNAPSHOT_KEY); } catch (e) {}
+}
+
+// Elderly-friendly "welcome back" prompt shown instead of silently restarting or
+// silently resuming - the user explicitly chooses to continue or start over.
+function showResumeAssessmentPrompt(snap) {
+    try {
+        const remaining = snap.remainingQueue.length;
+        const wrap = document.createElement('div');
+        wrap.id = 'resume-assessment-modal';
+        wrap.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9990;display:flex;align-items:center;justify-content:center;padding:20px;';
+        wrap.innerHTML =
+            '<div style="background:white;border-radius:20px;padding:28px 24px;max-width:380px;width:100%;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.25);">' +
+                '<div style="font-size:44px;margin-bottom:10px;">&#x1F553;</div>' +
+                '<h2 style="color:#00796B;font-size:20px;margin:0 0 10px;">Welcome back!</h2>' +
+                '<p style="color:#37474F;font-size:16px;line-height:1.5;margin:0 0 22px;">You have an unfinished wellness check-in with ' + remaining + ' ' + (remaining === 1 ? 'activity' : 'activities') + ' left. Would you like to continue where you left off?</p>' +
+                '<button id="resume-continue-btn" style="width:100%;min-height:55px;font-size:18px;font-weight:700;background:#00796B;color:white;border:none;border-radius:14px;margin-bottom:12px;cursor:pointer;">Continue</button>' +
+                '<button id="resume-fresh-btn" style="width:100%;min-height:55px;font-size:16px;font-weight:600;background:#F4F7F6;color:#37474F;border:1px solid #ddd;border-radius:14px;cursor:pointer;">Start Fresh Instead</button>' +
+            '</div>';
+        document.body.appendChild(wrap);
+        document.getElementById('resume-continue-btn').onclick = function () {
+            wrap.remove();
+            startAssessment(snap);
+        };
+        document.getElementById('resume-fresh-btn').onclick = function () {
+            wrap.remove();
+            clearAssessmentSnapshot();
+            showScreen('welcome-screen');
+        };
+    } catch (e) { showScreen('welcome-screen'); }
+}
 
 // --- AI COGNITIVE BASELINE MATCHER ---
 // Normative reference range for this age group, on the same 0-100 scale as gameScores.
@@ -550,11 +801,183 @@ function renderAiComparisonCard() {
 // built here and is fully crash-proof: unsupported browsers and denied mic
 // permission both degrade gracefully to the quick-tap prompt chips.
 let saarthiRecognition = null;
-let saarthiModalReady = false;
+let saarthiWrapEl = null;
+let saarthiModalBuiltForLang = null;
+
+// --- SAARTHI MULTILINGUAL LAYER ---
+// Every reply, intent pattern, chip label, and voice/recognition choice is looked up
+// through getSaarthiLang() (keyed on the app's existing currentLang, same selector
+// used everywhere else). English, Hindi, and Bengali are fully translated (the three
+// priority languages). Assamese, Manipuri, Khasi, Mizo, Nagamese, and Nepali aren't
+// defined here yet - getSaarthiLang() falls back to English content for those, so
+// Saarthi still works correctly (just not in-language) until native translations are
+// added for them in a later pass.
+const SAARTHI_I18N = {
+    en: {
+        voiceLangs: ['en-IN', 'en-GB', 'en-US'],
+        recognitionLang: 'en-IN',
+        yesWords: /\b(yes|yeah|yep|sure|okay|ok)\b/,
+        noWords: /\b(no|nope|nah)\b/,
+        domainLabels: { memory: 'Memory & Recall', attention: 'Attention & Focus', executive: 'Reasoning & Planning', visuospatial: 'Visual Recognition', speed: 'Response Speed' },
+        labels: { familyAlbum: 'Family Album', relaxingMusic: 'Relaxing Music', justChat: 'Just chat', and: 'and' },
+        t: {
+            scoreKnown: function (overall, strength, deficit) { return 'Your overall wellness score is ' + overall + ' percent. ' + strength + ' is your strongest area, and ' + deficit + ' could use a little more practice.'; },
+            scoreUnknown: function () { return "You haven't finished an assessment yet, but you're welcome to play any game whenever you like."; },
+            takeThere: function () { return ' Would you like me to take you there now?'; },
+            routineRemaining: function (n) { return 'You have ' + n + ' ' + (n === 1 ? 'activity' : 'activities') + " left in today's routine."; },
+            routineDone: function () { return "You've completed today's whole routine — wonderful work!"; },
+            family: function (names) { return 'Your family album has photos of your loved ones including ' + names + '. Would you like to practice your face recognition game?'; },
+            lonely: function () { return 'I am right here with you! Would you like to practice identifying your family in the photo album, or shall we listen to some relaxing bamboo flute music together?'; },
+            lonelyChatAck: function () { return "I'm here for you anytime you want to talk."; },
+            relax: function () { return 'Take a slow, deep breath with me. Everything is peaceful. Would you like me to start your evening calming soundscape and breathing guide?'; },
+            emergency: function () { return 'If you are feeling unwell or need immediate help, I can open your emergency SOS Alert right away. Would you like me to open SOS?'; },
+            about: function () { return 'NeoSaarthi is your daily cognitive wellness companion. It exercises your memory through gentle brain games, keeps you hydrated, and helps you stay connected with your loved ones.'; },
+            cognitive: function () { return "Daily active recall, regular gentle walking, and staying mentally engaged stimulate your brain's neuroplasticity. We focus on exercising your memory, not replacing it."; },
+            wellness: function () { return 'Drinking water prevents sudden fatigue and keeps your brain alert, while a ten-minute walk boosts oxygen and blood flow to your memory centers.'; },
+            identity: function () { return 'I am Saarthi, your personal cognitive wellness companion, built by Team NeoSaarthi to support your daily memory, health, and happiness.'; },
+            thanks: function () { return 'You are most welcome! Always happy to be by your side.'; },
+            howAreYou: function () { return "I am doing great, thank you for asking! I'm here and ready to help you with your daily routine or games."; },
+            greeting: function (tg) { return 'Namaste! ' + tg + '. It is wonderful to talk with you today. How are you feeling?'; },
+            timeGreet: { morning: 'Good morning', afternoon: 'Good afternoon', evening: 'Good evening' },
+            stayHere: function () { return 'Okay, staying right here.'; },
+            offtopic: function () { return 'I am sorry, but I am specifically designed to assist you with your cognitive exercises, daily wellness, and family memories. Is there something about your routine or games I can help you with today?'; },
+            unknownFallback: function () { return "I can help with your wellness score, today's routine, your family album, or a calming moment. You can also ask me what NeoSaarthi is, or how to improve your memory. Try tapping one of the prompts below, or ask me again."; },
+            chips: { about: 'What is NeoSaarthi?', score: 'How was my test result?', routine: 'What should I do right now?', family: 'Open family album', relax: 'Help me relax' },
+            listening: 'Listening... Speak to Saarthi in English or Hindi',
+            notAvailable: "Voice input isn't available on this browser — try a quick-tap prompt below.",
+            didntCatch: "Didn't catch that — try a quick-tap prompt below.",
+            close: 'Close', send: 'Send', typePlaceholder: 'Or type your message here...'
+        },
+        intents: {
+            score: /my score|my (test )?result|test result|wellness score|how (was|did) i (do|perform)|how am i doing|my progress|my performance/,
+            routine: /routine|\btask\b|today'?s (schedule|plan)|what should i do|remind/,
+            family: /family|photo|album|picture|remember my|who is in my/,
+            lonely: /\blonely\b|\bbored\b|\bboring\b|nothing to do|feel(ing)? alone/,
+            relax: /anxious|restless|help me sleep|can'?t sleep|i'?m tired|feel (tired|anxious|restless|stressed)|relax|\bcalm\b|breath(e|ing)|sound(scape)?|\bmusic\b/,
+            emergency: /\bemergency\b|call someone|call for help|need help (now|immediately)|send help|i need help\b/,
+            about: /what is (neosaarthi|this app)|what does this app do|how does this (app )?help|about (this app|neosaarthi)/,
+            cognitive: /improve my memory|why (should i |do i need to )?play (games|the games)|cognitive scaffolding|brain (exercise|training)|neuroplasticity/,
+            wellness: /why (is )?water|why do i need to walk|why (should i )?walk|hydration|drink(ing)? water/,
+            who: /who are you|who (made|built|created) you|what('?s| is) your name/,
+            thanks: /thank(s| you)|shukriya/,
+            how: /how are you|how'?s your day/,
+            greet: /^(hi|hello|hey|namaste)\b|good (morning|afternoon|evening)/
+        }
+    },
+    hi: {
+        voiceLangs: ['hi-IN'],
+        recognitionLang: 'hi-IN',
+        yesWords: /\b(हाँ|हां|जी हाँ|ठीक है)\b/,
+        noWords: /\b(नहीं|ना)\b/,
+        domainLabels: { memory: 'स्मृति और याद', attention: 'ध्यान और एकाग्रता', executive: 'तर्क और योजना', visuospatial: 'दृश्य पहचान', speed: 'प्रतिक्रिया गति' },
+        labels: { familyAlbum: 'फैमिली एल्बम', relaxingMusic: 'शांत संगीत', justChat: 'बस बात करें', and: 'और' },
+        t: {
+            scoreKnown: function (overall, strength, deficit) { return 'आपका कुल वेलनेस स्कोर ' + overall + ' प्रतिशत है। ' + strength + ' आपका सबसे मजबूत क्षेत्र है, और ' + deficit + ' में थोड़ा और अभ्यास करना अच्छा रहेगा।'; },
+            scoreUnknown: function () { return 'आपने अभी तक मूल्यांकन पूरा नहीं किया है, लेकिन आप जब चाहें कोई भी खेल खेल सकते हैं।'; },
+            takeThere: function () { return ' क्या आप चाहेंगे कि मैं आपको अभी वहाँ ले चलूँ?'; },
+            routineRemaining: function (n) { return 'आज की दिनचर्या में आपकी ' + n + ' ' + (n === 1 ? 'गतिविधि बाकी है' : 'गतिविधियाँ बाकी हैं') + '।'; },
+            routineDone: function () { return 'आपने आज की पूरी दिनचर्या पूरी कर ली है — बहुत बढ़िया काम!'; },
+            family: function (names) { return 'आपके पारिवारिक एल्बम में आपके प्रियजनों की तस्वीरें हैं, जिनमें ' + names + ' शामिल हैं। क्या आप अपना चेहरा पहचानने वाला खेल खेलना चाहेंगे?'; },
+            lonely: function () { return 'मैं यहाँ आपके साथ हूँ! क्या आप फोटो एल्बम में अपने परिवार को पहचानने का अभ्यास करना चाहेंगे, या क्या हम साथ में शांत बांसुरी संगीत सुनें?'; },
+            lonelyChatAck: function () { return 'मैं हमेशा आपसे बात करने के लिए यहाँ हूँ।'; },
+            relax: function () { return 'मेरे साथ धीरे से गहरी सांस लें। सब कुछ शांत है। क्या आप चाहेंगे कि मैं आपका शाम का शांत संगीत और श्वास मार्गदर्शन शुरू करूँ?'; },
+            emergency: function () { return 'अगर आपकी तबीयत ठीक नहीं है या आपको तुरंत मदद चाहिए, तो मैं अभी आपका आपातकालीन SOS अलर्ट खोल सकता हूँ। क्या आप चाहेंगे कि मैं SOS खोलूँ?'; },
+            about: function () { return 'नियोसारथी आपका दैनिक संज्ञानात्मक वेलनेस साथी है। यह सौम्य दिमागी खेलों के जरिए आपकी याददाश्त को सक्रिय रखता है, आपको हाइड्रेटेड रखता है, और आपको अपने प्रियजनों से जोड़े रखता है।'; },
+            cognitive: function () { return 'रोज सक्रिय याद करना, नियमित हल्की सैर, और दिमागी रूप से सक्रिय रहना आपके मस्तिष्क की न्यूरोप्लास्टिसिटी को बढ़ावा देता है। हम आपकी याददाश्त बदलने के बजाय उसे मजबूत बनाने पर ध्यान देते हैं।'; },
+            wellness: function () { return 'पानी पीने से अचानक थकान नहीं होती और आपका दिमाग सतर्क रहता है, जबकि दस मिनट की सैर आपके याददाश्त केंद्रों तक ऑक्सीजन और रक्त प्रवाह बढ़ाती है।'; },
+            identity: function () { return 'मैं सारथी हूँ, आपका व्यक्तिगत संज्ञानात्मक वेलनेस साथी, जिसे टीम नियोसारथी ने आपकी रोजाना याददाश्त, सेहत और खुशी के लिए बनाया है।'; },
+            thanks: function () { return 'आपका बहुत-बहुत स्वागत है! आपके साथ रहना हमेशा मेरी खुशी है।'; },
+            howAreYou: function () { return 'मैं बहुत अच्छा महसूस कर रहा हूँ, पूछने के लिए धन्यवाद! मैं यहाँ आपकी दिनचर्या या खेलों में मदद के लिए तैयार हूँ।'; },
+            greeting: function (tg) { return 'नमस्ते! ' + tg + '। आज आपसे बात करके बहुत अच्छा लगा। आप कैसा महसूस कर रहे हैं?'; },
+            timeGreet: { morning: 'सुप्रभात', afternoon: 'नमस्कार', evening: 'शुभ संध्या' },
+            stayHere: function () { return 'ठीक है, मैं यहीं रुकता हूँ।'; },
+            offtopic: function () { return 'माफ कीजिए, मैं खासतौर पर आपके दिमागी अभ्यास, दैनिक वेलनेस और पारिवारिक यादों में मदद के लिए बना हूँ। क्या आपकी दिनचर्या या खेलों से जुड़ी कोई बात है जिसमें मैं मदद कर सकता हूँ?'; },
+            unknownFallback: function () { return 'मैं आपके वेलनेस स्कोर, आज की दिनचर्या, आपके पारिवारिक एल्बम, या शांत पल में मदद कर सकता हूँ। आप मुझसे यह भी पूछ सकते हैं कि नियोसारथी क्या है, या याददाश्त कैसे सुधारें। नीचे दिए गए किसी सुझाव पर टैप करें, या मुझसे फिर से पूछें।'; },
+            chips: { about: 'नियोसारथी क्या है?', score: 'मेरा टेस्ट परिणाम कैसा रहा?', routine: 'मुझे अभी क्या करना चाहिए?', family: 'पारिवारिक एल्बम खोलें', relax: 'मुझे आराम करने में मदद करें' },
+            listening: 'सुन रहा हूँ... अंग्रेज़ी या हिंदी में सारथी से बात करें',
+            notAvailable: 'इस ब्राउज़र पर आवाज़ इनपुट उपलब्ध नहीं है — नीचे दिए गए सुझाव पर टैप करें।',
+            didntCatch: 'समझ नहीं आया — नीचे दिए गए सुझाव पर टैप करें।',
+            close: 'बंद करें', send: 'भेजें', typePlaceholder: 'या यहाँ अपना संदेश लिखें...'
+        },
+        intents: {
+            score: /मेरा स्कोर|मेरा परिणाम|मेरा टेस्ट|मैंने कैसा किया|मेरी प्रगति|मेरा प्रदर्शन/,
+            routine: /दिनचर्या|रूटीन|टास्क|क्या करूं|याद दिला/,
+            family: /परिवार|फोटो|एलबम|तस्वीर/,
+            lonely: /अकेला|अकेली|बोर\b|बोरियत|कुछ काम नहीं/,
+            relax: /चिंता|बेचैन|नींद नहीं|थका|थकी|आराम|शांत|सांस|संगीत/,
+            emergency: /आपातकाल|मदद चाहिए|किसी को बुलाओ|तुरंत मदद/,
+            about: /नियोसारथी क्या है|यह ऐप क्या है|यह कैसे मदद करता है/,
+            cognitive: /याददाश्त कैसे बढ़ाऊं|खेल क्यों खेलूं|दिमागी कसरत/,
+            wellness: /पानी क्यों जरूरी|टहलना क्यों जरूरी|चलना क्यों जरूरी/,
+            who: /तुम कौन हो|आप कौन हैं|आपको किसने बनाया/,
+            thanks: /धन्यवाद|शुक्रिया/,
+            how: /आप कैसे हैं|कैसी हो|कैसे हो/,
+            greet: /^नमस्ते|^नमस्कार|^हैलो|सुप्रभात|शुभ प्रभात|शुभ संध्या/
+        }
+    },
+    bn: {
+        voiceLangs: ['bn-IN', 'bn-BD', 'bn'],
+        recognitionLang: 'bn-IN',
+        yesWords: /\b(হ্যাঁ|জি|ঠিক আছে)\b/,
+        noWords: /\b(না)\b/,
+        domainLabels: { memory: 'স্মৃতি ও মনে রাখা', attention: 'মনোযোগ ও ফোকাস', executive: 'যুক্তি ও পরিকল্পনা', visuospatial: 'ভিজ্যুয়াল রিকগনিশন', speed: 'প্রতিক্রিয়া গতি' },
+        labels: { familyAlbum: 'ফ্যামিলি অ্যালবাম', relaxingMusic: 'শান্ত সুর', justChat: 'শুধু কথা বলি', and: 'এবং' },
+        t: {
+            scoreKnown: function (overall, strength, deficit) { return 'আপনার সামগ্রিক ওয়েলনেস স্কোর ' + overall + ' শতাংশ। ' + strength + ' আপনার সবচেয়ে শক্তিশালী ক্ষেত্র, এবং ' + deficit + '-এ আরেকটু অনুশীলন করলে ভালো হবে।'; },
+            scoreUnknown: function () { return 'আপনি এখনও মূল্যায়ন শেষ করেননি, তবে আপনি যখন খুশি যেকোনো খেলা খেলতে পারেন।'; },
+            takeThere: function () { return ' আপনি কি চান আমি এখনই আপনাকে সেখানে নিয়ে যাই?'; },
+            routineRemaining: function (n) { return 'আজকের রুটিনে আপনার আর ' + n + 'টি কাজ বাকি আছে।'; },
+            routineDone: function () { return 'আপনি আজকের পুরো রুটিন সম্পন্ন করেছেন — দারুণ কাজ!'; },
+            family: function (names) { return 'আপনার পারিবারিক অ্যালবামে আপনার প্রিয়জনদের ছবি আছে, যার মধ্যে ' + names + ' রয়েছেন। আপনি কি মুখ চেনার খেলাটি অনুশীলন করতে চান?'; },
+            lonely: function () { return 'আমি এখানে আপনার সাথেই আছি! আপনি কি ছবির অ্যালবামে আপনার পরিবারকে চেনার অনুশীলন করতে চান, নাকি আমরা একসাথে শান্ত বাঁশির সুর শুনি?'; },
+            lonelyChatAck: function () { return 'আমি সবসময় আপনার সাথে কথা বলার জন্য এখানে আছি।'; },
+            relax: function () { return 'আমার সাথে ধীরে গভীর শ্বাস নিন। সবকিছু শান্ত। আপনি কি চান আমি আপনার সন্ধ্যার শান্ত সুর ও শ্বাস-প্রশ্বাসের নির্দেশনা শুরু করি?'; },
+            emergency: function () { return 'আপনি যদি অসুস্থ বোধ করেন বা তাৎক্ষণিক সাহায্য দরকার হয়, আমি এখনই আপনার জরুরি SOS অ্যালার্ট খুলতে পারি। আপনি কি চান আমি SOS খুলি?'; },
+            about: function () { return 'নিওসারথী আপনার প্রতিদিনের কগনিটিভ ওয়েলনেস সঙ্গী। এটি মৃদু মস্তিষ্কের খেলার মাধ্যমে আপনার স্মৃতিশক্তিকে সক্রিয় রাখে, আপনাকে জলযোজিত রাখে, এবং আপনার প্রিয়জনদের সাথে সংযুক্ত রাখে।'; },
+            cognitive: function () { return 'প্রতিদিন সক্রিয়ভাবে মনে করা, নিয়মিত হালকা হাঁটা, এবং মানসিকভাবে সক্রিয় থাকা আপনার মস্তিষ্কের নিউরোপ্লাস্টিসিটিকে উদ্দীপিত করে। আমরা আপনার স্মৃতিশক্তি প্রতিস্থাপন নয়, বরং তা অনুশীলন করানোর উপর গুরুত্ব দিই।'; },
+            wellness: function () { return 'জল পান করলে হঠাৎ ক্লান্তি আসে না এবং মস্তিষ্ক সজাগ থাকে, আর দশ মিনিট হাঁটলে আপনার স্মৃতি কেন্দ্রে অক্সিজেন ও রক্ত সঞ্চালন বাড়ে।'; },
+            identity: function () { return 'আমি সারথী, আপনার ব্যক্তিগত কগনিটিভ ওয়েলনেস সঙ্গী, যাকে টিম নিওসারথী তৈরি করেছে আপনার প্রতিদিনের স্মৃতি, স্বাস্থ্য এবং সুখের জন্য।'; },
+            thanks: function () { return 'আপনাকে স্বাগতম! আপনার পাশে থাকতে পারা সবসময় আমার আনন্দের বিষয়।'; },
+            howAreYou: function () { return 'আমি খুব ভালো আছি, জিজ্ঞাসা করার জন্য ধন্যবাদ! আমি আপনার রুটিন বা খেলায় সাহায্য করতে প্রস্তুত।'; },
+            greeting: function (tg) { return 'নমস্কার! ' + tg + '। আজ আপনার সাথে কথা বলতে পেরে খুব ভালো লাগছে। আপনি কেমন অনুভব করছেন?'; },
+            timeGreet: { morning: 'শুভ সকাল', afternoon: 'শুভ অপরাহ্ন', evening: 'শুভ সন্ধ্যা' },
+            stayHere: function () { return 'ঠিক আছে, আমি এখানেই থাকছি।'; },
+            offtopic: function () { return 'দুঃখিত, আমি বিশেষভাবে আপনার কগনিটিভ ব্যায়াম, দৈনিক সুস্থতা এবং পারিবারিক স্মৃতিতে সাহায্য করার জন্য তৈরি। আপনার রুটিন বা খেলা নিয়ে কি কিছু আছে যাতে আমি সাহায্য করতে পারি?'; },
+            unknownFallback: function () { return 'আমি আপনার ওয়েলনেস স্কোর, আজকের রুটিন, পারিবারিক অ্যালবাম, অথবা শান্ত একটি মুহূর্তে সাহায্য করতে পারি। আপনি আমাকে জিজ্ঞাসা করতে পারেন নিওসারথী কী, অথবা স্মৃতিশক্তি কীভাবে বাড়ানো যায়। নিচের যেকোনো একটি অপশনে ট্যাপ করুন, অথবা আবার জিজ্ঞাসা করুন।'; },
+            chips: { about: 'নিওসারথী কী?', score: 'আমার টেস্টের ফলাফল কেমন হয়েছে?', routine: 'আমার এখন কী করা উচিত?', family: 'পারিবারিক অ্যালবাম খুলুন', relax: 'আমাকে আরাম করতে সাহায্য করুন' },
+            listening: 'শুনছি... ইংরেজি বা বাংলায় সারথীর সাথে কথা বলুন',
+            notAvailable: 'এই ব্রাউজারে ভয়েস ইনপুট উপলব্ধ নেই — নিচের অপশনে ট্যাপ করুন।',
+            didntCatch: 'বুঝতে পারিনি — নিচের অপশনে ট্যাপ করুন।',
+            close: 'বন্ধ করুন', send: 'পাঠান', typePlaceholder: 'অথবা এখানে আপনার বার্তা লিখুন...'
+        },
+        intents: {
+            score: /আমার স্কোর|আমার ফলাফল|আমার টেস্ট|আমি কেমন করলাম|আমার অগ্রগতি/,
+            routine: /রুটিন|কী করব|মনে করিয়ে/,
+            family: /পরিবার|ছবি|অ্যালবাম/,
+            lonely: /একা\b|একাকী|বিরক্ত|করার কিছু নেই/,
+            relax: /উদ্বিগ্ন|অস্থির|ঘুম আসছে না|ক্লান্ত|আরাম|শান্ত|শ্বাস|গান/,
+            emergency: /জরুরি|সাহায্য দরকার|কাউকে ডাকো/,
+            about: /নিওসারথী কী|এই অ্যাপ কী|এটা কীভাবে সাহায্য করে/,
+            cognitive: /স্মৃতিশক্তি কীভাবে বাড়াবো|কেন গেম খেলব|মস্তিষ্কের ব্যায়াম/,
+            wellness: /পানি কেন জরুরি|জল কেন জরুরি|হাঁটা কেন জরুরি/,
+            who: /তুমি কে|আপনি কে|তোমাকে কে বানিয়েছে/,
+            thanks: /ধন্যবাদ/,
+            how: /কেমন আছো|কেমন আছেন/,
+            greet: /^নমস্কার|^হ্যালো|শুভ সকাল|শুভ অপরাহ্ন|শুভ সন্ধ্যা/
+        }
+    }
+};
+
+function getSaarthiLang() {
+    return SAARTHI_I18N[currentLang] || SAARTHI_I18N.en;
+}
 
 function ensureSaarthiModal() {
-    if (saarthiModalReady) return;
+    if (saarthiWrapEl && saarthiModalBuiltForLang === currentLang) return;
     try {
+        if (saarthiWrapEl && saarthiWrapEl.parentNode) saarthiWrapEl.parentNode.removeChild(saarthiWrapEl);
+        const L = getSaarthiLang();
+        const T = L.t;
         const wrap = document.createElement('div');
         wrap.innerHTML =
             '<style>' +
@@ -1018,30 +1441,44 @@ function processSaarthiQuery(text) {
     } catch (e) {}
 }
 
-function startAssessment() {
+// Pass a snapshot from getAssessmentSnapshot() to resume an interrupted assessment
+// instead of starting a fresh one (see showResumeAssessmentPrompt).
+function startAssessment(resumeSnap) {
     showScreen('assessment-screen');
-    gauntletTimeLeft = 300;
-    currentPhase = 0;
-    window.savedRecallItems = [];
-    GauntletScore.reset();
-    
-    // Shuffle 13 games
-    window.gauntletTasksQueue = [0,1,2,3,4,5,6,7,8,9,10,11,12].sort(() => Math.random() - 0.5);
-    let recallIdx = window.gauntletTasksQueue.indexOf(11);
-    if (recallIdx < 5) {
-        let swap = window.gauntletTasksQueue[12];
-        window.gauntletTasksQueue[12] = 11;
-        window.gauntletTasksQueue[recallIdx] = swap;
+
+    if (resumeSnap) {
+        gauntletTimeLeft = resumeSnap.gauntletTimeLeft;
+        currentPhase = resumeSnap.currentPhase;
+        window.savedRecallItems = resumeSnap.savedRecallItems || [];
+        GauntletScore.reset();
+        GauntletScore.hydrate(resumeSnap.scoreDetail || {});
+        window.gauntletTasksQueue = resumeSnap.remainingQueue.slice();
+    } else {
+        gauntletTimeLeft = 300;
+        currentPhase = 0;
+        window.savedRecallItems = [];
+        GauntletScore.reset();
+
+        // Shuffle 13 games
+        window.gauntletTasksQueue = [0,1,2,3,4,5,6,7,8,9,10,11,12].sort(() => Math.random() - 0.5);
+        let recallIdx = window.gauntletTasksQueue.indexOf(11);
+        if (recallIdx < 5) {
+            let swap = window.gauntletTasksQueue[12];
+            window.gauntletTasksQueue[12] = 11;
+            window.gauntletTasksQueue[recallIdx] = swap;
+        }
     }
 
-    document.getElementById('gauntlet-timer').innerText = '05:00';
-    document.getElementById('gauntlet-progress').style.width = '0%';
-    
+    let m0 = Math.floor(gauntletTimeLeft / 60).toString().padStart(2, '0');
+    let s0 = (gauntletTimeLeft % 60).toString().padStart(2, '0');
+    document.getElementById('gauntlet-timer').innerText = m0 + ':' + s0;
+    document.getElementById('gauntlet-progress').style.width = (((300 - gauntletTimeLeft) / 300) * 100) + '%';
+
     const area = document.getElementById('gauntlet-area');
     if(!document.getElementById('demo-skip')) {
         const skipBtn = document.createElement('button');
         skipBtn.id = 'demo-skip';
-        skipBtn.innerText = 'Skip to Results';
+        const _gl0 = (langData[currentLang] && langData[currentLang].gauntlet) || langData['en'].gauntlet; skipBtn.innerText = _gl0.skip;
         skipBtn.style.position = 'absolute'; skipBtn.style.bottom = '10px'; skipBtn.style.background = 'transparent';
         skipBtn.style.border = 'none'; skipBtn.style.textDecoration = 'underline'; skipBtn.style.color = '#999';
         skipBtn.onclick = finishAssessment;
@@ -1067,6 +1504,54 @@ function startAssessment() {
     loadNextGauntletTask();
 }
 
+// Procedurally generates a distinct-integer array for Order Planning, preserving the
+// per-level difficulty shape (count/range) that used to be 3 hardcoded arrays - so
+// replaying the game doesn't show the exact same puzzle every time.
+function generateOrderPlanningArray(level) {
+    let count, min, max;
+    if (level === 1) { count = 4; min = 1; max = 99; }
+    else if (level === 2) { count = 5; min = -20; max = 40; }
+    else { count = 5; min = 10; max = 199; }
+
+    const nums = new Set();
+    let guard = 0;
+    while (nums.size < count && guard++ < 200) {
+        nums.add(Math.floor(Math.random() * (max - min + 1)) + min);
+    }
+    return Array.from(nums);
+}
+
+// Procedurally generates an arithmetic (levels 1-2) or geometric (level 3) sequence
+// for Pattern Completion, replacing the 3 fixed sequences that used to be identical
+// every playthrough.
+function generateNumberPattern(level) {
+    if (level === 1) {
+        const start = 1 + Math.floor(Math.random() * 5);   // 1-5
+        const step = 2 + Math.floor(Math.random() * 3);    // 2-4
+        return { seq: [start, start + step, start + 2*step, start + 3*step], ans: start + 4*step };
+    }
+    if (level === 2) {
+        const start = 2 + Math.floor(Math.random() * 8);   // 2-9
+        const step = 4 + Math.floor(Math.random() * 4);    // 4-7
+        return { seq: [start, start + step, start + 2*step, start + 3*step], ans: start + 4*step };
+    }
+    const start = 1 + Math.floor(Math.random() * 3);       // 1-3, ×2 geometric
+    return { seq: [start, start*2, start*4, start*8], ans: start*16 };
+}
+
+// A small, deliberately conservative pool of visual analogy puzzles for Matrix
+// Reasoning, replacing the single fixed puzzle that used to be identical every
+// playthrough. Kept small and hand-picked (unlike the two generators above) since
+// these need to be unambiguous for a scored cognitive test, not just varied.
+const MATRIX_REASONING_POOL = [
+    { promptHTML: '&#x2600;&#xFE0F; -> &#x1F305; <br><br> &#x1F319; -> ?', correct: '&#x1F30C;', distractors: ['&#x1F327;&#xFE0F;', '&#x26C4;', '&#x1F308;'] },
+    { promptHTML: '&#x2600;&#xFE0F; -> &#x1F319; <br><br> &#x1F525; -> ?', correct: '&#x2744;&#xFE0F;', distractors: ['&#x1F308;', '&#x1F4A7;', '&#x1F34E;'] },
+    { promptHTML: '&#x1F95A; -> &#x1F423; <br><br> &#x1F41B; -> ?', correct: '&#x1F98B;', distractors: ['&#x1F41D;', '&#x1F420;', '&#x1F338;'] }
+];
+function getMatrixReasoningPuzzle() {
+    return MATRIX_REASONING_POOL[Math.floor(Math.random() * MATRIX_REASONING_POOL.length)];
+}
+
 function loadNextGauntletTask() {
     if (gauntletTimeLeft <= 0) return;
     const area = document.getElementById('gauntlet-area');
@@ -1080,13 +1565,17 @@ function loadNextGauntletTask() {
     let taskType = window.gauntletTasksQueue.shift();
     currentPhase++;
     GauntletScore.begin(taskType);
+    saveAssessmentSnapshot(taskType);
 
-    let level = 1; let levelText = 'Level 1: Easy';
+    const gl = (langData[currentLang] && langData[currentLang].gauntlet) || langData['en'].gauntlet;
+    let level = 1; let levelText = gl.level_easy;
     if (currentPhase > 4 && currentPhase <= 9) {
-        level = 2; levelText = 'Level 2: Medium';
+        level = 2; levelText = gl.level_med;
     } else if (currentPhase > 9) {
-        level = 3; levelText = 'Level 3: Hard';
+        level = 3; levelText = gl.level_hard;
     }
+    const curSkipBtn = document.getElementById('demo-skip');
+    if (curSkipBtn) curSkipBtn.innerText = gl.skip;
     
     const badge = document.createElement('div');
     badge.innerText = levelText;
@@ -1131,7 +1620,7 @@ function loadNextGauntletTask() {
     }
 
     if (taskType === 0) {
-        titleEl.innerText = 'Game 1: Sequence Memory';
+        titleEl.innerText = gl.g0_title;
         let seqLen = level === 1 ? 3 : 4; // user requested max 4 items for level 3
         let speed = level === 1 ? 2000 : level === 2 ? 1600 : 1300;
         let pool = emj.shapes;
@@ -1139,7 +1628,7 @@ function loadNextGauntletTask() {
         for(let i=0; i<seqLen; i++) seq.push(pool[Math.floor(Math.random()*pool.length)]);
         window.savedRecallItems.push(seq[0]); 
         
-        makeInst('Watch the sequence...');
+        makeInst(gl.g0_watch);
         const disp = document.createElement('h2'); disp.style.fontSize = '80px'; disp.style.margin = '30px 0'; area.appendChild(disp);
         
         let step = 0;
@@ -1151,7 +1640,7 @@ function loadNextGauntletTask() {
                 step++;
             } else {
                 clearInterval(intv);
-                area.innerHTML = ''; area.appendChild(badge); makeInst('Tap the sequence in order:');
+                area.innerHTML = ''; area.appendChild(badge); makeInst(gl.g0_tap);
                 let userSeq = [];
                 makeGrid(pool, (val, btn) => {
                     userSeq.push(val);
@@ -1165,9 +1654,9 @@ function loadNextGauntletTask() {
         }, speed);
     }
     else if (taskType === 1) {
-        titleEl.innerText = 'Game 2: Grid Memory';
+        titleEl.innerText = gl.g1_title;
         let count = level === 1 ? 3 : 4; // user requested max 4
-        makeInst('Remember the green squares');
+        makeInst(gl.g1_rem);
         
         const grid = document.createElement('div');
         grid.style.display = 'grid'; grid.style.gridTemplateColumns = 'repeat(3, 1fr)'; grid.style.gap = '15px'; grid.style.margin = '30px auto'; grid.style.width = '240px'; grid.style.height = '240px';
@@ -1189,7 +1678,7 @@ function loadNextGauntletTask() {
         setTimeout(() => {
             if(gauntletTimeLeft <= 0) return;
             cells.forEach(c => c.style.background = '#eee');
-            makeInst('Tap the squares that were green');
+            makeInst(gl.g1_tap);
             let found = 0;
             cells.forEach((c, idx) => {
                 c.onclick = () => {
@@ -1201,8 +1690,8 @@ function loadNextGauntletTask() {
         }, level === 1 ? 4000 : level === 2 ? 3000 : 2500);
     }
     else if (taskType === 2) {
-        titleEl.innerText = 'Game 3: Target Detection';
-        makeInst('Tap the Blue Circle (&#x1F535;) as soon as it appears!');
+        titleEl.innerText = gl.g2_title;
+        makeInst(gl.g2_inst);
         const box = document.createElement('div'); box.style.height = '120px'; box.style.margin = '40px 0'; box.style.fontSize = '80px'; area.appendChild(box);
         let reps = 0;
         let everHitTarget = false;
@@ -1221,8 +1710,8 @@ function loadNextGauntletTask() {
         }, level === 1 ? 2500 : level === 2 ? 2000 : 1500);
     }
     else if (taskType === 3) {
-        titleEl.innerText = 'Game 4: Attention Switching';
-        makeInst(level === 1 ? 'If EVEN tap Left, If ODD tap Right' : 'If RED tap Left, If BLUE tap Right');
+        titleEl.innerText = gl.g3_title;
+        makeInst(level === 1 ? gl.g3_even_odd : gl.g3_red_blue);
         
         let target = document.createElement('h2'); target.style.fontSize = '100px'; target.style.margin = '30px 0'; area.appendChild(target);
         let val = level === 1 ? Math.floor(Math.random()*8)+2 : (Math.random() > 0.5 ? '&#x1F534;' : '&#x1F535;');
@@ -1230,13 +1719,13 @@ function loadNextGauntletTask() {
         let correctSide3 = level === 1 ? (val % 2 === 0 ? 'L' : 'R') : (val === '&#x1F534;' ? 'L' : 'R');
 
         const flex = document.createElement('div'); flex.style.display = 'flex'; flex.style.gap = '20px'; flex.style.justifyContent = 'center'; flex.style.width = '100%'; flex.style.maxWidth = '400px';
-        let btnL = document.createElement('button'); btnL.innerText = 'LEFT'; btnL.style.padding = '25px'; btnL.style.fontSize = '24px'; btnL.style.flex = '1'; btnL.style.borderRadius = '16px'; btnL.style.border = '2px solid #ccc'; btnL.onclick = () => { GauntletScore[correctSide3 === 'L' ? 'hit' : 'miss'](); loadNextGauntletTask(); };
-        let btnR = document.createElement('button'); btnR.innerText = 'RIGHT'; btnR.style.padding = '25px'; btnR.style.fontSize = '24px'; btnR.style.flex = '1'; btnR.style.borderRadius = '16px'; btnR.style.border = '2px solid #ccc'; btnR.onclick = () => { GauntletScore[correctSide3 === 'R' ? 'hit' : 'miss'](); loadNextGauntletTask(); };
+        let btnL = document.createElement('button'); btnL.innerText = gl.btn_left; btnL.style.padding = '25px'; btnL.style.fontSize = '24px'; btnL.style.flex = '1'; btnL.style.borderRadius = '16px'; btnL.style.border = '2px solid #ccc'; btnL.onclick = () => { GauntletScore[correctSide3 === 'L' ? 'hit' : 'miss'](); loadNextGauntletTask(); };
+        let btnR = document.createElement('button'); btnR.innerText = gl.btn_right; btnR.style.padding = '25px'; btnR.style.fontSize = '24px'; btnR.style.flex = '1'; btnR.style.borderRadius = '16px'; btnR.style.border = '2px solid #ccc'; btnR.onclick = () => { GauntletScore[correctSide3 === 'R' ? 'hit' : 'miss'](); loadNextGauntletTask(); };
         flex.appendChild(btnL); flex.appendChild(btnR); area.appendChild(flex);
     }
     else if (taskType === 4) {
-        titleEl.innerText = 'Game 5: Quick Match';
-        makeInst('Find the matching animal:');
+        titleEl.innerText = gl.g4_title;
+        makeInst(gl.g4_inst);
         
         const targetDisp = document.createElement('div');
         targetDisp.innerHTML = '&#x1F431;'; // Cat
@@ -1257,30 +1746,31 @@ function loadNextGauntletTask() {
         });
     }
     else if (taskType === 5) {
-        titleEl.innerText = 'Game 6: Pattern Completion';
-        makeInst('What number comes next?');
-        let pat = level === 1 ? [2, 4, 6, 8] : level === 2 ? [5, 10, 15, 20] : [1, 2, 4, 8];
-        let ans = level === 1 ? 10 : level === 2 ? 25 : 16;
+        titleEl.innerText = gl.g5_title;
+        makeInst(gl.g5_inst);
+        let genPat = generateNumberPattern(level);
+        let pat = genPat.seq, ans = genPat.ans;
         let pText = document.createElement('h2'); pText.innerText = pat.join(', ') + ', ?'; pText.style.margin = '30px 0'; pText.style.letterSpacing = '2px'; pText.style.color = '#00796B'; area.appendChild(pText);
 
         let opts = [ans, ans+1, ans-1, ans+2].sort(() => Math.random()-0.5);
         makeGrid(opts, (val) => { GauntletScore[val === ans ? 'hit' : 'miss'](); loadNextGauntletTask(); });
     }
     else if (taskType === 6) {
-        titleEl.innerText = 'Game 7: Matrix Reasoning';
-        makeInst('Complete the logic:');
-        let pText = document.createElement('h2'); pText.innerHTML = '&#x2600;&#xFE0F; -> &#x1F305; <br><br> &#x1F319; -> ?'; pText.style.margin = '30px 0'; pText.style.fontSize = '40px'; area.appendChild(pText);
+        titleEl.innerText = gl.g6_title;
+        makeInst(gl.g6_inst);
+        const puzzle6 = getMatrixReasoningPuzzle();
+        let pText = document.createElement('h2'); pText.innerHTML = puzzle6.promptHTML; pText.style.margin = '30px 0'; pText.style.fontSize = '40px'; area.appendChild(pText);
 
-        let correctOpt6 = '&#x1F30C;';
-        let opts = ['&#x1F30C;', '&#x1F327;&#xFE0F;', '&#x26C4;', '&#x1F308;'].sort(() => Math.random()-0.5);
+        let correctOpt6 = puzzle6.correct;
+        let opts = [puzzle6.correct].concat(puzzle6.distractors).sort(() => Math.random()-0.5);
         makeGrid(opts, (val) => { GauntletScore[val === correctOpt6 ? 'hit' : 'miss'](); loadNextGauntletTask(); });
     }
     else if (taskType === 7) {
-        titleEl.innerText = 'Game 8: N-Back Memory';
-        makeInst('Tap Match if the current shape is EXACTLY the same as the PREVIOUS shape.');
+        titleEl.innerText = gl.g7_title;
+        makeInst(gl.g7_inst);
         const box = document.createElement('div'); box.style.height = '120px'; box.style.margin = '20px 0'; box.style.fontSize = '80px'; area.appendChild(box);
         
-        let btn = document.createElement('button'); btn.innerText = 'MATCH!'; btn.style.padding = '20px'; btn.style.width = '100%'; btn.style.maxWidth = '300px'; btn.style.fontSize = '24px'; btn.style.fontWeight = 'bold'; btn.style.borderRadius = '16px'; btn.style.border = '2px solid #ccc'; btn.style.background = 'white'; area.appendChild(btn);
+        let btn = document.createElement('button'); btn.innerText = gl.btn_match; btn.style.padding = '20px'; btn.style.width = '100%'; btn.style.maxWidth = '300px'; btn.style.fontSize = '24px'; btn.style.fontWeight = 'bold'; btn.style.borderRadius = '16px'; btn.style.border = '2px solid #ccc'; btn.style.background = 'white'; area.appendChild(btn);
         
         let pool = emj.shapes;
         let last = '';
@@ -1303,8 +1793,8 @@ function loadNextGauntletTask() {
         }, level === 1 ? 3500 : 2500);
     }
     else if (taskType === 8) {
-        titleEl.innerText = 'Game 9: Go/No-Go';
-        makeInst('Tap GREEN (&#x1F7E2;). DO NOT tap RED (&#x1F534;).');
+        titleEl.innerText = gl.g8_title;
+        makeInst(gl.g8_inst);
         const box = document.createElement('div'); box.style.height = '120px'; box.style.margin = '40px 0'; box.style.fontSize = '100px'; box.style.cursor = 'pointer'; area.appendChild(box);
         let taps = 0; let step = 0;
         let intv = setInterval(() => {
@@ -1322,9 +1812,9 @@ function loadNextGauntletTask() {
         }, level === 1 ? 2500 : 1800);
     }
     else if (taskType === 9) {
-        titleEl.innerText = 'Game 10: Rule Learning';
+        titleEl.innerText = gl.g9_title;
         let isReversed = level > 1;
-        makeInst(isReversed ? 'Reverse Rule: Apple Right, Banana Left' : 'Rule: Apple Left, Banana Right');
+        makeInst(isReversed ? gl.g9_rev_rule : gl.g9_rule);
 
         let target = document.createElement('h2'); target.style.fontSize = '100px'; target.style.margin = '30px 0'; area.appendChild(target);
         let val = Math.random() > 0.5 ? '&#x1F34E;' : '&#x1F34C;';
@@ -1332,14 +1822,14 @@ function loadNextGauntletTask() {
         let correctSide9 = isReversed ? (val === '&#x1F34E;' ? 'R' : 'L') : (val === '&#x1F34E;' ? 'L' : 'R');
 
         const flex = document.createElement('div'); flex.style.display = 'flex'; flex.style.gap = '20px'; flex.style.justifyContent = 'center'; flex.style.width = '100%'; flex.style.maxWidth = '400px';
-        let btnL = document.createElement('button'); btnL.innerText = 'LEFT'; btnL.style.padding = '25px'; btnL.style.fontSize = '24px'; btnL.style.flex = '1'; btnL.style.borderRadius = '16px'; btnL.style.border = '2px solid #ccc'; btnL.onclick = () => { GauntletScore[correctSide9 === 'L' ? 'hit' : 'miss'](); loadNextGauntletTask(); };
-        let btnR = document.createElement('button'); btnR.innerText = 'RIGHT'; btnR.style.padding = '25px'; btnR.style.fontSize = '24px'; btnR.style.flex = '1'; btnR.style.borderRadius = '16px'; btnR.style.border = '2px solid #ccc'; btnR.onclick = () => { GauntletScore[correctSide9 === 'R' ? 'hit' : 'miss'](); loadNextGauntletTask(); };
+        let btnL = document.createElement('button'); btnL.innerText = gl.btn_left; btnL.style.padding = '25px'; btnL.style.fontSize = '24px'; btnL.style.flex = '1'; btnL.style.borderRadius = '16px'; btnL.style.border = '2px solid #ccc'; btnL.onclick = () => { GauntletScore[correctSide9 === 'L' ? 'hit' : 'miss'](); loadNextGauntletTask(); };
+        let btnR = document.createElement('button'); btnR.innerText = gl.btn_right; btnR.style.padding = '25px'; btnR.style.fontSize = '24px'; btnR.style.flex = '1'; btnR.style.borderRadius = '16px'; btnR.style.border = '2px solid #ccc'; btnR.onclick = () => { GauntletScore[correctSide9 === 'R' ? 'hit' : 'miss'](); loadNextGauntletTask(); };
         flex.appendChild(btnL); flex.appendChild(btnR); area.appendChild(flex);
     }
     else if (taskType === 10) {
-        titleEl.innerText = 'Game 11: Memory Recognition';
+        titleEl.innerText = gl.g10_title;
         
-        makeInst('Memorize these symbols...');
+        makeInst(gl.g10_memo);
         const tempPool = ['&#x1F30E;', '&#x1F680;', '&#x1F3B2;', '&#x1F514;'];
         const disp = document.createElement('div');
         disp.innerHTML = tempPool.join(' &nbsp; ');
@@ -1349,21 +1839,21 @@ function loadNextGauntletTask() {
         setTimeout(() => {
             if(gauntletTimeLeft <= 0) return;
             area.innerHTML = ''; area.appendChild(badge);
-            makeInst('Did you just see this symbol?');
+            makeInst(gl.g10_see);
             let isOld = Math.random() > 0.5;
             let val = isOld ? tempPool[Math.floor(Math.random()*tempPool.length)] : '&#x1F381;';
             
             let target = document.createElement('h2'); target.style.fontSize = '100px'; target.style.margin = '30px 0'; target.innerHTML = val; area.appendChild(target);
 
             const flex = document.createElement('div'); flex.style.display = 'flex'; flex.style.gap = '20px'; flex.style.justifyContent = 'center'; flex.style.width = '100%'; flex.style.maxWidth = '400px';
-            let btnO = document.createElement('button'); btnO.innerText = 'YES'; btnO.style.padding = '25px'; btnO.style.fontSize = '24px'; btnO.style.flex = '1'; btnO.style.borderRadius = '16px'; btnO.style.border = '2px solid #4CAF50'; btnO.onclick = () => { GauntletScore[isOld ? 'hit' : 'miss'](); loadNextGauntletTask(); };
-            let btnN = document.createElement('button'); btnN.innerText = 'NO'; btnN.style.padding = '25px'; btnN.style.fontSize = '24px'; btnN.style.flex = '1'; btnN.style.borderRadius = '16px'; btnN.style.border = '2px solid #F44336'; btnN.onclick = () => { GauntletScore[!isOld ? 'hit' : 'miss'](); loadNextGauntletTask(); };
+            let btnO = document.createElement('button'); btnO.innerText = gl.btn_yes; btnO.style.padding = '25px'; btnO.style.fontSize = '24px'; btnO.style.flex = '1'; btnO.style.borderRadius = '16px'; btnO.style.border = '2px solid #4CAF50'; btnO.onclick = () => { GauntletScore[isOld ? 'hit' : 'miss'](); loadNextGauntletTask(); };
+            let btnN = document.createElement('button'); btnN.innerText = gl.btn_no; btnN.style.padding = '25px'; btnN.style.fontSize = '24px'; btnN.style.flex = '1'; btnN.style.borderRadius = '16px'; btnN.style.border = '2px solid #F44336'; btnN.onclick = () => { GauntletScore[!isOld ? 'hit' : 'miss'](); loadNextGauntletTask(); };
             flex.appendChild(btnO); flex.appendChild(btnN); area.appendChild(flex);
         }, 3000);
     }
     else if (taskType === 11) {
-        titleEl.innerText = 'Game 12: Delayed Recall';
-        makeInst('Which shape was the very FIRST one you saw at the start?');
+        titleEl.innerText = gl.g11_title;
+        makeInst(gl.g11_inst);
         let correctShape11 = (window.savedRecallItems && window.savedRecallItems.length) ? window.savedRecallItems[0] : null;
         let opts = emj.shapes.slice().sort(() => Math.random() - 0.5);
         makeGrid(opts, (val, btn) => {
@@ -1373,11 +1863,9 @@ function loadNextGauntletTask() {
         });
     }
     else if (taskType === 12) {
-        titleEl.innerText = 'Game 13: Order Planning';
-        makeInst('Tap the numbers from Smallest to Largest');
-        let arr = [12, 45, 7, 89];
-        if (level === 2) arr = [3, -5, 12, 0, 8];
-        if (level === 3) arr = [105, 42, 99, 13, 76];
+        titleEl.innerText = gl.g12_title;
+        makeInst(gl.g12_inst);
+        let arr = generateOrderPlanningArray(level);
         let sorted = arr.slice().sort((a,b) => a-b);
         let currentIdx = 0;
 
@@ -1436,6 +1924,7 @@ function finishAssessment() {
     document.getElementById('gauntlet-title').innerText = 'Complete!';
 
     saveGauntletScores(); // real accuracy + reaction-time scores from GauntletScore, no mock data
+    clearAssessmentSnapshot(); // finished for real - no resume prompt needed next time
 
     const skipBtn = document.getElementById('demo-skip');
     if(skipBtn) skipBtn.remove();
@@ -2207,12 +2696,14 @@ function renderGamesList() {
         if (prescribedIds.includes(game.id)) { card.style.border = '2px solid #FF8A65'; }
         card.onclick = () => startSingleGame(game.id);
 
+        const glGames = (langData[currentLang] && langData[currentLang].gauntlet) || langData['en'].gauntlet;
+        let localizedName = (glGames && glGames['g' + game.id + '_title']) ? glGames['g' + game.id + '_title'].replace(/^[^:]+:\s*/, '') : game.name;
         card.innerHTML = `
             <div class="icon-box" style="background: #E0F2F1; color: #00796B; font-size: 24px; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">
                 ${game.icon}
             </div>
             <div style="flex: 1; margin-left: 15px; text-align: left;">
-                <h3 style="color: #37474F; font-size: 16px; margin: 0 0 4px 0; display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">${game.name} ${aiTag}${tag}</h3>
+                <h3 style="color: #37474F; font-size: 16px; margin: 0 0 4px 0; display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">${localizedName} ${aiTag}${tag}</h3>
                 <p style="color: #78909C; font-size: 13px; margin: 0;">${game.desc}</p>
             </div>
             <span style="color: #B0BEC5;">&#x25B6;</span>
@@ -2237,6 +2728,7 @@ function startSingleGame(taskType) {
 
 function quitAssessment() {
     window.isQuitting = true;
+    clearAssessmentSnapshot(); // deliberate quit, not an accidental refresh - don't offer to resume this one
     if (typeof gauntletInterval !== 'undefined') clearInterval(gauntletInterval);
     gauntletTimeLeft = 0; // Signals local game intervals to terminate
     
