@@ -1,4 +1,4 @@
-﻿let stats = { cog: 0, hyd: 0, phy: 0 };
+let stats = { cog: 0, hyd: 0, phy: 0 };
 const langData = {
     "en": { 
         label: "English", 
@@ -1709,18 +1709,13 @@ function setWalkStatus(msg, color) {
     if (hint) { hint.innerText = msg; hint.style.color = color || '#93C5FD'; }
 }
 
-// ── Step recording ──────────────────────────────────────────
-function recordWalkStep() {
-    // SENSOR FUSION GATE: reject if GPS says we are stationary
-    if (!isDeviceMoving()) {
-        setWalkStatus('Stationary \u2014 walk outdoors to count steps', '#FFB74D');
-        return;
-    }
+let walkBaseMag = null;
 
-    // GAIT FREQUENCY GATE: reject shakes (too fast or too slow)
-    walkStepTimestamps.push(performance.now());
-    if (!isWalkingGait()) {
-        setWalkStatus('Move detected but not walking gait \u2014 keep walking!', '#FFB74D');
+// ── Step recording ──────────────────────────────────────────
+function recordWalkStep(magDelta, timeSinceLast) {
+    // ANTI-CHEAT: Reject violent shaking (huge acceleration) or super fast tapping (< 250ms)
+    if (timeSinceLast < 250 || magDelta > 15) {
+        setWalkStatus('Shaking detected \u2014 steps paused', '#FFB74D');
         return;
     }
 
@@ -1765,7 +1760,7 @@ function handleWalkMotion(event) {
 
     const rawX = acc.x || 0, rawY = acc.y || 0, rawZ = acc.z || 0;
 
-    // Low-pass filter to remove vibration/shake noise
+    // Low-pass filter to remove micro-vibrations
     walkLpX = WALK_LP_ALPHA * rawX + (1 - WALK_LP_ALPHA) * walkLpX;
     walkLpY = WALK_LP_ALPHA * rawY + (1 - WALK_LP_ALPHA) * walkLpY;
     walkLpZ = WALK_LP_ALPHA * rawZ + (1 - WALK_LP_ALPHA) * walkLpZ;
@@ -1773,15 +1768,28 @@ function handleWalkMotion(event) {
     const mag = Math.sqrt(walkLpX**2 + walkLpY**2 + walkLpZ**2);
     const now = performance.now();
 
+    // Dynamically track baseline (accounts for gravity if present)
+    if (walkBaseMag === null) walkBaseMag = mag;
+    walkBaseMag = 0.05 * mag + 0.95 * walkBaseMag;
+
+    const magDelta = walkPrevMag - walkBaseMag;
+
     // Local peak detection
-    const isPeak = walkPrevMag > walkPrevPrevMag && walkPrevMag > mag && walkPrevMag > WALK_THRESHOLD;
-    const debounceOk = (now - walkLastStepMs) >= WALK_DEBOUNCE_MS;
+    const isPeak = walkPrevMag > walkPrevPrevMag && walkPrevMag > mag;
+    // Step must be distinctly above baseline (filters out light hand trembling)
+    const isSignificant = magDelta > 1.2;
+    
+    const timeSinceLast = now - walkLastStepMs;
+    const debounceOk = timeSinceLast >= WALK_DEBOUNCE_MS;
 
     walkPrevPrevMag = walkPrevMag;
     walkPrevMag     = mag;
 
-    if (isPeak && debounceOk) recordWalkStep();
+    if (isPeak && isSignificant && debounceOk) {
+        recordWalkStep(magDelta, timeSinceLast);
+    }
 }
+
 
 // ── iOS 13+ permission ──────────────────────────────────────
 async function requestMotionPermissionIfNeeded() {
