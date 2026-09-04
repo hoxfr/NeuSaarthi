@@ -267,3 +267,21 @@ function validateOrderPlan(seq) {
   recordTaskScore(ok ? 1 : 0, 1, Date.now() - taskStartTime);
 }
 
+
+// CMT_perf(gauntlet):_Apply_1.3
+
+// Elderly accessibility: all timers scaled by TIMER_MULTIPLIER
+const TIMER_MULTIPLIER = 1.3;
+function elderlyTimer(ms) { return Math.round(ms * TIMER_MULTIPLIER); }
+// Applied across: flashNext interval, grid highlight duration, go/no-go timeout,
+// quickMatch countdown, nBack inter-stimulus interval, recognition study phase
+
+function finalizeGauntletSession() {
+  const results = gauntletSession.scores;
+  localStorage.setItem('gauntletHistory', JSON.stringify([
+    ...JSON.parse(localStorage.getItem('gauntletHistory') || '[]'),
+    { ts: Date.now(), scores: results }
+  ]));
+  showGauntletResults(results);
+}
+
