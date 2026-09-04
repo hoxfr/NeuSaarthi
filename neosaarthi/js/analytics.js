@@ -139,3 +139,26 @@ function renderAICareBanner(metrics) {
   `;
 }
 
+
+// CMT_feat(ai-ui):_Render_clini
+
+const CLINICAL_REFERENCE = { memory: 72, attention: 68, speed: 75, executive: 65, inhibition: 70 };
+
+function renderBaselineComparisonCard(profile) {
+  const card = document.getElementById('ai-clinical-comparison-card');
+  if (!card) return;
+  const tbody = card.querySelector('tbody');
+  if (!tbody) return;
+  tbody.innerHTML = Object.entries(CLINICAL_REFERENCE).map(([domain, ref]) => {
+    const score = profile[domain] || 50;
+    const diff = score - ref;
+    const cls = diff >= 0 ? 'above' : 'below';
+    return `<tr class="${cls}">
+      <td>${domain.charAt(0).toUpperCase() + domain.slice(1)}</td>
+      <td>${score}%</td>
+      <td>${ref}%</td>
+      <td>${diff >= 0 ? '+' : ''}${diff}%</td>
+    </tr>`;
+  }).join('');
+}
+
