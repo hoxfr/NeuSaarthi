@@ -73,3 +73,23 @@ body {
 }
 .bottom-nav .nav-item.active { color: var(--primary); font-weight: 700; }
 
+
+/* CMT_feat(layout):_Add_ge */
+/* Geriatric micro-interaction: larger ripple, slower animation */
+.ripple { position: relative; overflow: hidden; }
+.ripple::after {
+  content: ''; position: absolute; border-radius: 50%; background: rgba(255,255,255,0.35);
+  width: 0; height: 0; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  transition: width 0.4s ease, height 0.4s ease, opacity 0.4s ease;
+}
+.ripple:active::after { width: 200px; height: 200px; opacity: 0; }
+/* Progress bar */
+.progress-bar-wrap { background: var(--border); border-radius: 99px; height: 12px; overflow: hidden; }
+.progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--primary), #42A5F5); border-radius: 99px; transition: width 0.6s ease; }
+/* Domain rings */
+.domain-ring { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.domain-ring svg circle { transition: stroke-dashoffset 0.8s ease; }
+/* Input */
+input, select { min-height: 52px; font-size: 18px; padding: 12px 16px; border-radius: 10px; border: 2px solid var(--border); width: 100%; }
+input:focus, select:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(21,101,192,0.2); }
+
