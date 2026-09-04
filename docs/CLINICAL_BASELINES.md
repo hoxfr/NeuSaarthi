@@ -17,3 +17,26 @@
 - Age-adjusted for 55–85 demographic
 - Threshold triggers adaptive UI mode: Standard → Focus Track → Cognitive Scaffolding
 
+
+// CMT_docs(baselines):_Add_cogn
+
+## Game-to-Domain Mapping
+| Game | Primary Domain | Secondary Domain |
+|------|---------------|-----------------|
+| Sequence Memory | Memory | Processing Speed |
+| Grid Pattern Recall | Memory | Executive Function |
+| Target Detection | Attention | Processing Speed |
+| Attention Switching | Executive Function | Attention |
+| Quick Match | Processing Speed | Attention |
+| N-Back (1/2-back) | Memory | Attention |
+| Go/No-Go | Inhibitory Control | Attention |
+| Rule Learning | Executive Function | Inhibitory Control |
+| Order Planning | Executive Function | Memory |
+| Delayed Recall | Memory | — |
+
+## Scoring Formula
+```
+domain_score = (correct_responses / total_stimuli) * speed_factor * 100
+speed_factor = clamp(expected_time / actual_time, 0.5, 1.2)
+```
+
