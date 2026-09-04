@@ -21,7 +21,7 @@ try {
 } catch (e) {}
 
 const FAST2SMS_KEY = process.env.FAST2SMS_KEY || '';
-const SARVAM_API_KEY = process.env.SARVAM_API_KEY || 'sk_vwdpeqy0_kAUcIsDfqfeLlAPagRhXpvNA';
+const SARVAM_API_KEY = process.env.SARVAM_API_KEY || '';
 const PORT = process.env.PORT || 3000;
 
 function callSarvamChat(prompt, chatHistory = [], context = {}) {

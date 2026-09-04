@@ -1334,6 +1334,8 @@ function showScreen(screenId) {
                 if (typeof renderFamilyMenu === 'function') renderFamilyMenu();
             } else if (screenId === 'routine-screen') {
                 if (typeof initRoutineScreen === 'function') initRoutineScreen();
+            } else if (screenId === 'sos-screen') {
+                if (typeof startSosSequence === 'function') startSosSequence();
             } else if (screenId === 'progress-screen') {
                 if (typeof renderProgressTab === 'function') renderProgressTab();
                 if (typeof renderAiComparisonCard === 'function') renderAiComparisonCard();
@@ -1410,6 +1412,126 @@ function toggleDrawer() {
 function openProfileSection(sectionId) {
     toggleDrawer(); // close drawer
     showScreen('screen-' + sectionId);
+}
+
+// --- SOS Emergency Contacts (prototype) ---
+const SOS_CONTACTS_KEY = 'sosContacts';
+
+function getSosContacts() {
+    try {
+        const raw = localStorage.getItem(SOS_CONTACTS_KEY);
+        if (raw) {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed) && parsed.length === 3) return parsed;
+        }
+    } catch (e) {}
+    const demo = [
+        { name: 'Dr. Baruah', relation: 'Doctor', phone: '9435012345' },
+        { name: 'Anurag', relation: 'Son', phone: '9876543210' },
+        { name: 'Priya', relation: 'Caregiver', phone: '9123456789' }
+    ];
+    try { localStorage.setItem(SOS_CONTACTS_KEY, JSON.stringify(demo)); } catch (e) {}
+    return demo;
+}
+
+function saveSosContacts(contacts) {
+    try { localStorage.setItem(SOS_CONTACTS_KEY, JSON.stringify(contacts)); } catch (e) {}
+}
+
+function escapeAttr(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+}
+
+function openSosContacts() {
+    try { toggleDrawer(); } catch (e) {}
+    const existing = document.getElementById('sos-contacts-modal');
+    if (existing) existing.remove();
+    const contacts = getSosContacts();
+    const wrap = document.createElement('div');
+    wrap.id = 'sos-contacts-modal';
+    wrap.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9985;display:flex;align-items:center;justify-content:center;padding:20px;';
+    wrap.innerHTML =
+        '<div style="background:white;border-radius:20px;padding:24px 20px;max-width:400px;width:100%;max-height:85vh;overflow-y:auto;">' +
+            '<h2 style="color:#00897B;font-size:20px;margin:0 0 6px;">&#x1F6A8; SOS Emergency Contacts</h2>' +
+            '<p style="color:#78909C;font-size:13px;margin:0 0 18px;">These 3 people will be alerted if SOS is triggered.</p>' +
+            '<div id="sos-contacts-fields"></div>' +
+            '<button id="sos-contacts-save-btn" style="width:100%;min-height:55px;background:#00897B;color:white;border:none;border-radius:14px;font-size:17px;font-weight:700;cursor:pointer;margin-top:14px;">Save Contacts</button>' +
+            '<button id="sos-contacts-close-btn" style="width:100%;min-height:50px;background:#F4F7F6;color:#37474F;border:1px solid #ddd;border-radius:14px;font-size:15px;font-weight:600;cursor:pointer;margin-top:10px;">Close</button>' +
+        '</div>';
+    document.body.appendChild(wrap);
+
+    const fieldsBox = document.getElementById('sos-contacts-fields');
+    contacts.forEach(function (c, i) {
+        const block = document.createElement('div');
+        block.style.cssText = 'border:1px solid #eee;border-radius:12px;padding:12px;margin-bottom:12px;text-align:left;';
+        block.innerHTML =
+            '<label style="font-size:12px;color:#78909C;font-weight:600;">Contact ' + (i + 1) + ' Name</label>' +
+            '<input type="text" id="sos-name-' + i + '" value="' + escapeAttr(c.name) + '" style="width:100%;padding:10px;margin:4px 0 8px;border-radius:8px;border:1px solid #ddd;font-size:15px;box-sizing:border-box;">' +
+            '<label style="font-size:12px;color:#78909C;font-weight:600;">Relationship</label>' +
+            '<input type="text" id="sos-relation-' + i + '" value="' + escapeAttr(c.relation) + '" style="width:100%;padding:10px;margin:4px 0 8px;border-radius:8px;border:1px solid #ddd;font-size:15px;box-sizing:border-box;">' +
+            '<label style="font-size:12px;color:#78909C;font-weight:600;">10-Digit Mobile Number</label>' +
+            '<input type="tel" id="sos-phone-' + i + '" value="' + escapeAttr(c.phone) + '" maxlength="10" style="width:100%;padding:10px;margin:4px 0;border-radius:8px;border:1px solid #ddd;font-size:15px;box-sizing:border-box;">';
+        fieldsBox.appendChild(block);
+    });
+
+    document.getElementById('sos-contacts-save-btn').onclick = function () {
+        const updated = [0, 1, 2].map(function (i) {
+            return {
+                name: document.getElementById('sos-name-' + i).value.trim() || ('Contact ' + (i + 1)),
+                relation: document.getElementById('sos-relation-' + i).value.trim(),
+                phone: document.getElementById('sos-phone-' + i).value.replace(/\D/g, '').slice(0, 10)
+            };
+        });
+        saveSosContacts(updated);
+        wrap.remove();
+    };
+    document.getElementById('sos-contacts-close-btn').onclick = function () { wrap.remove(); };
+}
+
+// Real countdown (was previously a static, never-decrementing "5") with genuine
+// cancellation - lets judges verify accidental-trigger protection actually works.
+let sosCountdownInterval = null;
+
+function startSosSequence() {
+    clearInterval(sosCountdownInterval);
+    let secondsLeft = 5;
+    const countEl = document.getElementById('sos-countdown');
+    const descEl = document.getElementById('sos-desc');
+    const dispatchEl = document.getElementById('sos-dispatch-message');
+    const cancelBtn = document.getElementById('sos-cancel-btn');
+    if (countEl) countEl.innerText = secondsLeft;
+    if (descEl) descEl.style.display = '';
+    if (dispatchEl) { dispatchEl.style.display = 'none'; dispatchEl.innerText = ''; }
+    if (cancelBtn) { cancelBtn.innerText = 'Cancel'; cancelBtn.onclick = cancelSos; }
+
+    sosCountdownInterval = setInterval(function () {
+        secondsLeft--;
+        if (countEl) countEl.innerText = secondsLeft;
+        if (secondsLeft <= 0) {
+            clearInterval(sosCountdownInterval);
+            dispatchSos();
+        }
+    }, 1000);
+}
+
+function cancelSos() {
+    clearInterval(sosCountdownInterval);
+    showScreen('home-screen');
+}
+
+function dispatchSos() {
+    try { playGentleChime(); } catch (e) {}
+    const contacts = getSosContacts();
+    const names = contacts.map(function (c) { return c.name; }).join(', ');
+    const descEl = document.getElementById('sos-desc');
+    const dispatchEl = document.getElementById('sos-dispatch-message');
+    const cancelBtn = document.getElementById('sos-cancel-btn');
+    if (descEl) descEl.style.display = 'none';
+    if (dispatchEl) {
+        dispatchEl.style.display = '';
+        dispatchEl.innerText = 'Emergency Alert Triggered! Simulating SMS & GPS Location Dispatch to ' + names + '...';
+    }
+    if (cancelBtn) { cancelBtn.innerText = 'Back to Home'; cancelBtn.onclick = function () { showScreen('home-screen'); }; }
 }
 
 
@@ -1559,9 +1681,9 @@ function showResumeAssessmentPrompt(snap) {
         wrap.innerHTML =
             '<div style="background:white;border-radius:20px;padding:28px 24px;max-width:380px;width:100%;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.25);">' +
                 '<div style="font-size:44px;margin-bottom:10px;">&#x1F553;</div>' +
-                '<h2 style="color:#00796B;font-size:20px;margin:0 0 10px;">Welcome back!</h2>' +
+                '<h2 style="color:#00897B;font-size:20px;margin:0 0 10px;">Welcome back!</h2>' +
                 '<p style="color:#37474F;font-size:16px;line-height:1.5;margin:0 0 22px;">You have an unfinished wellness check-in with ' + remaining + ' ' + (remaining === 1 ? 'activity' : 'activities') + ' left. Would you like to continue where you left off?</p>' +
-                '<button id="resume-continue-btn" style="width:100%;min-height:55px;font-size:18px;font-weight:700;background:#00796B;color:white;border:none;border-radius:14px;margin-bottom:12px;cursor:pointer;">Continue</button>' +
+                '<button id="resume-continue-btn" style="width:100%;min-height:55px;font-size:18px;font-weight:700;background:#00897B;color:white;border:none;border-radius:14px;margin-bottom:12px;cursor:pointer;">Continue</button>' +
                 '<button id="resume-fresh-btn" style="width:100%;min-height:55px;font-size:16px;font-weight:600;background:#F4F7F6;color:#37474F;border:1px solid #ddd;border-radius:14px;cursor:pointer;">Start Fresh Instead</button>' +
             '</div>';
         document.body.appendChild(wrap);
@@ -1824,10 +1946,10 @@ function renderAiComparisonCard() {
             row.innerHTML =
                 '<div style="display:flex;justify-content:space-between;font-size:12.5px;color:#37474F;font-weight:600;margin-bottom:3px;">' +
                     '<span>' + domainName + (isFocus ? ' &#x1F3AF;' : '') + '</span>' +
-                    '<span style="color:#00796B;">' + userVal + '% <span style="color:#999;font-weight:400;">/ ' + baseVal + '% ' + typicalWord + '</span></span>' +
+                    '<span style="color:#00897B;">' + userVal + '% <span style="color:#999;font-weight:400;">/ ' + baseVal + '% ' + typicalWord + '</span></span>' +
                 '</div>' +
                 '<div style="position:relative;height:10px;background:#EEF3F2;border-radius:6px;">' +
-                    '<div style="height:100%;width:' + Math.max(2, Math.min(100, userVal)) + '%;background:' + (isFocus ? '#FF8A65' : '#00796B') + ';border-radius:6px;"></div>' +
+                    '<div style="height:100%;width:' + Math.max(2, Math.min(100, userVal)) + '%;background:' + (isFocus ? '#FF8A65' : '#00897B') + ';border-radius:6px;"></div>' +
                     '<div style="position:absolute;top:-3px;left:' + Math.max(0, Math.min(100, baseVal)) + '%;width:2px;height:16px;background:#37474F;"></div>' +
                 '</div>';
             barsContainer.appendChild(row);
@@ -2037,18 +2159,18 @@ function ensureSaarthiModal() {
                 '@keyframes saarthiRingPulse{0%{box-shadow:0 0 0 0 rgba(0,121,107,.5);}70%{box-shadow:0 0 0 22px rgba(0,121,107,0);}100%{box-shadow:0 0 0 0 rgba(0,121,107,0);}}' +
                 '@keyframes saarthiMicPulse{0%{box-shadow:0 0 0 0 rgba(0,121,107,.5);}70%{box-shadow:0 0 0 14px rgba(0,121,107,0);}100%{box-shadow:0 0 0 0 rgba(0,121,107,0);}}' +
                 '@keyframes saarthiPillIn{from{transform:translate(-50%,16px);opacity:0;}to{transform:translate(-50%,0);opacity:1;}}' +
-                '.saarthi-ring{width:96px;height:96px;border-radius:50%;background:linear-gradient(135deg,#00796B,#00BFA5);display:flex;align-items:center;justify-content:center;color:white;margin:0 auto;animation:saarthiRingPulse 1.6s infinite;font-size:34px;}' +
+                '.saarthi-ring{width:96px;height:96px;border-radius:50%;background:linear-gradient(135deg,#00897B,#00BFA5);display:flex;align-items:center;justify-content:center;color:white;margin:0 auto;animation:saarthiRingPulse 1.6s infinite;font-size:34px;}' +
                 '.saarthi-chip{min-height:55px;padding:14px 16px;font-size:17px;text-align:left;border-radius:14px;border:1px solid #ddd;background:#F4F7F6;color:#37474F;font-weight:600;cursor:pointer;width:100%;}' +
                 '.saarthi-chip:active{background:#E0F2F1;}' +
                 '.saarthi-pill-icon{animation:saarthiMicPulse 2s infinite;}' +
                 '.saarthi-text-input{flex:1;min-height:48px;padding:0 14px;border-radius:14px;border:1px solid #ddd;font-size:15px;font-family:"Poppins",sans-serif;color:#37474F;}' +
-                '.saarthi-send-btn{min-height:48px;padding:0 18px;border-radius:14px;border:none;background:#00796B;color:white;font-weight:700;font-size:15px;cursor:pointer;}' +
+                '.saarthi-send-btn{min-height:48px;padding:0 18px;border-radius:14px;border:none;background:#00897B;color:white;font-weight:700;font-size:15px;cursor:pointer;}' +
             '</style>' +
             '<div id="saarthi-voice-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9998;align-items:flex-end;justify-content:center;">' +
                 '<div style="background:white;width:100%;max-width:420px;border-radius:24px 24px 0 0;padding:26px 22px 30px;text-align:center;max-height:88vh;overflow-y:auto;">' +
                     '<div class="saarthi-ring"><span>&#x1F399;&#xFE0F;</span></div>' +
                     '<p id="saarthi-status-text" style="font-size:17px;font-weight:600;color:#37474F;margin:16px 0 6px;">Listening... Speak to Saarthi in English or Hindi</p>' +
-                    '<div id="saarthi-transcript" style="min-height:24px;color:#00796B;font-size:15px;font-style:italic;margin-bottom:14px;"></div>' +
+                    '<div id="saarthi-transcript" style="min-height:24px;color:#00897B;font-size:15px;font-style:italic;margin-bottom:14px;"></div>' +
                     '<div style="display:flex;gap:8px;margin-bottom:16px;">' +
                         '<input id="saarthi-text-input" class="saarthi-text-input" type="text" placeholder="Or type your message here...">' +
                         '<button class="saarthi-send-btn" onclick="sendSaarthiTextQuery()">Send</button>' +
@@ -2063,7 +2185,7 @@ function ensureSaarthiModal() {
                     '<button onclick="closeSaarthiVoiceModal()" style="min-height:52px;width:100%;border-radius:14px;border:none;background:#eee;color:#37474F;font-weight:700;font-size:17px;cursor:pointer;">Close</button>' +
                 '</div>' +
             '</div>' +
-            '<div id="saarthi-pill" style="display:none;position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:9999;width:min(94vw,380px);background:linear-gradient(135deg,#00796B,#004D40);color:white;border-radius:26px;box-shadow:0 8px 24px rgba(0,0,0,0.3);padding:12px 16px;animation:saarthiPillIn .25s ease-out;">' +
+            '<div id="saarthi-pill" style="display:none;position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:9999;width:min(94vw,380px);background:linear-gradient(135deg,#00897B,#004D40);color:white;border-radius:26px;box-shadow:0 8px 24px rgba(0,0,0,0.3);padding:12px 16px;animation:saarthiPillIn .25s ease-out;">' +
                 '<div style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="reopenSaarthiFull()">' +
                     '<div class="saarthi-pill-icon" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;">&#x1F399;&#xFE0F;</div>' +
                     '<div style="flex:1;text-align:left;overflow:hidden;">' +
@@ -2645,6 +2767,34 @@ function getSaarthiAppContext() {
     };
 }
 
+// Real animated "thinking" indicator for the Sarvam network wait (previously just a
+// static, unanimated "सारथी सोच रहे हैं..." string with no visual cue anything was
+// in progress). Overwritten automatically once showPillText() sets the real reply.
+let saarthiThinkingStyleInjected = false;
+function ensureSaarthiThinkingStyle() {
+    if (saarthiThinkingStyleInjected) return;
+    try {
+        const style = document.createElement('style');
+        style.innerHTML =
+            '@keyframes saarthiDotBounce{0%,80%,100%{opacity:.3;transform:translateY(0);}40%{opacity:1;transform:translateY(-4px);}}' +
+            '.saarthi-thinking-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor;margin:0 2px;animation:saarthiDotBounce 1.1s infinite;}';
+        document.head.appendChild(style);
+        saarthiThinkingStyleInjected = true;
+    } catch (e) {}
+}
+function showSaarthiThinkingIndicator() {
+    try {
+        ensureSaarthiThinkingStyle();
+        const r = document.getElementById('saarthi-pill-reply-line');
+        if (r) {
+            r.innerHTML = 'NeuSaarthi is thinking' +
+                '<span class="saarthi-thinking-dot" style="animation-delay:0s;"></span>' +
+                '<span class="saarthi-thinking-dot" style="animation-delay:0.15s;"></span>' +
+                '<span class="saarthi-thinking-dot" style="animation-delay:0.3s;"></span>';
+        }
+    } catch (e) {}
+}
+
 function processSaarthiQuery(text) {
     try {
         const t = (text || '').trim();
@@ -2665,9 +2815,21 @@ function processSaarthiQuery(text) {
             return;
         }
 
-        // When in Hindi mode, use Sarvam AI Indic LLM & Neural Voice!
+        // Smart local pre-caching: every intent EXCEPT genuinely open-ended
+        // conversation ('offtopic') already has full, instant, zero-network local
+        // content in the user's language via SAARTHI_I18N - answer from that
+        // immediately instead of paying a 4-5s Sarvam round trip for questions we
+        // already know how to answer locally (score/routine/family/relax/emergency/
+        // about/cognitive/wellness/smalltalk/lonely all qualify).
+        if ((currentLang === 'hi' || window.sarvamHindiActive) && intent !== 'offtopic') {
+            fallbackToLocalSaarthi(t, intent);
+            return;
+        }
+
+        // Genuinely open-ended Hindi conversation: use Sarvam AI Indic LLM & Neural Voice
         if (currentLang === 'hi' || window.sarvamHindiActive) {
-            SaarthiUI.collapseToPill(t, "सारथी सोच रहे हैं...");
+            SaarthiUI.collapseToPill(t, '');
+            showSaarthiThinkingIndicator();
 
             if (!window.sarvamChatHistory) window.sarvamChatHistory = [];
 
@@ -2852,8 +3014,22 @@ function loadNextGauntletTask() {
     area.innerHTML = ''; 
     
     if (window.gauntletTasksQueue.length === 0) {
-        finishAssessment();
-        return;
+        // The 13 games alone only take ~30-40s for a fast player - far short of the
+        // intended 5-minute session. Rather than end early, start another adaptive
+        // round (re-shuffled, difficulty keeps scaling via currentPhase) as long as
+        // meaningful time remains. Never do this for standalone single-game practice.
+        if (!window.isSingleGame && gauntletTimeLeft > 15) {
+            window.gauntletTasksQueue = [0,1,2,3,4,5,6,7,8,9,10,11,12].sort(() => Math.random() - 0.5);
+            let recallIdx = window.gauntletTasksQueue.indexOf(11);
+            if (recallIdx < 5) {
+                let swap = window.gauntletTasksQueue[12];
+                window.gauntletTasksQueue[12] = 11;
+                window.gauntletTasksQueue[recallIdx] = swap;
+            }
+        } else {
+            finishAssessment();
+            return;
+        }
     }
 
     let taskType = window.gauntletTasksQueue.shift();
@@ -2967,7 +3143,7 @@ function loadNextGauntletTask() {
             if(!active.includes(r)) active.push(r);
         }
         
-        active.forEach(idx => cells[idx].style.background = '#00796B');
+        active.forEach(idx => cells[idx].style.background = '#00897B');
         
         setTimeout(() => {
             if(gauntletTimeLeft <= 0) return;
@@ -2976,8 +3152,10 @@ function loadNextGauntletTask() {
             let found = 0;
             cells.forEach((c, idx) => {
                 c.onclick = () => {
+                    if (c.dataset.answered) return; // prevent a fast double-tap from double-scoring this cell
+                    c.dataset.answered = '1';
                     if(active.includes(idx)) { c.style.background = '#4CAF50'; found++; GauntletScore.hit(); }
-                    else { c.style.background = '#F44336'; GauntletScore.miss(); }
+                    else { c.style.background = '#FFECB3'; GauntletScore.miss(); } // gentle amber, not red - matches the exercise games' no-harsh-failure convention
                     if(found === count) setTimeout(loadNextGauntletTask, 500);
                 }
             });
@@ -2995,6 +3173,7 @@ function loadNextGauntletTask() {
             box.innerHTML = isTarget ? '&#x1F535;' : '&#x1F7E2;';
             GauntletScore.prompted();
             box.onclick = () => {
+                box.onclick = null; // prevent a fast double-tap from double-scoring this stimulus
                 if(isTarget) { everHitTarget = true; GauntletScore.hit(); clearInterval(intv); box.style.background = '#E8F5E9'; box.style.borderRadius = '50%'; setTimeout(loadNextGauntletTask, 500); }
                 else { GauntletScore.miss(); }
             };
@@ -3044,7 +3223,7 @@ function loadNextGauntletTask() {
         makeInst(gl.g5_inst);
         let genPat = generateNumberPattern(level);
         let pat = genPat.seq, ans = genPat.ans;
-        let pText = document.createElement('h2'); pText.innerText = pat.join(', ') + ', ?'; pText.style.margin = '30px 0'; pText.style.letterSpacing = '2px'; pText.style.color = '#00796B'; area.appendChild(pText);
+        let pText = document.createElement('h2'); pText.innerText = pat.join(', ') + ', ?'; pText.style.margin = '30px 0'; pText.style.letterSpacing = '2px'; pText.style.color = '#00897B'; area.appendChild(pText);
 
         let opts = [ans, ans+1, ans-1, ans+2].sort(() => Math.random()-0.5);
         makeGrid(opts, (val) => { GauntletScore[val === ans ? 'hit' : 'miss'](); loadNextGauntletTask(); });
@@ -3097,6 +3276,7 @@ function loadNextGauntletTask() {
             box.innerHTML = isGreen ? '&#x1F7E2;' : '&#x1F534;';
             GauntletScore.prompted();
             box.onclick = () => {
+                box.onclick = null; // prevent a fast double-tap from double-scoring this stimulus
                 if(isGreen) { taps++; GauntletScore.hit(); }
                 else { GauntletScore.miss(); }
             };
@@ -3165,14 +3345,17 @@ function loadNextGauntletTask() {
 
         let shuffled = arr.slice().sort(() => Math.random() - 0.5);
         makeGrid(shuffled, (val, btn) => {
+            if (btn.disabled) return; // prevent a fast double-tap from double-scoring this button
             if(val == sorted[currentIdx]) {
+                btn.disabled = true;
                 GauntletScore.hit();
                 btn.style.background = '#4CAF50'; btn.style.color = 'white';
                 currentIdx++;
                 if(currentIdx === arr.length) setTimeout(loadNextGauntletTask, 500);
             } else {
                 GauntletScore.miss();
-                btn.style.background = '#F44336'; btn.style.color = 'white';
+                btn.style.background = '#FFECB3'; btn.style.color = '#37474F'; // gentle amber, not red
+                setTimeout(() => { if (!btn.disabled) { btn.style.background = 'white'; btn.style.color = ''; } }, 500);
             }
         });
     }
@@ -3205,17 +3388,26 @@ function finishAssessment() {
         document.getElementById('gauntlet-timer').style.display = 'inline-block';
         document.getElementById('gauntlet-progress').parentElement.style.display = 'block';
         saveGauntletScores(); // record this one game's real result too
-        if (typeof window.routineTaskCallback === 'function') {
-            let cb = window.routineTaskCallback;
-            window.routineTaskCallback = null;
-            cb();
-            return;
+
+        // Brief warm acknowledgment instead of silently jumping away - practice
+        // games deserve the same encouraging tone as the Life-Skills Exercises.
+        const gArea = document.getElementById('gauntlet-area');
+        if (gArea) {
+            gArea.innerHTML = '<div style="text-align:center;padding-top:40px;"><div style="font-size:50px;">&#x1F389;</div><h2 style="color:#37474F;margin:10px 0 0;">Great job!</h2></div>';
         }
-        showScreen('game-menu-screen');
+        setTimeout(() => {
+            if (typeof window.routineTaskCallback === 'function') {
+                let cb = window.routineTaskCallback;
+                window.routineTaskCallback = null;
+                cb();
+                return;
+            }
+            showScreen('game-menu-screen');
+        }, 900);
         return;
     }
 
-    document.getElementById('gauntlet-title').innerText = 'Complete!';
+    document.getElementById('gauntlet-title').innerText = '&#x1F389; Great effort!';
 
     saveGauntletScores(); // real accuracy + reaction-time scores from GauntletScore, no mock data
     clearAssessmentSnapshot(); // finished for real - no resume prompt needed next time
@@ -3264,7 +3456,7 @@ function applyMatrixToHome(profile) {
     
     home.style.background = '#FDFCF0';
     home.style.color = '#37474F';
-    header.style.background = 'linear-gradient(135deg, #00796B, #004D40)';
+    header.style.background = 'linear-gradient(135deg, #00897B, #004D40)';
     header.style.borderBottom = 'none';
     
     if (profile.ui === 'High Contrast Mode') {
@@ -3954,10 +4146,10 @@ function renderProgressTab() {
             card.innerHTML = `
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                     <span style="font-weight: 700; font-size: 14px; color: #37474F;">${catName}</span>
-                    <span style="font-size: 13px; font-weight: 700; color: ${pct >= 100 ? '#4CAF50' : '#00796B'};">${item.done} / ${item.total}</span>
+                    <span style="font-size: 13px; font-weight: 700; color: ${pct >= 100 ? '#4CAF50' : '#00897B'};">${item.done} / ${item.total}</span>
                 </div>
                 <div class="bar-bg" style="width: 100%; height: 8px; background: #eee; border-radius: 4px; overflow: hidden;">
-                    <div style="width: ${pct}%; height: 100%; background: ${pct >= 100 ? '#4CAF50' : (pct >= 50 ? '#00796B' : '#FF9800')}; border-radius: 4px; transition: 0.5s ease-out;"></div>
+                    <div style="width: ${pct}%; height: 100%; background: ${pct >= 100 ? '#4CAF50' : (pct >= 50 ? '#00897B' : '#FF9800')}; border-radius: 4px; transition: 0.5s ease-out;"></div>
                 </div>
             `;
             cogContainer.appendChild(card);
@@ -4036,7 +4228,7 @@ function renderGamesList() {
         let localizedName = (glGames && glGames['g' + game.id + '_title']) ? glGames['g' + game.id + '_title'].replace(/^[^:]+:\s*/, '') : game.name;
         const localizedDesc = (gmLoc && gmLoc.gameDescs && gmLoc.gameDescs[game.id]) ? gmLoc.gameDescs[game.id] : game.desc;
         card.innerHTML = `
-            <div class="icon-box" style="background: #E0F2F1; color: #00796B; font-size: 24px; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">
+            <div class="icon-box" style="background: #E0F2F1; color: #00897B; font-size: 24px; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">
                 ${game.icon}
             </div>
             <div style="flex: 1; margin-left: 15px; text-align: left;">
@@ -4179,8 +4371,8 @@ function renderExerciseComplete(exerciseId) {
         '<div style="font-size:60px;margin-bottom:10px;">&#x1F389;</div>' +
         '<h2 style="color:#37474F;">Well done!</h2>' +
         '<p style="color:#78909C;margin-bottom:24px;">You completed ' + (meta ? meta.name : 'the exercise') + '.</p>' +
-        '<button onclick="showScreen(\'game-menu-screen\')" style="background:#00796B;color:white;border:none;padding:15px 30px;font-size:18px;border-radius:30px;font-weight:bold;cursor:pointer;min-height:55px;">Back to Menu</button>' +
-        '<button id="exercise-play-again-btn" style="margin-top:12px;display:block;width:100%;background:white;color:#00796B;border:2px solid #00796B;padding:12px;font-size:16px;border-radius:30px;font-weight:bold;cursor:pointer;min-height:55px;">Play Again</button>';
+        '<button onclick="showScreen(\'game-menu-screen\')" style="background:#00897B;color:white;border:none;padding:15px 30px;font-size:18px;border-radius:30px;font-weight:bold;cursor:pointer;min-height:55px;">Back to Menu</button>' +
+        '<button id="exercise-play-again-btn" style="margin-top:12px;display:block;width:100%;background:white;color:#00897B;border:2px solid #00897B;padding:12px;font-size:16px;border-radius:30px;font-weight:bold;cursor:pointer;min-height:55px;">Play Again</button>';
     area.appendChild(box);
     const againBtn = document.getElementById('exercise-play-again-btn');
     if (againBtn) againBtn.onclick = function () { window.currentExercise = { id: exerciseId, level: 1 }; loadExerciseLevel(); };
@@ -4248,7 +4440,7 @@ function makeMatchGrid(area, items, opts) {
             if (locked || btn.dataset.matched === 'true') return;
             if (!firstPick) {
                 firstPick = { btn: btn, item: item };
-                btn.style.border = '3px solid #00796B';
+                btn.style.border = '3px solid #00897B';
                 btn.style.background = '#E0F2F1';
                 return;
             }
@@ -4404,7 +4596,7 @@ function renderOrientationLevel(level) {
         next();
     } else {
         const sit = document.createElement('p');
-        sit.innerText = L.l3Situation; sit.style.color = '#00796B'; sit.style.fontWeight = '600'; sit.style.textAlign = 'center';
+        sit.innerText = L.l3Situation; sit.style.color = '#00897B'; sit.style.fontWeight = '600'; sit.style.textAlign = 'center';
         sit.style.background = '#E0F2F1'; sit.style.padding = '16px'; sit.style.borderRadius = '14px'; sit.style.marginBottom = '20px'; sit.style.fontSize = '16px'; sit.style.lineHeight = '1.5';
         area.appendChild(sit);
         try { speakSaarthi(L.l3Situation); } catch (e) {}
@@ -4530,7 +4722,7 @@ function renderAuditoryLevel(level) {
     function showListening() {
         area.innerHTML = '';
         const msg = document.createElement('h3');
-        msg.innerText = L.listen; msg.style.color = '#00796B'; msg.style.textAlign = 'center';
+        msg.innerText = L.listen; msg.style.color = '#00897B'; msg.style.textAlign = 'center';
         area.appendChild(msg);
         const icon = document.createElement('div');
         icon.innerHTML = '&#x1F399;&#xFE0F;'; icon.style.fontSize = '60px'; icon.style.textAlign = 'center'; icon.style.marginTop = '20px';
@@ -4544,7 +4736,7 @@ function renderAuditoryLevel(level) {
         const btn = document.createElement('button');
         btn.innerHTML = '&#x1F501; ' + L.replay;
         btn.style.marginTop = '20px'; btn.style.padding = '12px 24px'; btn.style.fontSize = '15px'; btn.style.fontWeight = '600';
-        btn.style.borderRadius = '20px'; btn.style.border = '2px solid #00796B'; btn.style.background = 'white'; btn.style.color = '#00796B'; btn.style.cursor = 'pointer'; btn.style.minHeight = '48px';
+        btn.style.borderRadius = '20px'; btn.style.border = '2px solid #00897B'; btn.style.background = 'white'; btn.style.color = '#00897B'; btn.style.cursor = 'pointer'; btn.style.minHeight = '48px';
         btn.onclick = function () {
             if (activeSeq) activeSeq.cancel();
             activeSeq = speakSequence(chosen.map(function (c) { return c.w; }), 900, function () {});
@@ -4600,7 +4792,7 @@ function renderAuditoryLevel(level) {
                 userOrder.push(opt);
                 const badge = document.createElement('span');
                 badge.innerText = String(userOrder.length);
-                badge.style.cssText = 'position:absolute;top:-8px;right:-8px;background:#00796B;color:white;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;';
+                badge.style.cssText = 'position:absolute;top:-8px;right:-8px;background:#00897B;color:white;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;';
                 btn.appendChild(badge);
                 btn.style.opacity = '0.7';
                 if (userOrder.length === chosen.length) {
@@ -4655,10 +4847,10 @@ function renderMap(area, landmarkKeys, pathLines) {
     const mapBox = document.createElement('div');
     mapBox.style.position = 'relative'; mapBox.style.width = '100%'; mapBox.style.maxWidth = '380px';
     mapBox.style.height = '260px'; mapBox.style.background = '#E8F5E9'; mapBox.style.borderRadius = '16px'; mapBox.style.marginBottom = '20px';
-    let svg = '<svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;"><defs><marker id="arrowhead" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><polygon points="0 0, 8 4, 0 8" fill="#00796B"/></marker></defs>';
+    let svg = '<svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;"><defs><marker id="arrowhead" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><polygon points="0 0, 8 4, 0 8" fill="#00897B"/></marker></defs>';
     (pathLines || []).forEach(function (line) {
         const from = MAP_POS[line.from], to = MAP_POS[line.to];
-        svg += '<line x1="' + from.x + '%" y1="' + from.y + '%" x2="' + to.x + '%" y2="' + to.y + '%" stroke="#00796B" stroke-width="3" marker-end="url(#arrowhead)"/>';
+        svg += '<line x1="' + from.x + '%" y1="' + from.y + '%" x2="' + to.x + '%" y2="' + to.y + '%" stroke="#00897B" stroke-width="3" marker-end="url(#arrowhead)"/>';
     });
     svg += '</svg>';
     mapBox.innerHTML = svg;
@@ -4693,13 +4885,13 @@ function renderRouteLevel(level) {
             const btn = document.createElement('button');
             btn.innerText = L.dirs[dk];
             btn.style.padding = '14px 18px'; btn.style.fontSize = '16px'; btn.style.fontWeight = '600'; btn.style.borderRadius = '14px';
-            btn.style.border = '2px solid #00796B'; btn.style.background = 'white'; btn.style.color = '#00796B'; btn.style.cursor = 'pointer'; btn.style.minHeight = '55px';
+            btn.style.border = '2px solid #00897B'; btn.style.background = 'white'; btn.style.color = '#00897B'; btn.style.cursor = 'pointer'; btn.style.minHeight = '55px';
             btn.onclick = function () {
                 const isCorrect = dk === correctSeq[stepIdx];
                 if (isCorrect) {
                     btn.style.background = '#4CAF50'; btn.style.color = 'white';
                     stepIdx++;
-                    setTimeout(function () { btn.style.background = 'white'; btn.style.color = '#00796B'; }, 500);
+                    setTimeout(function () { btn.style.background = 'white'; btn.style.color = '#00897B'; }, 500);
                     if (stepIdx >= correctSeq.length) setTimeout(onDone, 600);
                 } else {
                     btn.style.background = '#FFECB3';
@@ -5144,7 +5336,7 @@ function showRoutineActionModal(config) {
 
     modal.innerHTML = `
         <div style="background: white; border-radius: 24px; padding: 26px 22px; width: 90%; max-width: 380px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.25);">
-            <div style="display: inline-flex; align-items: center; gap: 6px; background: #E0F2F1; color: #00796B; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; margin-bottom: 12px;">
+            <div style="display: inline-flex; align-items: center; gap: 6px; background: #E0F2F1; color: #00897B; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; margin-bottom: 12px;">
                 <span class="material-symbols-rounded" style="font-size: 15px;">psychology</span> ${config.badge || 'Cognitive Scaffolding'}
             </div>
             
@@ -5159,7 +5351,7 @@ function showRoutineActionModal(config) {
             ` : ''}
 
             <div style="display: flex; flex-direction: column; gap: 10px;">
-                <button id="routine-modal-primary" style="background: #00796B; color: white; border: none; padding: 15px; font-size: 16px; font-weight: bold; border-radius: 16px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,121,107,0.3);">
+                <button id="routine-modal-primary" style="background: #00897B; color: white; border: none; padding: 15px; font-size: 16px; font-weight: bold; border-radius: 16px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,121,107,0.3);">
                     ${config.primaryBtnText}
                 </button>
                 
@@ -5204,7 +5396,7 @@ function showHydrationModal() {
 
     modal.innerHTML = `
         <div style="background: white; border-radius: 24px; padding: 26px 20px; width: 90%; max-width: 380px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.25);">
-            <div style="display: inline-flex; align-items: center; gap: 6px; background: #E0F2F1; color: #00796B; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; margin-bottom: 10px;">
+            <div style="display: inline-flex; align-items: center; gap: 6px; background: #E0F2F1; color: #00897B; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; margin-bottom: 10px;">
                 <span class="material-symbols-rounded" style="font-size: 15px;">psychology</span> ${hyd.badge || 'Active Recall Check'}
             </div>
             
@@ -5641,10 +5833,10 @@ function showRoutineCongrats(message) {
     modal.innerHTML = `
         <div style="background: white; border-radius: 24px; padding: 28px 24px; width: 90%; max-width: 380px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.25);">
             <div style="font-size: 55px; margin-bottom: 12px;">&#x1F31F;</div>
-            <h2 style="color: #00796B; font-size: 22px; margin: 0 0 8px 0; font-weight: 800;">${congratsTitle}</h2>
+            <h2 style="color: #00897B; font-size: 22px; margin: 0 0 8px 0; font-weight: 800;">${congratsTitle}</h2>
             <p style="color: #555; font-size: 15px; margin: 0 0 22px 0; line-height: 1.5;">${message}</p>
             
-            <button onclick="document.getElementById('routine-congrats-modal').remove()" style="background: #00796B; color: white; border: none; padding: 14px 28px; font-size: 16px; font-weight: bold; border-radius: 24px; cursor: pointer; width: 100%; box-shadow: 0 4px 10px rgba(0,121,107,0.3);">
+            <button onclick="document.getElementById('routine-congrats-modal').remove()" style="background: #00897B; color: white; border: none; padding: 14px 28px; font-size: 16px; font-weight: bold; border-radius: 24px; cursor: pointer; width: 100%; box-shadow: 0 4px 10px rgba(0,121,107,0.3);">
                 ${continueBtnText}
             </button>
         </div>

@@ -21,23 +21,26 @@
         <div id="drawer-overlay" class="drawer-overlay" onclick="toggleDrawer()"></div>
         <div id="side-drawer" class="side-drawer">
             <div class="drawer-header">
-                <h2 id="drawer-title" style="color: #00796B; font-size: 18px;">Profile Menu</h2>
+                <h2 id="drawer-title" style="color: #00897B; font-size: 18px;">Profile Menu</h2>
                 <button onclick="toggleDrawer()" style="background:none; border:none; color:#666; cursor:pointer;"><span class="material-symbols-rounded">close</span></button>
             </div>
             <div class="drawer-item" onclick="openProfileSection('clinical')">
                 <span class="material-symbols-rounded" style="color:#FF8A65;">badge</span> <span id="drawer-item-clinical">Wellness Profile</span>
             </div>
             <div class="drawer-item" onclick="openProfileSection('cognitive')">
-                <span class="material-symbols-rounded" style="color:#00796B;">psychology</span> <span id="drawer-item-cognitive">Cognitive Profile</span>
+                <span class="material-symbols-rounded" style="color:#00897B;">psychology</span> <span id="drawer-item-cognitive">Cognitive Profile</span>
             </div>
             <div class="drawer-item" onclick="openProfileSection('functional')">
                 <span class="material-symbols-rounded" style="color:#FFC107;">accessibility_new</span> <span id="drawer-item-functional">Daily Support</span>
             </div>
             <div class="drawer-item" onclick="openProfileSection('preferences')">
-                <span class="material-symbols-rounded" style="color:#00796B;">settings</span> <span id="drawer-item-preferences">User Preferences</span>
+                <span class="material-symbols-rounded" style="color:#00897B;">settings</span> <span id="drawer-item-preferences">User Preferences</span>
             </div>
             <div class="drawer-item" onclick="openProfileSection('context')">
                 <span class="material-symbols-rounded" style="color:#FF8A65;">favorite</span> <span id="drawer-item-context">Personal Context</span>
+            </div>
+            <div class="drawer-item" onclick="openSosContacts()">
+                <span class="material-symbols-rounded" style="color:#D32F2F;">emergency</span> <span id="drawer-item-sos">SOS Emergency Contacts</span>
             </div>
         </div>
 
@@ -75,7 +78,7 @@
                     <label id="label-phone">Phone Number (Required)*</label>
                     <div style="display: flex; gap: 10px;">
                         <input type="text" value="+91" disabled style="width: 60px; text-align: center; border-radius: 12px; border: 1px solid #ddd; background: #f5f5f5;">
-                        <input type="tel" id="phone-input" placeholder="Enter 10-digit number" style="flex: 1; padding: 16px; border-radius: 12px; border: 1px solid #00796B; font-family: 'Poppins', sans-serif;">
+                        <input type="tel" id="phone-input" placeholder="Enter 10-digit number" style="flex: 1; padding: 16px; border-radius: 12px; border: 1px solid #00897B; font-family: 'Poppins', sans-serif;">
                     </div>
                 </div>
                 <div class="input-group">
@@ -114,8 +117,8 @@
                 <p id="role-subtitle">We will adapt the experience for you.</p>
             </header>
             <main class="content-pad" style="display: flex; flex-direction: column; gap: 20px;">
-                <div class="action-card" onclick="selectRole('self')" style="text-align: center; padding: 30px 20px; border: 2px solid #00796B; background: white;">
-                    <span class="material-symbols-rounded" style="font-size: 48px; color: #00796B; margin-bottom: 10px;">person</span>
+                <div class="action-card" onclick="selectRole('self')" style="text-align: center; padding: 30px 20px; border: 2px solid #00897B; background: white;">
+                    <span class="material-symbols-rounded" style="font-size: 48px; color: #00897B; margin-bottom: 10px;">person</span>
                     <h2 id="role-self-title" style="color: #37474F;">Set up for myself</h2>
                     <p id="role-self-desc" style="font-size: 14px; color: #666; margin-top: 8px;">I want to exercise my brain and maintain a healthy routine.</p>
                 </div>
@@ -131,7 +134,7 @@
         <section id="welcome-screen" class="screen">
             <main class="content-pad" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100%;">
                 <span class="material-symbols-rounded" style="font-size: 80px; color: #FF8A65; margin-bottom: 20px;">celebration</span>
-                <h1 id="welcome-title" style="color: #00796B; margin-bottom: 10px;">Let's warm up!</h1>
+                <h1 id="welcome-title" style="color: #00897B; margin-bottom: 10px;">Let's warm up!</h1>
                 <p id="welcome-desc" style="color: #666; margin-bottom: 40px; line-height: 1.5;">Play a quick game so we can personalize your experience.</p>
                 <button class="primary-btn" onclick="startAssessment()" style="width: 100%; border-radius: 24px;">
                     <span id="btn-start-game">Start Fun Game</span>
@@ -143,7 +146,7 @@
         <section id="assessment-screen" class="screen">
             <header class="inner-header" style="text-align: center; padding-top: 40px; background: white; border-bottom: 1px solid #eee; position: relative;">
                 <button class="back-btn" onclick="quitAssessment()" style="position: absolute; left: 15px; top: 20px; font-size: 24px; background: none; border: none; cursor: pointer; color: #37474F;">&#x2190;</button>
-                <div style="background: #E0F2F1; color: #00796B; display: inline-block; padding: 6px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; margin-bottom: 12px; border: 2px solid #00796B;" id="gauntlet-timer" style="display:none;">05:00</div>
+                <div style="background: #E0F2F1; color: #00897B; display: inline-block; padding: 6px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; margin-bottom: 12px; border: 2px solid #00897B;" id="gauntlet-timer" style="display:none;">05:00</div>
                 <h2 id="gauntlet-title" style="color: #37474F; font-size: 20px;">Phase 1: Reflexes</h2>
                 <div class="progress-bar" style="width: 80%; height: 8px; background: #eee; margin: 15px auto 10px; border-radius: 4px; overflow: hidden;">
                     <div id="gauntlet-progress" style="width: 25%; height: 100%; background: #FF8A65; border-radius: 4px; transition: 0.4s ease-out;"></div>
@@ -158,7 +161,7 @@
         <section id="exercise-screen" class="screen">
             <header class="inner-header" style="text-align: center; padding-top: 40px; background: white; border-bottom: 1px solid #eee; position: relative;">
                 <button class="back-btn" onclick="quitExercise()" style="position: absolute; left: 15px; top: 20px; font-size: 24px; background: none; border: none; cursor: pointer; color: #37474F;">&#x2190;</button>
-                <div id="exercise-level-badge" style="background: #E0F2F1; color: #00796B; display: inline-block; padding: 6px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; margin-bottom: 12px; border: 2px solid #00796B;">Level 1</div>
+                <div id="exercise-level-badge" style="background: #E0F2F1; color: #00897B; display: inline-block; padding: 6px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; margin-bottom: 12px; border: 2px solid #00897B;">Level 1</div>
                 <h2 id="exercise-title" style="color: #37474F; font-size: 20px;"></h2>
             </header>
             <main style="flex: 1; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #FDFCF0; position: relative;" id="exercise-area">
@@ -170,7 +173,7 @@
         <section id="analyzing-screen" class="screen">
             <main class="content-pad" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100%;">
                 <div class="spinner"></div>
-                <h2 id="analyzing-text" style="color: #00796B; margin-top: 30px; font-size: 18px;">Analyzing your interactions...</h2>
+                <h2 id="analyzing-text" style="color: #00897B; margin-top: 30px; font-size: 18px;">Analyzing your interactions...</h2>
             </main>
         </section>
 
@@ -209,7 +212,7 @@
 
             <main class="content-pad" style="display: flex; flex-direction: column; gap: 16px; padding-bottom: 100px;">
                 <!-- 🤖 AI Dynamic Care Track Banner -->
-                <div id="ai-care-track-banner" style="display: none; background: linear-gradient(135deg, #004D40, #00796B); border-radius: 18px; padding: 16px; color: white; box-shadow: 0 4px 15px rgba(0,77,64,0.25); border: 1px solid rgba(255,255,255,0.2); position: relative; overflow: hidden;">
+                <div id="ai-care-track-banner" style="display: none; background: linear-gradient(135deg, #004D40, #00897B); border-radius: 18px; padding: 16px; color: white; box-shadow: 0 4px 15px rgba(0,77,64,0.25); border: 1px solid rgba(255,255,255,0.2); position: relative; overflow: hidden;">
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
                         <span style="background: rgba(255,255,255,0.22); padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
                             <span class="material-symbols-rounded" style="font-size: 14px;">psychology</span> <span id="ai-plan-badge">AI Care Plan Active</span>
@@ -223,8 +226,8 @@
                     </button>
                 </div>
                 <p id="home-routine-heading" style="font-size: 14px; color: #666; margin-bottom: -8px; font-weight: 600;">Your Daily Wellness Routine</p>
-                <div class="quest-card" onclick="showScreen('game-menu-screen')" style="border-left: 6px solid #00796B;">
-                    <div class="quest-icon" style="background: #E0F2F1; color: #00796B;"><span class="material-symbols-rounded">extension</span></div>
+                <div class="quest-card" onclick="showScreen('game-menu-screen')" style="border-left: 6px solid #00897B;">
+                    <div class="quest-icon" style="background: #E0F2F1; color: #00897B;"><span class="material-symbols-rounded">extension</span></div>
                     <div class="quest-text"><h2 id="btn-game" style="color:#37474F;">Cognitive Exercise</h2><p id="sub-btn-game" style="color:#666;">Targeted Therapy</p></div>
                     <span class="material-symbols-rounded" style="color: #ccc;">chevron_right</span>
                 </div>
@@ -276,18 +279,18 @@
         <section id="screen-cognitive" class="screen" style="background: #FDFCF0;">
             <header class="inner-header" style="display: flex; align-items: center; justify-content: space-between; padding: 20px; background: white; border-bottom: 1px solid #eee;">
                 <button onclick="showScreen('home-screen')" style="background: none; border: none; font-size: 24px; color: #37474F; cursor: pointer;"><span class="material-symbols-rounded">arrow_back</span></button>
-                <h2 style="font-size: 18px; color: #00796B;">Cognitive Profile</h2>
-                <button onclick="showScreen('home-screen')" style="background: #00796B; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: bold;">Save</button>
+                <h2 style="font-size: 18px; color: #00897B;">Cognitive Profile</h2>
+                <button onclick="showScreen('home-screen')" style="background: #00897B; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: bold;">Save</button>
             </header>
             <main class="content-pad" style="padding-top: 20px;">
                 <div style="display: flex; flex-direction: column; gap: 20px; background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
-                    <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-size: 15px; font-weight: 500; color: #37474F;">Memory</span><input type="range" min="0" max="100" value="40" style="width: 60%; accent-color: #00796B;"></div>
-                    <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-size: 15px; font-weight: 500; color: #37474F;">Attention</span><input type="range" min="0" max="100" value="65" style="width: 60%; accent-color: #00796B;"></div>
-                    <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-size: 15px; font-weight: 500; color: #37474F;">Executive Func.</span><input type="range" min="0" max="100" value="50" style="width: 60%; accent-color: #00796B;"></div>
-                    <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-size: 15px; font-weight: 500; color: #37474F;">Recognition</span><input type="range" min="0" max="100" value="70" style="width: 60%; accent-color: #00796B;"></div>
-                    <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-size: 15px; font-weight: 500; color: #37474F;">Language</span><input type="range" min="0" max="100" value="85" style="width: 60%; accent-color: #00796B;"></div>
-                    <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-size: 15px; font-weight: 500; color: #37474F;">Visuospatial</span><input type="range" min="0" max="100" value="45" style="width: 60%; accent-color: #00796B;"></div>
-                    <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-size: 15px; font-weight: 500; color: #37474F;">Orientation</span><input type="range" min="0" max="100" value="30" style="width: 60%; accent-color: #00796B;"></div>
+                    <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-size: 15px; font-weight: 500; color: #37474F;">Memory</span><input type="range" min="0" max="100" value="40" style="width: 60%; accent-color: #00897B;"></div>
+                    <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-size: 15px; font-weight: 500; color: #37474F;">Attention</span><input type="range" min="0" max="100" value="65" style="width: 60%; accent-color: #00897B;"></div>
+                    <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-size: 15px; font-weight: 500; color: #37474F;">Executive Func.</span><input type="range" min="0" max="100" value="50" style="width: 60%; accent-color: #00897B;"></div>
+                    <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-size: 15px; font-weight: 500; color: #37474F;">Recognition</span><input type="range" min="0" max="100" value="70" style="width: 60%; accent-color: #00897B;"></div>
+                    <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-size: 15px; font-weight: 500; color: #37474F;">Language</span><input type="range" min="0" max="100" value="85" style="width: 60%; accent-color: #00897B;"></div>
+                    <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-size: 15px; font-weight: 500; color: #37474F;">Visuospatial</span><input type="range" min="0" max="100" value="45" style="width: 60%; accent-color: #00897B;"></div>
+                    <div style="display: flex; align-items: center; justify-content: space-between;"><span style="font-size: 15px; font-weight: 500; color: #37474F;">Orientation</span><input type="range" min="0" max="100" value="30" style="width: 60%; accent-color: #00897B;"></div>
                 </div>
             </main>
         </section>
@@ -303,7 +306,7 @@
                 /* Bottom Nav */
                 .bottom-nav { background: white; padding: 15px 20px; display: none; flex-direction: row; justify-content: space-around; align-items: center; border-top: 1px solid #eee; border-radius: 0 0 40px 40px; box-shadow: 0 -4px 20px rgba(0,0,0,0.05); width: 100%; position: absolute; bottom: 0; z-index: 100; }
                 .nav-item { display: flex; flex-direction: column; align-items: center; color: #999; font-size: 12px; cursor: pointer; transition: 0.2s; }
-                .nav-item.active { color: #00796B; font-weight: bold; transform: scale(1.1); }
+                .nav-item.active { color: #00897B; font-weight: bold; transform: scale(1.1); }
                 .nav-item span.material-symbols-rounded { margin-bottom: 4px; font-size: 28px; }
             </style>
             <header class="inner-header" style="display: flex; align-items: center; justify-content: space-between; padding: 20px; background: white; border-bottom: 1px solid #eee;">
@@ -315,11 +318,11 @@
                 <div style="display: flex; flex-direction: column; gap: 12px; background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f9f9f9; border-radius: 12px;">
                         <span style="font-size: 15px; color: #37474F; font-weight: 500;">Routine Assistance</span>
-                        <div style="width: 40px; height: 24px; background: #00796B; border-radius: 12px; position: relative;"><div style="width: 18px; height: 18px; background: white; border-radius: 50%; position: absolute; right: 3px; top: 3px;"></div></div>
+                        <div style="width: 40px; height: 24px; background: #00897B; border-radius: 12px; position: relative;"><div style="width: 18px; height: 18px; background: white; border-radius: 50%; position: absolute; right: 3px; top: 3px;"></div></div>
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f9f9f9; border-radius: 12px;">
                         <span style="font-size: 15px; color: #37474F; font-weight: 500;">Daily Routine Reminders</span>
-                        <div style="width: 40px; height: 24px; background: #00796B; border-radius: 12px; position: relative;"><div style="width: 18px; height: 18px; background: white; border-radius: 50%; position: absolute; right: 3px; top: 3px;"></div></div>
+                        <div style="width: 40px; height: 24px; background: #00897B; border-radius: 12px; position: relative;"><div style="width: 18px; height: 18px; background: white; border-radius: 50%; position: absolute; right: 3px; top: 3px;"></div></div>
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f9f9f9; border-radius: 12px;">
                         <span style="font-size: 15px; color: #37474F; font-weight: 500;">Appointment Reminders</span>
@@ -327,7 +330,7 @@
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f9f9f9; border-radius: 12px;">
                         <span style="font-size: 15px; color: #37474F; font-weight: 500;">Orientation Support</span>
-                        <div style="width: 40px; height: 24px; background: #00796B; border-radius: 12px; position: relative;"><div style="width: 18px; height: 18px; background: white; border-radius: 50%; position: absolute; right: 3px; top: 3px;"></div></div>
+                        <div style="width: 40px; height: 24px; background: #00897B; border-radius: 12px; position: relative;"><div style="width: 18px; height: 18px; background: white; border-radius: 50%; position: absolute; right: 3px; top: 3px;"></div></div>
                     </div>
                 </div>
             </main>
@@ -337,8 +340,8 @@
         <section id="screen-preferences" class="screen" style="background: #FDFCF0;">
             <header class="inner-header" style="display: flex; align-items: center; justify-content: space-between; padding: 20px; background: white; border-bottom: 1px solid #eee;">
                 <button onclick="showScreen('home-screen')" style="background: none; border: none; font-size: 24px; color: #37474F; cursor: pointer;"><span class="material-symbols-rounded">arrow_back</span></button>
-                <h2 style="font-size: 18px; color: #00796B;">User Preferences</h2>
-                <button onclick="showScreen('home-screen')" style="background: #00796B; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: bold;">Save</button>
+                <h2 style="font-size: 18px; color: #00897B;">User Preferences</h2>
+                <button onclick="showScreen('home-screen')" style="background: #00897B; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: bold;">Save</button>
             </header>
             <main class="content-pad" style="padding-top: 20px;">
                 <div style="display: flex; flex-direction: column; gap: 16px; background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
@@ -371,7 +374,7 @@
             <main class="content-pad" style="padding-top: 20px;">
                 <div style="display: flex; flex-direction: column; gap: 16px; background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
                     <label style="font-size: 14px; color: #666; font-weight: 600;">Family / Familiar People</label>
-                    <button style="width: 100%; padding: 12px; border-radius: 8px; border: 1px dashed #00796B; background: #E0F2F1; color: #00796B; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: 'Poppins';">
+                    <button style="width: 100%; padding: 12px; border-radius: 8px; border: 1px dashed #00897B; background: #E0F2F1; color: #00897B; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: 'Poppins';">
                         <span class="material-symbols-rounded">upload</span> Upload Photo
                     </button>
                     <label style="font-size: 14px; color: #666; font-weight: 600;">Favourite Activities</label>
@@ -383,7 +386,7 @@
         <!-- --- 6. Routine Screen --- -->
                         <!-- --- 6. Routine Screen --- -->
         <section id="routine-screen" class="screen" style="background: #FDFCF0;">
-            <header class="dash-header" style="border-radius: 0 0 24px 24px; padding: 45px 24px 20px; background: linear-gradient(135deg, #00796B, #004D40); color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.12); position: relative;">
+            <header class="dash-header" style="border-radius: 0 0 24px 24px; padding: 45px 24px 20px; background: linear-gradient(135deg, #00897B, #004D40); color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.12); position: relative;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                     <button onclick="showScreen('home-screen')" style="background: rgba(255,255,255,0.2); border: none; padding: 7px 14px; border-radius: 20px; color: white; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-weight: 600; font-size: 14px; backdrop-filter: blur(4px);">
                         <span class="material-symbols-rounded" style="font-size: 18px;">arrow_back</span> <span id="routine-back-text">Home</span>
@@ -411,7 +414,7 @@
 
             <main class="content-pad" style="padding-bottom: 90px; padding-top: 20px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                    <h3 id="routine-morning-title" style="color: #00796B; margin: 0; font-size: 16px; font-weight: 700;">&#x1F305; Morning</h3>
+                    <h3 id="routine-morning-title" style="color: #00897B; margin: 0; font-size: 16px; font-weight: 700;">&#x1F305; Morning</h3>
                     <span id="routine-morning-sub" style="font-size: 12px; color: #78909C;">Start of Day</span>
                 </div>
                 
@@ -426,7 +429,7 @@
                 </div>
                 
                 <div style="display: flex; justify-content: space-between; align-items: center; margin: 24px 0 12px;">
-                    <h3 id="routine-afternoon-title" style="color: #00796B; margin: 0; font-size: 16px; font-weight: 700;">&#x2600;&#xFE0F; Afternoon</h3>
+                    <h3 id="routine-afternoon-title" style="color: #00897B; margin: 0; font-size: 16px; font-weight: 700;">&#x2600;&#xFE0F; Afternoon</h3>
                     <span id="routine-afternoon-sub" style="font-size: 12px; color: #78909C;">Mid-Day Energy</span>
                 </div>
                 
@@ -461,7 +464,7 @@
                 </div>
 
                 <div style="display: flex; justify-content: space-between; align-items: center; margin: 24px 0 12px;">
-                    <h3 id="routine-evening-title" style="color: #00796B; margin: 0; font-size: 16px; font-weight: 700;">&#x1F319; Evening</h3>
+                    <h3 id="routine-evening-title" style="color: #00897B; margin: 0; font-size: 16px; font-weight: 700;">&#x1F319; Evening</h3>
                     <span id="routine-evening-sub" style="font-size: 12px; color: #78909C;">Rest & Relaxation</span>
                 </div>
                 
@@ -491,7 +494,8 @@
                 </div>
                 <h1 id="sos-title" style="color: white; font-size: 32px; margin-bottom: 10px;">Emergency</h1>
                 <p id="sos-desc" style="color: rgba(255,255,255,0.8); font-size: 18px; margin-bottom: 50px;">Alerting family in <span id="sos-countdown" style="font-weight: bold; font-size: 24px;">5</span>s</p>
-                <button id="sos-cancel-btn" onclick="showScreen('home-screen')" style="background: transparent; border: 2px solid white; color: white; padding: 16px 40px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer;">Cancel</button>
+                <p id="sos-dispatch-message" style="display:none; color: white; font-size: 16px; line-height: 1.5; max-width: 320px; margin-bottom: 40px; background: rgba(0,0,0,0.2); padding: 16px; border-radius: 14px;"></p>
+                <button id="sos-cancel-btn" onclick="cancelSos()" style="background: transparent; border: 2px solid white; color: white; padding: 16px 40px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; min-height: 55px;">Cancel</button>
             </main>
         </section>
 
@@ -559,7 +563,7 @@
         <!-- --- Progress Screen --- -->
         <section id="progress-screen" class="screen" style="background: #FDFCF0;">
             <header class="inner-header" style="padding: 40px 24px 20px; background: white; border-bottom: 1px solid #eee; text-align: center; display: block;">
-                <h1 id="progress-title" style="font-size: 24px; color: #00796B; margin: 0;">Daily Wellness Progress</h1>
+                <h1 id="progress-title" style="font-size: 24px; color: #00897B; margin: 0;">Daily Wellness Progress</h1>
             </header>
             <main class="content-pad" style="padding-bottom: 120px;">
                 
@@ -590,8 +594,8 @@
                 <div id="ai-clinical-comparison-card" style="background: white; border-radius: 18px; padding: 18px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); border: 1px solid #E0F2F1;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <div style="display: flex; align-items: center; gap: 6px;">
-                            <span class="material-symbols-rounded" style="color: #00796B;">neurology</span>
-                            <h3 id="ai-comparison-title" style="margin: 0; font-size: 16px; color: #00796B; font-weight: 800;">AI Focus Comparison</h3>
+                            <span class="material-symbols-rounded" style="color: #00897B;">neurology</span>
+                            <h3 id="ai-comparison-title" style="margin: 0; font-size: 16px; color: #00897B; font-weight: 800;">AI Focus Comparison</h3>
                         </div>
                         <span id="ai-model-badge" style="font-size: 11px; background: #E0F2F1; color: #004D40; padding: 3px 8px; border-radius: 10px; font-weight: 700;">AI Model</span>
                     </div>
@@ -667,7 +671,7 @@
 
     <!-- 🎙️ Floating Saarthi Voice AI Button -->
     <div id="saarthi-ai-mic-btn" onclick="openSaarthiVoiceModal()" style="position: fixed; bottom: 80px; right: 20px; z-index: 9999; cursor: pointer;">
-        <div style="position: relative; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #00796B, #004D40); display: flex; align-items: center; justify-content: center; color: white; font-size: 26px; box-shadow: 0 6px 20px rgba(0, 121, 107, 0.4); border: 2px solid white; transition: 0.2s;">
+        <div style="position: relative; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #00897B, #004D40); display: flex; align-items: center; justify-content: center; color: white; font-size: 26px; box-shadow: 0 6px 20px rgba(0, 121, 107, 0.4); border: 2px solid white; transition: 0.2s;">
             <span class="material-symbols-rounded" style="font-size: 28px;">mic</span>
             <span style="position: absolute; top: -2px; right: -2px; width: 14px; height: 14px; background: #FFC107; border-radius: 50%; border: 2px solid white;"></span>
         </div>
