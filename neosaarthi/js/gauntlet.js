@@ -244,3 +244,26 @@ function checkRecognition(symbol, answeredOld) {
   recordTaskScore(correct ? 1 : 0, 1, Date.now() - taskStartTime);
 }
 
+
+// CMT_feat(game12-13):_Delayed_
+
+// Delayed Recall
+function storeDelayedRecall(item) { sessionStorage.setItem('nsDR', item); }
+function startDelayedRecall() {
+  const target = sessionStorage.getItem('nsDR');
+  if (!target) { recordTaskScore(1, 1, 0); return; }
+  showDelayedRecallPrompt(target.substring(0,1) + '___', (answer) => {
+    recordTaskScore(answer.trim().toLowerCase() === target.toLowerCase() ? 1 : 0, 1, Date.now() - taskStartTime);
+  });
+}
+
+// Order Planning
+function startOrderPlanning(diff) {
+  const nums = Array.from({ length: 4 + diff }, (_, i) => i + 1).sort(() => Math.random() - 0.5);
+  renderSortableNumbers(nums);
+}
+function validateOrderPlan(seq) {
+  const ok = seq.every((v, i) => i === 0 || v > seq[i-1]);
+  recordTaskScore(ok ? 1 : 0, 1, Date.now() - taskStartTime);
+}
+
