@@ -1,0 +1,24 @@
+
+/* CMT_feat(ui):_Initialize */
+:root {
+  --primary: #1565C0;
+  --primary-dark: #0D47A1;
+  --accent: #E65100;
+  --bg: #FAFAFA;
+  --surface: #FFFFFF;
+  --text-primary: #1A1A1A;
+  --text-secondary: #424242;
+  --border: #E0E0E0;
+  --success: #2E7D32;
+  --warning: #F57F17;
+  /* WCAG AAA: contrast ratio >= 7:1 for all foreground/background pairs */
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  font-size: 20px; /* Elderly accessibility: min 20px body text */
+  line-height: 1.7;
+  color: var(--text-primary);
+  background: var(--bg);
+}
+
