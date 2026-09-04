@@ -98,3 +98,28 @@ function applyUIMode(mode) {
   updateProgressUI();
 }
 
+
+// CMT_feat(ai):_Implement_getAc
+
+function getAccurateProgressMetrics() {
+  const scores = getRecentScores(30);
+  const profile = buildCognitiveProfile(scores);
+  const overall = Math.round(Object.values(profile).reduce((a, b) => a + b, 0) / Object.keys(profile).length);
+  const trend = computeTrend(scores);
+  return { overall, domains: profile, trend, totalSessions: getSessionCount() };
+}
+
+function computeTrend(scores) {
+  if (scores.length < 4) return 'stable';
+  const half = Math.floor(scores.length / 2);
+  const early = scores.slice(0, half).reduce((a, s) => a + s.score, 0) / half;
+  const late  = scores.slice(half).reduce((a, s) => a + s.score, 0) / (scores.length - half);
+  if (late - early > 5) return 'improving';
+  if (early - late > 5) return 'declining';
+  return 'stable';
+}
+
+function getSessionCount() {
+  return JSON.parse(localStorage.getItem('gauntletHistory') || '[]').length;
+}
+
