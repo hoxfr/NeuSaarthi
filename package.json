@@ -1,4 +1,11 @@
 {
+  "name": "neosaarthi",
+  "version": "1.0.0",
+  "description": "NeoSaarthi - daily cognitive wellness companion for elderly adults",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
     "jsdom": "^30.0.1",
     "localtunnel": "^2.0.2"

@@ -3,7 +3,7 @@ const https = require('https');
 const fs = require('fs');
 const path = require('path');
 
-const FAST2SMS_KEY = 'DeWwXpQ3Prc4ZtLTJ7NfOCgbxFv10YVqk9Hao5Ezs6dIRylm2iHjRIqdgync0wPoTlL7NZs3UBpFXexJ';
+const FAST2SMS_KEY = process.env.FAST2SMS_KEY || '';
 const PORT = process.env.PORT || 3000;
 
 // In-memory store for OTPs: phone -> { otp, expiresAt }

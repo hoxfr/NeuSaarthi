@@ -27,3 +27,13 @@ temp_script.js
 add_*.py
 remove_*.py
 apply_*.py
+*.py
+*.sh
+*Fix*.js
+do*.js
+addFamilyQuiz.js
+buildRoutine.js
+hideTimer.js
+inspectScript.js
+rename.js
+restoreWalk.js
