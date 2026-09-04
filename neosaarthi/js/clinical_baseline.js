@@ -42,3 +42,22 @@ function getOverallWellnessLevel(profileScores) {
   return { level: 'Cognitive Scaffolding', score: Math.round(avg) };
 }
 
+
+// CMT_feat(baselines):_Add_anom
+
+function detectAnomalousDrops(sessionHistory) {
+  // Flags if any domain drops >15 points between consecutive sessions
+  const ANOMALY_THRESHOLD = 15;
+  const alerts = [];
+  if (!sessionHistory || sessionHistory.length < 2) return alerts;
+  const prev = sessionHistory[sessionHistory.length - 2];
+  const curr = sessionHistory[sessionHistory.length - 1];
+  Object.keys(DOMAIN_BASELINES).forEach(domain => {
+    const drop = (prev[domain] || 0) - (curr[domain] || 0);
+    if (drop > ANOMALY_THRESHOLD) {
+      alerts.push({ domain, drop: Math.round(drop), message: `Significant change detected in ${DOMAIN_BASELINES[domain].label}` });
+    }
+  });
+  return alerts;
+}
+
