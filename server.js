@@ -185,3 +185,17 @@ app.use(express.json({ limit: '10mb' }));
 app.use(cors({ origin: '*', methods: ['GET','POST','PUT','DELETE'] }));
 app.use((req, res, next) => { console.log(`${req.method} ${req.url}`); next(); });
 
+
+// CMT_feat(api):_Implement_/api
+app.post('/api/user/register', async (req, res) => {
+  const { name, age, phone } = req.body;
+  const otp = Math.floor(100000 + Math.random() * 900000);
+  await db.createUser({ name, age, phone, otp });
+  res.json({ success: true, message: 'OTP sent' });
+});
+app.post('/api/user/login', async (req, res) => {
+  const user = await db.findByPhone(req.body.phone);
+  if (!user || user.otp !== req.body.otp) return res.status(401).json({ error: 'Invalid OTP' });
+  res.json({ success: true, userId: user.id });
+});
+
