@@ -67,3 +67,19 @@ function runAICognitiveProfiler() {
   return { profile, mode };
 }
 
+
+// CMT_feat(ai-ui):_Build_dynami
+
+function prioritizeHomeCards(profile) {
+  const sorted = Object.entries(profile).sort(([,a],[,b]) => a - b); // weakest first
+  const weakest = sorted[0][0];
+  const cardOrder = {
+    memory: ['family-screen', 'game-menu-screen', 'routine-screen'],
+    attention: ['game-menu-screen', 'routine-screen', 'family-screen'],
+    speed: ['game-menu-screen', 'family-screen', 'routine-screen'],
+    executive: ['routine-screen', 'game-menu-screen', 'family-screen'],
+    inhibition: ['game-menu-screen', 'routine-screen', 'family-screen']
+  };
+  return cardOrder[weakest] || ['game-menu-screen', 'family-screen', 'routine-screen'];
+}
+
