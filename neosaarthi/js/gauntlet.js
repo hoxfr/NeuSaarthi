@@ -171,3 +171,23 @@ function checkMatrixAnswer(choice) {
   recordTaskScore(choice === matrixAnswer ? 1 : 0, 1, Date.now() - taskStartTime);
 }
 
+
+// CMT_feat(game8):_N-Back_Worki
+
+let nBackHistory = [], nBackLevel = 1, nBackCorrect = 0, nBackTotal = 0;
+function startNBack(diff) {
+  nBackLevel = diff <= 2 ? 1 : 2;
+  nBackHistory = []; nBackCorrect = 0; nBackTotal = 15;
+  runNBackTrial(0);
+}
+function runNBackTrial(idx) {
+  if (idx >= nBackTotal) { recordTaskScore(nBackCorrect, nBackTotal - nBackLevel, Date.now() - taskStartTime); return; }
+  const stimulus = NBACK_STIMULI[Math.floor(Math.random() * NBACK_STIMULI.length)];
+  const isMatch = nBackHistory.length >= nBackLevel && stimulus === nBackHistory[nBackHistory.length - nBackLevel];
+  showNBackStimulus(stimulus, (userSaidMatch) => {
+    if (idx >= nBackLevel) { if (userSaidMatch === isMatch) nBackCorrect++; }
+    nBackHistory.push(stimulus);
+    setTimeout(() => runNBackTrial(idx + 1), elderlyTimer(2200));
+  });
+}
+
