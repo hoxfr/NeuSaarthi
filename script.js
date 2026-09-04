@@ -1326,6 +1326,7 @@ function showScreen(screenId) {
         try {
             if (screenId === 'game-menu-screen') {
                 if (typeof renderGamesList === 'function') renderGamesList();
+                if (typeof renderExercisesList === 'function') renderExercisesList();
             } else if (screenId === 'home-screen') {
                 if (typeof updateProgressUI === 'function') updateProgressUI();
                 if (typeof renderAiCareTrackBanner === 'function') renderAiCareTrackBanner();
@@ -4089,6 +4090,653 @@ function quitAssessment() {
         }
         window.isQuitting = false;
     }, 150);
+}
+
+// ============================================================
+// LIFE-SKILLS EXERCISES MODULE
+// Standalone practice games, deliberately isolated from the Cognitive Gauntlet:
+// no GauntletScore, no AI_DOMAIN_GAMES, no localStorage['gameScores'] writes, no
+// timer, never shuffled into the 13-game assessment. Reachable only via the
+// "Life-Skills Exercises" section of the Games Menu.
+// ============================================================
+
+const EXERCISE_LIST = [
+    { id: 'orientation', name: 'Today & Around Me', desc: 'Practice day, time, and daily routine awareness', icon: '&#x1F324;&#xFE0F;' },
+    { id: 'pairs',       name: 'Pairs & Matching',   desc: 'Match familiar objects', icon: '&#x1F9E9;' },
+    { id: 'auditory',    name: 'Auditory Memory',    desc: 'Listen and remember', icon: '&#x1F442;' },
+    { id: 'route',       name: 'Route Planning',     desc: "Find your way", icon: '&#x1F5FA;&#xFE0F;' }
+];
+
+function renderExercisesList() {
+    const container = document.getElementById('exercises-list-container');
+    if (!container) return;
+    container.innerHTML = '';
+    EXERCISE_LIST.forEach(function (ex) {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.style.display = 'flex'; card.style.alignItems = 'center'; card.style.padding = '15px';
+        card.style.cursor = 'pointer'; card.style.marginBottom = '10px';
+        card.onclick = function () { startExercise(ex.id); };
+        card.innerHTML =
+            '<div class="icon-box" style="background:#F3E5F5;color:#8E24AA;font-size:24px;width:50px;height:50px;display:flex;align-items:center;justify-content:center;border-radius:12px;">' + ex.icon + '</div>' +
+            '<div style="flex:1;margin-left:15px;text-align:left;">' +
+                '<h3 style="color:#37474F;font-size:16px;margin:0 0 4px 0;">' + ex.name + '</h3>' +
+                '<p style="color:#78909C;font-size:13px;margin:0;">' + ex.desc + '</p>' +
+            '</div>' +
+            '<span style="color:#B0BEC5;">&#x25B6;</span>';
+        container.appendChild(card);
+    });
+}
+
+function startExercise(exerciseId) {
+    showScreen('exercise-screen');
+    window.currentExercise = { id: exerciseId, level: 1 };
+    loadExerciseLevel();
+}
+
+function loadExerciseLevel() {
+    const ex = window.currentExercise;
+    if (!ex) return;
+    const badge = document.getElementById('exercise-level-badge');
+    if (badge) badge.innerText = 'Level ' + ex.level;
+    const titleEl = document.getElementById('exercise-title');
+    const meta = EXERCISE_LIST.find(function (e) { return e.id === ex.id; });
+    if (titleEl && meta) titleEl.innerText = meta.name;
+    const area = document.getElementById('exercise-area');
+    if (area) area.innerHTML = '';
+
+    if (ex.id === 'orientation') renderOrientationLevel(ex.level);
+    else if (ex.id === 'pairs') renderPairsLevel(ex.level);
+    else if (ex.id === 'auditory') renderAuditoryLevel(ex.level);
+    else if (ex.id === 'route') renderRouteLevel(ex.level);
+}
+
+function quitExercise() {
+    try { window.speechSynthesis.cancel(); } catch (e) {}
+    window.currentExercise = null;
+    showScreen('game-menu-screen');
+}
+
+function advanceExerciseLevel() {
+    const ex = window.currentExercise;
+    if (!ex) return;
+    if (ex.level >= 3) {
+        renderExerciseComplete(ex.id);
+    } else {
+        ex.level++;
+        loadExerciseLevel();
+    }
+}
+
+function renderExerciseComplete(exerciseId) {
+    const area = document.getElementById('exercise-area');
+    if (!area) return;
+    area.innerHTML = '';
+    const meta = EXERCISE_LIST.find(function (e) { return e.id === exerciseId; });
+    const box = document.createElement('div');
+    box.style.textAlign = 'center';
+    box.innerHTML =
+        '<div style="font-size:60px;margin-bottom:10px;">&#x1F389;</div>' +
+        '<h2 style="color:#37474F;">Well done!</h2>' +
+        '<p style="color:#78909C;margin-bottom:24px;">You completed ' + (meta ? meta.name : 'the exercise') + '.</p>' +
+        '<button onclick="showScreen(\'game-menu-screen\')" style="background:#00796B;color:white;border:none;padding:15px 30px;font-size:18px;border-radius:30px;font-weight:bold;cursor:pointer;min-height:55px;">Back to Menu</button>' +
+        '<button id="exercise-play-again-btn" style="margin-top:12px;display:block;width:100%;background:white;color:#00796B;border:2px solid #00796B;padding:12px;font-size:16px;border-radius:30px;font-weight:bold;cursor:pointer;min-height:55px;">Play Again</button>';
+    area.appendChild(box);
+    const againBtn = document.getElementById('exercise-play-again-btn');
+    if (againBtn) againBtn.onclick = function () { window.currentExercise = { id: exerciseId, level: 1 }; loadExerciseLevel(); };
+}
+
+// --- Shared helper: gentle "flash then advance" (no red — see design note below) ---
+// These games are relaxed practice, not scored assessment, so wrong answers never
+// flash red. Instead the tapped option flashes a soft amber and the correct answer
+// is highlighted in green shortly after, then the flow advances.
+function flashAndAdvance(btn, isCorrect, onDone, correctBtn) {
+    try {
+        btn.style.transition = 'background 0.2s';
+        if (isCorrect) {
+            btn.style.background = '#4CAF50'; btn.style.color = 'white';
+            setTimeout(onDone, 600);
+        } else {
+            btn.style.background = '#FFECB3';
+            setTimeout(function () {
+                if (correctBtn) { correctBtn.style.background = '#4CAF50'; correctBtn.style.color = 'white'; }
+                setTimeout(onDone, 700);
+            }, 500);
+        }
+    } catch (e) { onDone(); }
+}
+
+// --- Shared helper: sequential Saarthi speech with gaps (speakSaarthi cancels any
+// in-flight utterance on each call, so words MUST be chained through onEnd, never
+// fired back-to-back) ---
+function speakSequence(words, gapMs, onAllDone) {
+    let cancelled = false;
+    function speakAt(i) {
+        if (cancelled) return;
+        if (i >= words.length) { if (typeof onAllDone === 'function') onAllDone(); return; }
+        speakSaarthi(words[i], function () {
+            if (cancelled) return;
+            setTimeout(function () { speakAt(i + 1); }, gapMs);
+        });
+    }
+    speakAt(0);
+    return { cancel: function () { cancelled = true; try { window.speechSynthesis.cancel(); } catch (e) {} } };
+}
+
+// --- Shared helper: two-step pick/lock/dim matching grid (Pairs & Matching) ---
+// Distinct from the gauntlet's makeGrid: tracks a first-pick/second-pick state
+// machine and locks matched pairs in place (dimmed, disabled) without re-rendering
+// the whole grid, rather than makeGrid's single-tap-and-advance pattern.
+function makeMatchGrid(area, items, opts) {
+    const grid = document.createElement('div');
+    grid.style.display = 'grid';
+    grid.style.gridTemplateColumns = 'repeat(' + (opts.columns || (items.length <= 6 ? 3 : 4)) + ', 1fr)';
+    grid.style.gap = '15px'; grid.style.marginTop = '20px';
+    grid.style.width = '100%'; grid.style.maxWidth = '460px';
+
+    let firstPick = null;
+    let locked = false;
+
+    items.forEach(function (item) {
+        const btn = document.createElement('button');
+        btn.innerHTML = item.display;
+        btn.style.padding = '15px'; btn.style.fontSize = '38px';
+        btn.style.borderRadius = '12px'; btn.style.border = '2px solid #ccc';
+        btn.style.background = 'white'; btn.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+        btn.style.cursor = 'pointer'; btn.dataset.matched = 'false';
+        btn.onclick = function () {
+            if (locked || btn.dataset.matched === 'true') return;
+            if (!firstPick) {
+                firstPick = { btn: btn, item: item };
+                btn.style.border = '3px solid #00796B';
+                btn.style.background = '#E0F2F1';
+                return;
+            }
+            if (firstPick.btn === btn) return;
+            locked = true;
+            const isMatch = opts.isPair(firstPick.item, item);
+            const flashColor = isMatch ? '#4CAF50' : '#FFECB3';
+            btn.style.background = flashColor;
+            firstPick.btn.style.background = flashColor;
+            setTimeout(function () {
+                if (isMatch) {
+                    [btn, firstPick.btn].forEach(function (b) {
+                        b.dataset.matched = 'true';
+                        b.style.opacity = '0.35';
+                        b.style.border = '2px solid #4CAF50';
+                        b.style.cursor = 'default';
+                    });
+                    opts.onMatch(firstPick.item, item);
+                } else {
+                    btn.style.background = 'white'; btn.style.border = '2px solid #ccc';
+                    firstPick.btn.style.background = 'white'; firstPick.btn.style.border = '2px solid #ccc';
+                    if (opts.onMismatch) opts.onMismatch(firstPick.item, item);
+                }
+                firstPick = null; locked = false;
+            }, 600);
+        };
+        grid.appendChild(btn);
+    });
+    area.appendChild(grid);
+    return grid;
+}
+
+function shuffleArr(arr) { return arr.slice().sort(function () { return Math.random() - 0.5; }); }
+
+// --- Per-language content pools. English/Hindi/Bengali fully written (the three
+// priority languages); every other language code falls back to English content,
+// same pattern as SAARTHI_I18N and the rest of the app's i18n. ---
+function exLang(pool) { return pool[currentLang] || pool.en; }
+
+const ORIENTATION_CONTENT = {
+    en: {
+        weekdays: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+        timeOfDay: ['Morning', 'Afternoon', 'Evening'],
+        seasons: ['Winter', 'Summer', 'Monsoon'],
+        qDay: 'What day is today?', qTime: 'Is it morning, afternoon, or evening?', qSeason: 'What season is it?',
+        l2: [
+            { prompt: 'It is raining. What should you take?', correct: 'Umbrella', options: ['Umbrella', 'Sunglasses', 'Fan'] },
+            { prompt: 'It is morning. What would you normally do?', correct: 'Breakfast', options: ['Breakfast', 'Dinner', 'Sleep'] },
+            { prompt: 'It is winter. What should you wear?', correct: 'Sweater', options: ['Sweater', 'T-shirt', 'Sandals'] }
+        ],
+        l3Situation: 'It is Monday morning. It is raining. You are at home. You want to go outside.',
+        l3Questions: [
+            { q: 'What should you take with you?', options: ['Umbrella', 'Sunglasses', 'Nothing'], correct: 'Umbrella' },
+            { q: 'What time of day is it?', options: ['Morning', 'Night'], correct: 'Morning' }
+        ]
+    },
+    hi: {
+        weekdays: ['रविवार', 'सोमवार', 'मंगलवार', 'बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार'],
+        timeOfDay: ['सुबह', 'दोपहर', 'शाम'],
+        seasons: ['सर्दी', 'गर्मी', 'बरसात'],
+        qDay: 'आज कौन सा दिन है?', qTime: 'क्या अभी सुबह है, दोपहर है, या शाम है?', qSeason: 'अभी कौन सा मौसम है?',
+        l2: [
+            { prompt: 'बारिश हो रही है। आपको क्या साथ ले जाना चाहिए?', correct: 'छाता', options: ['छाता', 'धूप का चश्मा', 'पंखा'] },
+            { prompt: 'सुबह का समय है। आप आमतौर पर क्या करते हैं?', correct: 'नाश्ता', options: ['नाश्ता', 'रात का खाना', 'नींद'] },
+            { prompt: 'सर्दी का मौसम है। आपको क्या पहनना चाहिए?', correct: 'स्वेटर', options: ['स्वेटर', 'टी-शर्ट', 'चप्पल'] }
+        ],
+        l3Situation: 'आज सोमवार की सुबह है। बारिश हो रही है। आप घर पर हैं। आप बाहर जाना चाहते हैं।',
+        l3Questions: [
+            { q: 'आपको अपने साथ क्या ले जाना चाहिए?', options: ['छाता', 'धूप का चश्मा', 'कुछ नहीं'], correct: 'छाता' },
+            { q: 'अभी दिन का कौन सा समय है?', options: ['सुबह', 'रात'], correct: 'सुबह' }
+        ]
+    },
+    bn: {
+        weekdays: ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'],
+        timeOfDay: ['সকাল', 'দুপুর', 'সন্ধ্যা'],
+        seasons: ['শীত', 'গ্রীষ্ম', 'বর্ষা'],
+        qDay: 'আজ কী বার?', qTime: 'এখন কি সকাল, দুপুর, নাকি সন্ধ্যা?', qSeason: 'এখন কোন ঋতু চলছে?',
+        l2: [
+            { prompt: 'বৃষ্টি হচ্ছে। আপনার কী নিয়ে যাওয়া উচিত?', correct: 'ছাতা', options: ['ছাতা', 'রোদচশমা', 'পাখা'] },
+            { prompt: 'সকালবেলা। আপনি সাধারণত কী করেন?', correct: 'জলখাবার', options: ['জলখাবার', 'রাতের খাবার', 'ঘুম'] },
+            { prompt: 'শীতকাল। আপনার কী পরা উচিত?', correct: 'সোয়েটার', options: ['সোয়েটার', 'টি-শার্ট', 'চপ্পল'] }
+        ],
+        l3Situation: 'আজ সোমবার সকাল। বৃষ্টি হচ্ছে। আপনি বাড়িতে আছেন। আপনি বাইরে যেতে চান।',
+        l3Questions: [
+            { q: 'আপনার সাথে কী নেওয়া উচিত?', options: ['ছাতা', 'রোদচশমা', 'কিছু না'], correct: 'ছাতা' },
+            { q: 'এখন দিনের কোন সময়?', options: ['সকাল', 'রাত'], correct: 'সকাল' }
+        ]
+    }
+};
+
+function actualTimeOfDayIdx() {
+    const h = new Date().getHours();
+    return h < 12 ? 0 : (h < 17 ? 1 : 2);
+}
+function actualSeasonIdx() {
+    const m = new Date().getMonth(); // 0-11
+    if (m === 11 || m === 0 || m === 1) return 0; // Winter: Dec-Feb
+    if (m >= 2 && m <= 5) return 1; // Summer: Mar-Jun
+    return 2; // Monsoon-ish: Jul-Nov
+}
+
+function renderOrientationQuestion(promptText, options, correctText, area, onAnswered) {
+    const p = document.createElement('h3');
+    p.innerText = promptText; p.style.color = '#37474F'; p.style.textAlign = 'center'; p.style.margin = '0 0 24px 0'; p.style.fontSize = '19px'; p.style.lineHeight = '1.4';
+    area.appendChild(p);
+    try { speakSaarthi(promptText); } catch (e) {}
+    const wrap = document.createElement('div');
+    wrap.style.display = 'flex'; wrap.style.flexDirection = 'column'; wrap.style.gap = '14px'; wrap.style.width = '100%'; wrap.style.maxWidth = '420px';
+    const buttons = [];
+    options.forEach(function (opt) {
+        const btn = document.createElement('button');
+        btn.innerText = opt;
+        btn.style.padding = '16px'; btn.style.fontSize = '18px'; btn.style.fontWeight = '600';
+        btn.style.borderRadius = '14px'; btn.style.border = '2px solid #ccc'; btn.style.background = 'white';
+        btn.style.cursor = 'pointer'; btn.style.minHeight = '55px';
+        btn.onclick = function () {
+            buttons.forEach(function (b) { b.disabled = true; b.style.cursor = 'default'; });
+            const isCorrect = opt === correctText;
+            const correctBtn = buttons.find(function (b) { return b.innerText === correctText; });
+            flashAndAdvance(btn, isCorrect, onAnswered, correctBtn);
+        };
+        buttons.push(btn);
+        wrap.appendChild(btn);
+    });
+    area.appendChild(wrap);
+}
+
+function renderOrientationLevel(level) {
+    const area = document.getElementById('exercise-area');
+    const L = exLang(ORIENTATION_CONTENT);
+    if (level === 1) {
+        const qs = [
+            { prompt: L.qDay, options: shuffleArr([L.weekdays[new Date().getDay()], L.weekdays[(new Date().getDay() + 2) % 7], L.weekdays[(new Date().getDay() + 4) % 7]]), correct: L.weekdays[new Date().getDay()] },
+            { prompt: L.qTime, options: L.timeOfDay.slice(), correct: L.timeOfDay[actualTimeOfDayIdx()] },
+            { prompt: L.qSeason, options: L.seasons.slice(), correct: L.seasons[actualSeasonIdx()] }
+        ];
+        let qIdx = 0;
+        function next() {
+            area.innerHTML = '';
+            if (qIdx >= qs.length) { advanceExerciseLevel(); return; }
+            const q = qs[qIdx++];
+            renderOrientationQuestion(q.prompt, q.options, q.correct, area, next);
+        }
+        next();
+    } else if (level === 2) {
+        let idx = 0;
+        function next() {
+            area.innerHTML = '';
+            if (idx >= L.l2.length) { advanceExerciseLevel(); return; }
+            const s = L.l2[idx++];
+            renderOrientationQuestion(s.prompt, shuffleArr(s.options), s.correct, area, next);
+        }
+        next();
+    } else {
+        const sit = document.createElement('p');
+        sit.innerText = L.l3Situation; sit.style.color = '#00796B'; sit.style.fontWeight = '600'; sit.style.textAlign = 'center';
+        sit.style.background = '#E0F2F1'; sit.style.padding = '16px'; sit.style.borderRadius = '14px'; sit.style.marginBottom = '20px'; sit.style.fontSize = '16px'; sit.style.lineHeight = '1.5';
+        area.appendChild(sit);
+        try { speakSaarthi(L.l3Situation); } catch (e) {}
+        let idx = 0;
+        const qBox = document.createElement('div');
+        area.appendChild(qBox);
+        function next() {
+            qBox.innerHTML = '';
+            if (idx >= L.l3Questions.length) { advanceExerciseLevel(); return; }
+            const q = L.l3Questions[idx++];
+            renderOrientationQuestion(q.q, shuffleArr(q.options), q.correct, qBox, next);
+        }
+        next();
+    }
+}
+
+const PAIRS_CONTENT = {
+    en: { promptSame: 'Tap two matching pictures', promptRelated: 'Which two things go together?', promptRemember: 'Remember these objects', promptRecall: 'Which objects did you see?' },
+    hi: { promptSame: 'दो मिलते-जुलते चित्रों पर टैप करें', promptRelated: 'कौन सी दो चीज़ें एक साथ चलती हैं?', promptRemember: 'इन वस्तुओं को याद रखें', promptRecall: 'आपने कौन सी वस्तुएं देखीं?' },
+    bn: { promptSame: 'দুটি মিলে যাওয়া ছবিতে ট্যাপ করুন', promptRelated: 'কোন দুটি জিনিস একসাথে যায়?', promptRemember: 'এই জিনিসগুলো মনে রাখুন', promptRecall: 'আপনি কোন জিনিসগুলো দেখেছিলেন?' }
+};
+const IDENTICAL_OBJECTS = ['&#x1F34E;', '&#x1F511;', '&#x1F45E;', '&#x2615;', '&#x1F338;', '&#x1F9E6;']; // apple, key, shoe, cup, flower, sock
+const RELATED_PAIRS = [
+    { a: '&#x1F511;', b: '&#x1F6AA;' }, // key -> door
+    { a: '&#x2602;&#xFE0F;', b: '&#x1F327;&#xFE0F;' }, // umbrella -> rain cloud
+    { a: '&#x2615;', b: '&#x1F944;' }, // cup -> spoon
+    { a: '&#x1F45E;', b: '&#x1F9E6;' }, // shoe -> sock
+    { a: '&#x2600;&#xFE0F;', b: '&#x1F576;&#xFE0F;' } // sun -> sunglasses
+];
+
+function renderPairsPrompt(area, text) {
+    const p = document.createElement('h3');
+    p.innerText = text; p.style.color = '#37474F'; p.style.textAlign = 'center'; p.style.margin = '0 0 10px 0'; p.style.fontSize = '18px';
+    area.appendChild(p);
+}
+
+function renderPairsLevel(level) {
+    const area = document.getElementById('exercise-area');
+    const L = exLang(PAIRS_CONTENT);
+    if (level === 1) {
+        const n = 3; // 3 identical pairs
+        const chosen = shuffleArr(IDENTICAL_OBJECTS).slice(0, n);
+        const items = shuffleArr(chosen.concat(chosen).map(function (emoji, i) { return { key: i, display: emoji, groupId: emoji }; }));
+        renderPairsPrompt(area, L.promptSame);
+        let matched = 0;
+        makeMatchGrid(area, items, {
+            isPair: function (a, b) { return a.groupId === b.groupId; },
+            onMatch: function () { matched++; if (matched === n) setTimeout(advanceExerciseLevel, 500); }
+        });
+    } else if (level === 2) {
+        const n = 4;
+        const chosenPairs = shuffleArr(RELATED_PAIRS).slice(0, n);
+        const items = shuffleArr(chosenPairs.reduce(function (acc, pair, i) {
+            acc.push({ key: 'a' + i, display: pair.a, groupId: i });
+            acc.push({ key: 'b' + i, display: pair.b, groupId: i });
+            return acc;
+        }, []));
+        renderPairsPrompt(area, L.promptRelated);
+        let matched = 0;
+        makeMatchGrid(area, items, {
+            isPair: function (a, b) { return a.groupId === b.groupId; },
+            onMatch: function () { matched++; if (matched === n) setTimeout(advanceExerciseLevel, 500); }
+        });
+    } else {
+        const seen = shuffleArr(IDENTICAL_OBJECTS).slice(0, 4);
+        // Dedupe first: IDENTICAL_OBJECTS and RELATED_PAIRS intentionally reuse some of
+        // the same emoji codes, so a naive concat can produce duplicate distractors.
+        const candidatePool = Array.from(new Set(
+            IDENTICAL_OBJECTS.concat(RELATED_PAIRS.map(function (p) { return p.a; }), RELATED_PAIRS.map(function (p) { return p.b; }))
+        )).filter(function (o) { return seen.indexOf(o) === -1; });
+        const distractors = shuffleArr(candidatePool).slice(0, 4);
+        renderPairsPrompt(area, L.promptRemember);
+        const revealGrid = document.createElement('div');
+        revealGrid.style.display = 'flex'; revealGrid.style.gap = '16px'; revealGrid.style.justifyContent = 'center'; revealGrid.style.margin = '20px 0'; revealGrid.style.fontSize = '48px';
+        seen.forEach(function (e) { const s = document.createElement('span'); s.innerHTML = e; revealGrid.appendChild(s); });
+        area.appendChild(revealGrid);
+        setTimeout(function () {
+            area.innerHTML = '';
+            renderPairsPrompt(area, L.promptRecall);
+            const pool = shuffleArr(seen.concat(distractors));
+            let picked = 0;
+            const wrap = document.createElement('div');
+            wrap.style.display = 'grid'; wrap.style.gridTemplateColumns = 'repeat(4, 1fr)'; wrap.style.gap = '12px'; wrap.style.marginTop = '16px'; wrap.style.maxWidth = '460px';
+            pool.forEach(function (emoji) {
+                const btn = document.createElement('button');
+                btn.innerHTML = emoji;
+                btn.style.padding = '14px'; btn.style.fontSize = '34px'; btn.style.borderRadius = '12px';
+                btn.style.border = '2px solid #ccc'; btn.style.background = 'white'; btn.style.cursor = 'pointer';
+                btn.onclick = function () {
+                    if (btn.disabled) return;
+                    btn.disabled = true;
+                    const wasSeen = seen.indexOf(emoji) !== -1;
+                    btn.style.background = wasSeen ? '#4CAF50' : '#FFECB3';
+                    picked++;
+                    if (picked >= 4) setTimeout(advanceExerciseLevel, 700);
+                };
+                wrap.appendChild(btn);
+            });
+            area.appendChild(wrap);
+        }, 6000);
+    }
+}
+
+const AUDITORY_CONTENT = {
+    en: { listen: 'Listen carefully...', whichHeard: 'Which pictures did you hear?', tapOrder: 'Now tap them in the order you heard them', replay: 'Replay' },
+    hi: { listen: 'ध्यान से सुनें...', whichHeard: 'आपने कौन सी तस्वीरें सुनीं?', tapOrder: 'अब उन्हें उसी क्रम में टैप करें जिस क्रम में आपने सुना', replay: 'फिर से सुनें' },
+    bn: { listen: 'মনোযোগ দিয়ে শুনুন...', whichHeard: 'আপনি কোন ছবিগুলো শুনেছেন?', tapOrder: 'এখন যে ক্রমে শুনেছেন সেই ক্রমে ট্যাপ করুন', replay: 'আবার শুনুন' }
+};
+const AUDITORY_WORDS = {
+    en: [{ w: 'Apple', e: '&#x1F34E;' }, { w: 'Car', e: '&#x1F697;' }, { w: 'Tree', e: '&#x1F333;' }, { w: 'Dog', e: '&#x1F436;' }, { w: 'Cup', e: '&#x2615;' }, { w: 'Key', e: '&#x1F511;' }, { w: 'Guitar', e: '&#x1F3B8;' }, { w: 'Door', e: '&#x1F6AA;' }, { w: 'Flower', e: '&#x1F338;' }, { w: 'Spoon', e: '&#x1F944;' }],
+    hi: [{ w: 'सेब', e: '&#x1F34E;' }, { w: 'कार', e: '&#x1F697;' }, { w: 'पेड़', e: '&#x1F333;' }, { w: 'कुत्ता', e: '&#x1F436;' }, { w: 'कप', e: '&#x2615;' }, { w: 'चाबी', e: '&#x1F511;' }, { w: 'गिटार', e: '&#x1F3B8;' }, { w: 'दरवाज़ा', e: '&#x1F6AA;' }, { w: 'फूल', e: '&#x1F338;' }, { w: 'चम्मच', e: '&#x1F944;' }],
+    bn: [{ w: 'আপেল', e: '&#x1F34E;' }, { w: 'গাড়ি', e: '&#x1F697;' }, { w: 'গাছ', e: '&#x1F333;' }, { w: 'কুকুর', e: '&#x1F436;' }, { w: 'কাপ', e: '&#x2615;' }, { w: 'চাবি', e: '&#x1F511;' }, { w: 'গিটার', e: '&#x1F3B8;' }, { w: 'দরজা', e: '&#x1F6AA;' }, { w: 'ফুল', e: '&#x1F338;' }, { w: 'চামচ', e: '&#x1F944;' }]
+};
+
+function renderAuditoryLevel(level) {
+    const area = document.getElementById('exercise-area');
+    const L = exLang(AUDITORY_CONTENT);
+    const wordPool = exLang(AUDITORY_WORDS);
+    const count = level === 1 ? 2 : (level === 2 ? 3 : 5);
+    const chosen = shuffleArr(wordPool).slice(0, count);
+    let activeSeq = null;
+
+    function showListening() {
+        area.innerHTML = '';
+        const msg = document.createElement('h3');
+        msg.innerText = L.listen; msg.style.color = '#00796B'; msg.style.textAlign = 'center';
+        area.appendChild(msg);
+        const icon = document.createElement('div');
+        icon.innerHTML = '&#x1F399;&#xFE0F;'; icon.style.fontSize = '60px'; icon.style.textAlign = 'center'; icon.style.marginTop = '20px';
+        area.appendChild(icon);
+        activeSeq = speakSequence(chosen.map(function (c) { return c.w; }), 900, function () {
+            if (level === 1) renderRecognizeChoices(); else renderOrderChoices();
+        });
+    }
+
+    function replayBtn(container) {
+        const btn = document.createElement('button');
+        btn.innerHTML = '&#x1F501; ' + L.replay;
+        btn.style.marginTop = '20px'; btn.style.padding = '12px 24px'; btn.style.fontSize = '15px'; btn.style.fontWeight = '600';
+        btn.style.borderRadius = '20px'; btn.style.border = '2px solid #00796B'; btn.style.background = 'white'; btn.style.color = '#00796B'; btn.style.cursor = 'pointer'; btn.style.minHeight = '48px';
+        btn.onclick = function () {
+            if (activeSeq) activeSeq.cancel();
+            activeSeq = speakSequence(chosen.map(function (c) { return c.w; }), 900, function () {});
+        };
+        container.appendChild(btn);
+    }
+
+    function renderRecognizeChoices() {
+        area.innerHTML = '';
+        const p = document.createElement('h3'); p.innerText = L.whichHeard; p.style.color = '#37474F'; p.style.textAlign = 'center';
+        area.appendChild(p);
+        const distractors = shuffleArr(wordPool.filter(function (w) { return chosen.indexOf(w) === -1; })).slice(0, 2);
+        const options = shuffleArr(chosen.concat(distractors));
+        const grid = document.createElement('div');
+        grid.style.display = 'grid'; grid.style.gridTemplateColumns = 'repeat(2, 1fr)'; grid.style.gap = '15px'; grid.style.marginTop = '20px'; grid.style.maxWidth = '400px';
+        let selected = 0;
+        options.forEach(function (opt) {
+            const btn = document.createElement('button');
+            btn.innerHTML = opt.e;
+            btn.style.padding = '20px'; btn.style.fontSize = '40px'; btn.style.borderRadius = '12px';
+            btn.style.border = '2px solid #ccc'; btn.style.background = 'white'; btn.style.cursor = 'pointer';
+            btn.onclick = function () {
+                if (btn.disabled) return;
+                btn.disabled = true;
+                const wasHeard = chosen.indexOf(opt) !== -1;
+                btn.style.background = wasHeard ? '#4CAF50' : '#FFECB3';
+                selected++;
+                if (selected >= 2) setTimeout(advanceExerciseLevel, 700);
+            };
+            grid.appendChild(btn);
+        });
+        area.appendChild(grid);
+        replayBtn(area);
+    }
+
+    function renderOrderChoices() {
+        area.innerHTML = '';
+        const p = document.createElement('h3'); p.innerText = L.tapOrder; p.style.color = '#37474F'; p.style.textAlign = 'center'; p.style.fontSize = '16px';
+        area.appendChild(p);
+        const shuffledForDisplay = shuffleArr(chosen);
+        const grid = document.createElement('div');
+        grid.style.display = 'grid'; grid.style.gridTemplateColumns = 'repeat(' + (chosen.length <= 3 ? 3 : 3) + ', 1fr)'; grid.style.gap = '15px'; grid.style.marginTop = '20px'; grid.style.maxWidth = '440px';
+        const userOrder = [];
+        shuffledForDisplay.forEach(function (opt) {
+            const btn = document.createElement('button');
+            btn.innerHTML = opt.e;
+            btn.style.position = 'relative';
+            btn.style.padding = '18px'; btn.style.fontSize = '36px'; btn.style.borderRadius = '12px';
+            btn.style.border = '2px solid #ccc'; btn.style.background = 'white'; btn.style.cursor = 'pointer';
+            btn.onclick = function () {
+                if (btn.disabled) return;
+                btn.disabled = true;
+                userOrder.push(opt);
+                const badge = document.createElement('span');
+                badge.innerText = String(userOrder.length);
+                badge.style.cssText = 'position:absolute;top:-8px;right:-8px;background:#00796B;color:white;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;';
+                btn.appendChild(badge);
+                btn.style.opacity = '0.7';
+                if (userOrder.length === chosen.length) {
+                    const allCorrect = userOrder.every(function (o, i) { return o.w === chosen[i].w; });
+                    setTimeout(function () {
+                        Array.prototype.forEach.call(grid.children, function (b, idx) {
+                            b.style.background = allCorrect ? '#4CAF50' : '#FFECB3';
+                        });
+                        setTimeout(advanceExerciseLevel, 800);
+                    }, 300);
+                }
+            };
+            grid.appendChild(btn);
+        });
+        area.appendChild(grid);
+        replayBtn(area);
+    }
+
+    showListening();
+}
+
+const ROUTE_CONTENT = {
+    en: {
+        landmarks: { home: 'Home', park: 'Park', market: 'Market', hospital: 'Hospital', pharmacy: 'Pharmacy' },
+        dirs: { straight: 'Go straight', left: 'Turn left', right: 'Turn right', up: 'Go up' },
+        l1Prompt: 'Go from Home to the Park. Which way do you go?',
+        l2Prompt: 'Go from Home to the Hospital. Follow the path, one step at a time.',
+        l3Prompt: 'Go from Home to the Pharmacy. Go past the Park, then turn right at the Market.',
+        l3q1: 'Which landmark do you pass first?', l3q2: 'Where do you turn right?'
+    },
+    hi: {
+        landmarks: { home: 'घर', park: 'पार्क', market: 'बाज़ार', hospital: 'अस्पताल', pharmacy: 'फार्मेसी' },
+        dirs: { straight: 'सीधे जाएं', left: 'बाएं मुड़ें', right: 'दाएं मुड़ें', up: 'ऊपर जाएं' },
+        l1Prompt: 'घर से पार्क तक जाएं। आप किस दिशा में जाएंगे?',
+        l2Prompt: 'घर से अस्पताल तक जाएं। एक-एक कदम रास्ते का पालन करें।',
+        l3Prompt: 'घर से फार्मेसी तक जाएं। पार्क को पार करें, फिर बाज़ार पर दाएं मुड़ें।',
+        l3q1: 'आप सबसे पहले किस स्थान से गुजरेंगे?', l3q2: 'आप दाएं कहाँ मुड़ेंगे?'
+    },
+    bn: {
+        landmarks: { home: 'বাড়ি', park: 'পার্ক', market: 'বাজার', hospital: 'হাসপাতাল', pharmacy: 'ফার্মেসি' },
+        dirs: { straight: 'সোজা যান', left: 'বামে ঘুরুন', right: 'ডানে ঘুরুন', up: 'উপরে যান' },
+        l1Prompt: 'বাড়ি থেকে পার্কে যান। আপনি কোন দিকে যাবেন?',
+        l2Prompt: 'বাড়ি থেকে হাসপাতালে যান। এক পা এক পা করে পথ অনুসরণ করুন।',
+        l3Prompt: 'বাড়ি থেকে ফার্মেসিতে যান। পার্ক পেরিয়ে যান, তারপর বাজারে ডানে ঘুরুন।',
+        l3q1: 'আপনি প্রথমে কোন জায়গা দিয়ে যাবেন?', l3q2: 'আপনি কোথায় ডানে ঘুরবেন?'
+    }
+};
+const MAP_ICONS = { home: '&#x1F3E0;', park: '&#x1F333;', market: '&#x1F3EA;', hospital: '&#x1F3E5;', pharmacy: '&#x1F48A;' };
+const MAP_POS = { home: { x: 15, y: 75 }, park: { x: 50, y: 20 }, market: { x: 78, y: 50 }, hospital: { x: 85, y: 15 }, pharmacy: { x: 55, y: 82 } };
+
+function renderMap(area, landmarkKeys, pathLines) {
+    const mapBox = document.createElement('div');
+    mapBox.style.position = 'relative'; mapBox.style.width = '100%'; mapBox.style.maxWidth = '380px';
+    mapBox.style.height = '260px'; mapBox.style.background = '#E8F5E9'; mapBox.style.borderRadius = '16px'; mapBox.style.marginBottom = '20px';
+    let svg = '<svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;"><defs><marker id="arrowhead" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><polygon points="0 0, 8 4, 0 8" fill="#00796B"/></marker></defs>';
+    (pathLines || []).forEach(function (line) {
+        const from = MAP_POS[line.from], to = MAP_POS[line.to];
+        svg += '<line x1="' + from.x + '%" y1="' + from.y + '%" x2="' + to.x + '%" y2="' + to.y + '%" stroke="#00796B" stroke-width="3" marker-end="url(#arrowhead)"/>';
+    });
+    svg += '</svg>';
+    mapBox.innerHTML = svg;
+    landmarkKeys.forEach(function (key) {
+        const pos = MAP_POS[key];
+        const node = document.createElement('div');
+        node.style.position = 'absolute'; node.style.left = pos.x + '%'; node.style.top = pos.y + '%';
+        node.style.transform = 'translate(-50%,-50%)'; node.style.textAlign = 'center';
+        node.innerHTML = '<div style="font-size:32px;">' + MAP_ICONS[key] + '</div><div style="font-size:11px;font-weight:bold;color:#37474F;background:white;padding:1px 6px;border-radius:8px;">' + exLang(ROUTE_CONTENT).landmarks[key] + '</div>';
+        mapBox.appendChild(node);
+    });
+    area.appendChild(mapBox);
+}
+
+function renderRouteLevel(level) {
+    const area = document.getElementById('exercise-area');
+    const L = exLang(ROUTE_CONTENT);
+
+    function prompt(text) {
+        const p = document.createElement('p');
+        p.innerText = text; p.style.color = '#37474F'; p.style.textAlign = 'center'; p.style.fontSize = '15px'; p.style.marginBottom = '16px'; p.style.maxWidth = '380px'; p.style.lineHeight = '1.4';
+        area.appendChild(p);
+        try { speakSaarthi(text); } catch (e) {}
+    }
+
+    function dirButtons(correctSeq, onDone) {
+        const wrap = document.createElement('div');
+        wrap.style.display = 'flex'; wrap.style.flexWrap = 'wrap'; wrap.style.gap = '12px'; wrap.style.justifyContent = 'center'; wrap.style.maxWidth = '380px';
+        let stepIdx = 0;
+        const dirKeys = ['straight', 'left', 'right', 'up'];
+        dirKeys.forEach(function (dk) {
+            const btn = document.createElement('button');
+            btn.innerText = L.dirs[dk];
+            btn.style.padding = '14px 18px'; btn.style.fontSize = '16px'; btn.style.fontWeight = '600'; btn.style.borderRadius = '14px';
+            btn.style.border = '2px solid #00796B'; btn.style.background = 'white'; btn.style.color = '#00796B'; btn.style.cursor = 'pointer'; btn.style.minHeight = '55px';
+            btn.onclick = function () {
+                const isCorrect = dk === correctSeq[stepIdx];
+                if (isCorrect) {
+                    btn.style.background = '#4CAF50'; btn.style.color = 'white';
+                    stepIdx++;
+                    setTimeout(function () { btn.style.background = 'white'; btn.style.color = '#00796B'; }, 500);
+                    if (stepIdx >= correctSeq.length) setTimeout(onDone, 600);
+                } else {
+                    btn.style.background = '#FFECB3';
+                    setTimeout(function () { btn.style.background = 'white'; }, 500);
+                }
+            };
+            wrap.appendChild(btn);
+        });
+        area.appendChild(wrap);
+    }
+
+    if (level === 1) {
+        prompt(L.l1Prompt);
+        renderMap(area, ['home', 'park'], [{ from: 'home', to: 'park' }]);
+        dirButtons(['straight'], advanceExerciseLevel);
+    } else if (level === 2) {
+        prompt(L.l2Prompt);
+        renderMap(area, ['home', 'hospital'], [{ from: 'home', to: 'hospital' }]);
+        dirButtons(['right', 'up', 'right'], advanceExerciseLevel);
+    } else {
+        prompt(L.l3Prompt);
+        renderMap(area, ['home', 'park', 'market', 'hospital', 'pharmacy'], [{ from: 'home', to: 'park' }, { from: 'park', to: 'market' }, { from: 'market', to: 'pharmacy' }]);
+        const qBox = document.createElement('div');
+        area.appendChild(qBox);
+        const questions = [
+            { q: L.l3q1, options: shuffleArr([L.landmarks.park, L.landmarks.market, L.landmarks.hospital]), correct: L.landmarks.park },
+            { q: L.l3q2, options: shuffleArr([L.landmarks.park, L.landmarks.market, L.landmarks.home]), correct: L.landmarks.market }
+        ];
+        let qIdx = 0;
+        function nextQ() {
+            qBox.innerHTML = '';
+            if (qIdx >= questions.length) { advanceExerciseLevel(); return; }
+            const q = questions[qIdx++];
+            renderOrientationQuestion(q.q, q.options, q.correct, qBox, nextQ);
+        }
+        nextQ();
+    }
 }
 
 // --- Family Targeted Therapy Module ---

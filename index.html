@@ -154,6 +154,18 @@
             </main>
         </section>
 
+        <!-- --- Life-Skills Exercises (standalone practice, NOT part of the Cognitive Gauntlet/assessment) --- -->
+        <section id="exercise-screen" class="screen">
+            <header class="inner-header" style="text-align: center; padding-top: 40px; background: white; border-bottom: 1px solid #eee; position: relative;">
+                <button class="back-btn" onclick="quitExercise()" style="position: absolute; left: 15px; top: 20px; font-size: 24px; background: none; border: none; cursor: pointer; color: #37474F;">&#x2190;</button>
+                <div id="exercise-level-badge" style="background: #E0F2F1; color: #00796B; display: inline-block; padding: 6px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; margin-bottom: 12px; border: 2px solid #00796B;">Level 1</div>
+                <h2 id="exercise-title" style="color: #37474F; font-size: 20px;"></h2>
+            </header>
+            <main style="flex: 1; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #FDFCF0; position: relative;" id="exercise-area">
+                <!-- Injected by JS -->
+            </main>
+        </section>
+
         <!-- --- 7. Analyzing Screen --- -->
         <section id="analyzing-screen" class="screen">
             <main class="content-pad" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100%;">
@@ -613,6 +625,12 @@
                 <p id="game-menu-desc" style="color: #78909C; margin-bottom: 20px; font-size: 14px;">Play specific games to improve your cognitive skills. Games are recommended based on your recent assessment.</p>
                 <div id="games-list-container" style="display: flex; flex-direction: column; gap: 15px; padding-bottom: 40px;">
                     <!-- Games injected here -->
+                </div>
+
+                <h3 id="exercises-section-title" class="section-title" style="margin-top: 24px;">Life-Skills Exercises</h3>
+                <p id="exercises-section-desc" style="color: #78909C; margin-bottom: 15px; font-size: 13px;">Relaxed practice activities &mdash; no scoring, no time limit.</p>
+                <div id="exercises-list-container" style="display: flex; flex-direction: column; gap: 15px; padding-bottom: 40px;">
+                    <!-- Exercises injected here -->
                 </div>
             </main>
         </section>
