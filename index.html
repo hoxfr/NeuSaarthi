@@ -21,23 +21,23 @@
         <div id="drawer-overlay" class="drawer-overlay" onclick="toggleDrawer()"></div>
         <div id="side-drawer" class="side-drawer">
             <div class="drawer-header">
-                <h2 style="color: #00796B; font-size: 18px;">Profile Menu</h2>
+                <h2 id="drawer-title" style="color: #00796B; font-size: 18px;">Profile Menu</h2>
                 <button onclick="toggleDrawer()" style="background:none; border:none; color:#666; cursor:pointer;"><span class="material-symbols-rounded">close</span></button>
             </div>
             <div class="drawer-item" onclick="openProfileSection('clinical')">
-                <span class="material-symbols-rounded" style="color:#FF8A65;">badge</span> Wellness Profile
+                <span class="material-symbols-rounded" style="color:#FF8A65;">badge</span> <span id="drawer-item-clinical">Wellness Profile</span>
             </div>
             <div class="drawer-item" onclick="openProfileSection('cognitive')">
-                <span class="material-symbols-rounded" style="color:#00796B;">psychology</span> Cognitive Profile
+                <span class="material-symbols-rounded" style="color:#00796B;">psychology</span> <span id="drawer-item-cognitive">Cognitive Profile</span>
             </div>
             <div class="drawer-item" onclick="openProfileSection('functional')">
-                <span class="material-symbols-rounded" style="color:#FFC107;">accessibility_new</span> Daily Support
+                <span class="material-symbols-rounded" style="color:#FFC107;">accessibility_new</span> <span id="drawer-item-functional">Daily Support</span>
             </div>
             <div class="drawer-item" onclick="openProfileSection('preferences')">
-                <span class="material-symbols-rounded" style="color:#00796B;">settings</span> User Preferences
+                <span class="material-symbols-rounded" style="color:#00796B;">settings</span> <span id="drawer-item-preferences">User Preferences</span>
             </div>
             <div class="drawer-item" onclick="openProfileSection('context')">
-                <span class="material-symbols-rounded" style="color:#FF8A65;">favorite</span> Personal Context
+                <span class="material-symbols-rounded" style="color:#FF8A65;">favorite</span> <span id="drawer-item-context">Personal Context</span>
             </div>
         </div>
 
@@ -477,9 +477,9 @@
                 <div class="sos-ripple" style="width: 150px; height: 150px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 40px; box-shadow: 0 0 0 20px rgba(255,255,255,0.2), 0 0 0 40px rgba(255,255,255,0.1);">
                     <span class="material-symbols-rounded" style="font-size: 80px; color: #B71C1C;">emergency</span>
                 </div>
-                <h1 style="color: white; font-size: 32px; margin-bottom: 10px;">Emergency</h1>
-                <p style="color: rgba(255,255,255,0.8); font-size: 18px; margin-bottom: 50px;">Alerting family in <span style="font-weight: bold; font-size: 24px;">5</span>s</p>
-                <button onclick="showScreen('home-screen')" style="background: transparent; border: 2px solid white; color: white; padding: 16px 40px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer;">Cancel</button>
+                <h1 id="sos-title" style="color: white; font-size: 32px; margin-bottom: 10px;">Emergency</h1>
+                <p id="sos-desc" style="color: rgba(255,255,255,0.8); font-size: 18px; margin-bottom: 50px;">Alerting family in <span id="sos-countdown" style="font-weight: bold; font-size: 24px;">5</span>s</p>
+                <button id="sos-cancel-btn" onclick="showScreen('home-screen')" style="background: transparent; border: 2px solid white; color: white; padding: 16px 40px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer;">Cancel</button>
             </main>
         </section>
 
@@ -487,15 +487,15 @@
         <section id="walk-screen" class="screen" style="background: #1E3A8A; color: white;">
             <header class="inner-header" style="padding: 50px 24px 10px; background: transparent; display: flex; justify-content: space-between; align-items: center;">
                 <button onclick="pauseWalk(); showScreen('routine-screen');" style="background: rgba(255,255,255,0.2); border: none; padding: 10px; border-radius: 50%; color: white; display: flex; cursor: pointer;"><span class="material-symbols-rounded">arrow_back</span></button>
-                <span style="font-size: 18px; font-weight: bold;">Mobility Tracker</span>
+                <span id="walk-header-title" style="font-size: 18px; font-weight: bold;">Mobility Tracker</span>
                 <div style="width: 44px;"></div>
             </header>
             <main class="content-pad" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; position: relative;">
                 
                 <div id="walk-confetti" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100; flex-direction: column; justify-content: center; align-items: center;">
                     <span class="material-symbols-rounded" style="font-size: 100px; color: #4CAF50; margin-bottom: 20px;">task_alt</span>
-                    <h2 style="font-size: 32px; color: white; margin-bottom: 10px;">Goal Reached!</h2>
-                    <p style="color: #ccc; font-size: 18px;">Great job completing your walk.</p>
+                    <h2 id="walk-goal-title" style="font-size: 32px; color: white; margin-bottom: 10px;">Goal Reached!</h2>
+                    <p id="walk-goal-desc" style="color: #ccc; font-size: 18px;">Great job completing your walk.</p>
                 </div>
                 <!-- SVG Progress Ring — container is FIXED, only arc stroke animates -->
                 <div style="position: relative; width: 250px; height: 250px; margin-bottom: 32px; display: flex; align-items: center; justify-content: center;">
@@ -516,22 +516,22 @@
                     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1;">
                         <span class="material-symbols-rounded" style="font-size: 36px; color: #4CAF50; margin-bottom: 6px;">directions_walk</span>
                         <h1 id="walk-steps" style="font-size: 52px; margin: 0; line-height: 1; font-weight: 700;">0</h1>
-                        <p style="color: #93C5FD; font-size: 15px; margin-top: 4px;">Steps</p>
+                        <p id="walk-steps-label" style="color: #93C5FD; font-size: 15px; margin-top: 4px;">Steps</p>
                     </div>
                 </div>
  
                 <div style="display: flex; gap: 30px; margin-bottom: 30px; justify-content: center;">
                     <div>
                         <h2 id="walk-time" style="font-size: 30px; margin: 0;">00:00</h2>
-                        <p style="color: #93C5FD; font-size: 13px;">Active Time</p>
+                        <p id="walk-time-label" style="color: #93C5FD; font-size: 13px;">Active Time</p>
                     </div>
                     <div>
                         <h2 id="walk-distance" style="font-size: 30px; margin: 0;">0.00 km</h2>
-                        <p style="color: #93C5FD; font-size: 13px;">Distance</p>
+                        <p id="walk-dist-label" style="color: #93C5FD; font-size: 13px;">Distance</p>
                     </div>
                     <div>
                         <h2 id="walk-goal" style="font-size: 30px; margin: 0;">10:00</h2>
-                        <p style="color: #93C5FD; font-size: 13px;">Daily Goal</p>
+                        <p id="walk-goal-label" style="color: #93C5FD; font-size: 13px;">Daily Goal</p>
                     </div>
                 </div>
  

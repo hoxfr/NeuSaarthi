@@ -210,7 +210,16 @@ const PAGE_SEGMENTS_I18N = {
             aiSummaryLabel: "AI Summary:",
             aiSummaryDefault: "AI insights will appear here after your next assessment or game session.",
             cognitiveTitle: "Cognitive Wellness",
-            typical: "typical"
+            typical: "typical",
+            domains: {
+                memory: "Memory & Recall",
+                attention: "Attention & Focus",
+                executive: "Reasoning & Planning",
+                visuospatial: "Visual Recognition",
+                speed: "Response Speed",
+                family: "Family & Face Recognition",
+                audio: "Calming Audio & Breathing"
+            }
         },
         nav: {
             home: "Home",
@@ -231,6 +240,7 @@ const PAGE_SEGMENTS_I18N = {
             desc: "Daily habits that actively exercise, not replace, your memory.",
             progressLabel: "Daily Progress",
             completed: "Completed",
+            tasks: "Tasks",
             morningTitle: "\u{1F305} Morning",
             morningSub: "Start of Day",
             taskMorningTitle: "Morning Brain Exercise",
@@ -251,11 +261,131 @@ const PAGE_SEGMENTS_I18N = {
         },
         gameMenu: {
             title: "Targeted Therapy",
-            desc: "Play specific games to improve your cognitive skills. Games are recommended based on your recent assessment."
+            desc: "Play specific games to improve your cognitive skills. Games are recommended based on your recent assessment.",
+            aiPrescribed: "AI Prescribed",
+            mustPlay: "Must Play",
+            recommended: "Recommended",
+            good: "Good",
+            gameDescs: {
+                0: "Remember the order of shapes",
+                1: "Recall the green squares",
+                2: "Tap the blue circle quickly",
+                3: "Follow changing rules",
+                4: "Find the matching animal",
+                5: "Find the missing number",
+                6: "Complete the visual logic",
+                7: "Match current with previous",
+                8: "Inhibit incorrect responses",
+                9: "Learn and reverse rules",
+                10: "Identify symbols you saw",
+                11: "Remember the first shape",
+                12: "Sort numbers in order"
+            }
         },
         family: {
             title: "Family Connect",
-            desc: "Recognize your loved ones to strengthen your memory."
+            desc: "Recognize your loved ones to strengthen your memory.",
+            albumTitle: "Family Memory Album",
+            albumDesc: "Look at your family picture. Test your memory by identifying each family member!",
+            startBtn: "Start Recognition Game",
+            cluePrefix: "Clue:",
+            question: "Who is this person in the family?",
+            backToAlbum: "Back to Family Album",
+            wonderful: "Wonderful!",
+            remembered: "You remembered correctly!",
+            nextMember: "Next Family Member \u27A1",
+            keepGoing: "Keep Going!",
+            reminder: "Here is a gentle reminder:",
+            tryNext: "Try Next \u27A1",
+            takesPractice: "That's okay, memory takes practice.",
+            tryAnother: "Try Another Member \u27A1"
+        },
+        routineModal: {
+            offlineBtn: "\u2714 Mark as Done (Self-Reflected Offline)",
+            closeBtn: "Close",
+            alreadyDone: "\u2705 Already completed for today!",
+            congratsTitle: "Wonderful Progress!",
+            continueBtn: "Continue Routine \u2714",
+            morningBrain: {
+                badge: "Prospective Memory Check",
+                title: "Morning Brain Warmup",
+                desc: "<strong>Active Retrieval Practice:</strong> Take 10 seconds to recall: What day is today, and what is one goal you have? Actively retrieving memories primes your prefrontal cortex before playing your warmup game.",
+                btn: "Play Quick Memory Game \u25B6",
+                doneToast: "Brain Warmup Complete! Great job actively challenging your working memory.",
+                offlineToast: "Memory check-in logged! Daily self-recall keeps neural pathways active."
+            },
+            hydration: {
+                badge: "Active Recall Check",
+                title: "Hydration & Memory",
+                desc: "<strong>Test your recent memory:</strong> Can you recall when you last drank a glass of water today?",
+                btn: "Log Glass & Check Off Task",
+                recentBtn: "\u{2600}\u{FE0F} Recently (Past 1-2 hours)",
+                earlierBtn: "\u{1F374} Around mealtime earlier",
+                forgotBtn: "\u{1F914} Not sure / Need a fresh glass now!",
+                glassesTracked: "Glasses Tracked Today:",
+                feedback: "<strong>\u{1F9E0} Brain Stimulated!</strong> Actively reflecting on recent events exercises your episodic memory and strengthens hippocampal recall.",
+                toast: "Recall & Hydration Tracked! Self-reflection and hydration both keep your brain resilient."
+            },
+            walk: {
+                badge: "Mental Navigation & Movement",
+                title: "Gentle Walk & Movement",
+                desc: "<strong>Spatial Recall Exercise:</strong> Can you mentally picture the route of your walk or garden stroll? Mental navigation exercises the parietal and hippocampal regions of the brain.",
+                btn: "Start Walk Tracker \u25B6",
+                toast: "Movement logged! Light movement increases oxygen and blood flow to memory centers."
+            },
+            afternoonPuzzle: {
+                badge: "Working Memory Refresh",
+                title: "Afternoon Mind Refresh",
+                desc: "<strong>Visual Recognition Check:</strong> A quick, relaxing matching game to counteract afternoon fatigue and train visual attention.",
+                btn: "Play Quick Match \u25B6",
+                doneToast: "Afternoon Refresh Complete! Active visual discrimination strengthens memory.",
+                offlineToast: "Logged! Taking time for mental stimulation keeps the day balanced."
+            },
+            eveningAudio: {
+                badge: "Evening Calming",
+                title: "Evening Audio Therapy",
+                desc: "Soothing soundscapes & guided breathing to ease evening restlessness and support deep sleep.",
+                breatheIn: "Breathe In...",
+                breatheHold: "Hold Gently...",
+                breatheOut: "Slowly Breathe Out...",
+                breatheRest: "Rest...",
+                rain: "\u{1F327}\u{FE0F} Rain",
+                bowl: "\u{1F9D8} Singing Bowl",
+                flute: "\u{1FA84} Flute Drone",
+                startBtn: "Start Calming Soundscape",
+                pauseBtn: "Pause Soundscape",
+                completeBtn: "\u2714 Complete Session & Mark Done",
+                exitBtn: "Exit",
+                toast: "Evening Relaxation Complete! May you have a peaceful, deep, and restful night."
+            }
+        },
+        walkScreen: {
+            header: "Mobility Tracker",
+            goalReached: "Goal Reached!",
+            goalDesc: "Great job completing your walk.",
+            steps: "Steps",
+            time: "Active Time",
+            distance: "Distance",
+            dailyGoal: "Daily Goal",
+            start: "Start Walk",
+            pause: "Pause",
+            resume: "Resume Walk",
+            pausedStatus: "Walk paused",
+            hint: "Active pedometer: Timer pauses automatically when stationary"
+        },
+        sosScreen: {
+            title: "Emergency",
+            alerting: "Alerting family in ",
+            seconds: "s",
+            cancel: "Cancel"
+        },
+        sideDrawer: {
+            menuTitle: "Profile Menu",
+            clinical: "Wellness Profile",
+            cognitive: "Cognitive Profile",
+            functional: "Daily Support",
+            preferences: "User Preferences",
+            context: "Personal Context"
         }
     },
     hi: {
@@ -273,7 +403,16 @@ const PAGE_SEGMENTS_I18N = {
             aiSummaryLabel: "AI सारांश:",
             aiSummaryDefault: "AI विश्लेषण आपके अगले मूल्यांकन या खेल सत्र के बाद यहाँ दिखाई देगा।",
             cognitiveTitle: "संज्ञानात्मक वेलनेस",
-            typical: "सामान्य"
+            typical: "सामान्य",
+            domains: {
+                memory: "स्मृति व स्मरण",
+                attention: "ध्यान व सजगता",
+                executive: "तर्क व योजना",
+                visuospatial: "दृश्य पहचान",
+                speed: "प्रतिक्रिया गति",
+                family: "पारिवारिक व चेहरे की पहचान",
+                audio: "शांत संगीत व प्राणायाम"
+            }
         },
         nav: {
             home: "होम",
@@ -294,6 +433,7 @@ const PAGE_SEGMENTS_I18N = {
             desc: "ऐसी दैनिक आदतें जो याददाश्त को बदलने के बजाय सक्रिय बनाती हैं।",
             progressLabel: "दैनिक प्रगति",
             completed: "पूर्ण",
+            tasks: "कार्य",
             morningTitle: "\u{1F305} सुबह",
             morningSub: "दिन की शुरुआत",
             taskMorningTitle: "सुबह का दिमागी व्यायाम",
@@ -314,11 +454,131 @@ const PAGE_SEGMENTS_I18N = {
         },
         gameMenu: {
             title: "लक्षित अभ्यास",
-            desc: "अपने संज्ञानात्मक कौशल को बेहतर बनाने के लिए खेल खेलें। खेल आपके हालिया मूल्यांकन के आधार पर सुझाए गए हैं।"
+            desc: "अपने संज्ञानात्मक कौशल को बेहतर बनाने के लिए खेल खेलें। खेल आपके हालिया मूल्यांकन के आधार पर सुझाए गए हैं।",
+            aiPrescribed: "AI निर्धारित",
+            mustPlay: "ज़रूर खेलें",
+            recommended: "सुझावित",
+            good: "अच्छा",
+            gameDescs: {
+                0: "आकृतियों का क्रम याद रखें",
+                1: "हरे खानों को याद रखें",
+                2: "नीले गोले को तुरंत दबाएं",
+                3: "बदलते नियमों का पालन करें",
+                4: "समान जानवर खोजें",
+                5: "लापता संख्या खोजें",
+                6: "दृश्य तर्क पूरा करें",
+                7: "वर्तमान को पिछले से मिलाएं",
+                8: "गलत पर नियंत्रण रखें",
+                9: "नियम सीखें और उलटें",
+                10: "देखे गए प्रतीकों को पहचानें",
+                11: "पहली आकृति याद रखें",
+                12: "संख्याओं को क्रम से लगाएं"
+            }
         },
         family: {
             title: "पारिवारिक जुड़ाव",
-            desc: "अपनी याददाश्त मजबूत करने के लिए अपने प्रियजनों को पहचानें।"
+            desc: "अपनी याददाश्त मजबूत करने के लिए अपने प्रियजनों को पहचानें।",
+            albumTitle: "पारिवारिक स्मृति एल्बम",
+            albumDesc: "अपनी पारिवारिक तस्वीर देखें। प्रत्येक सदस्य को पहचानकर अपनी याददाश्त परखें!",
+            startBtn: "पहचान खेल शुरू करें",
+            cluePrefix: "संकेत:",
+            question: "परिवार में यह कौन हैं?",
+            backToAlbum: "पारिवारिक एल्बम पर वापस जाएं",
+            wonderful: "शानदार!",
+            remembered: "आपने बिल्कुल सही पहचाना!",
+            nextMember: "अगला सदस्य \u27A1",
+            keepGoing: "प्रयास जारी रखें!",
+            reminder: "यहाँ एक सरल स्मृति संकेत है:",
+            tryNext: "अगला प्रयास करें \u27A1",
+            takesPractice: "कोई बात नहीं, अभ्यास से याददाश्त मजबूत होती है।",
+            tryAnother: "दूसरा सदस्य पहचानें \u27A1"
+        },
+        routineModal: {
+            offlineBtn: "\u2714 पूरा हुआ चिह्नित करें (स्वयं अभ्यास किया)",
+            closeBtn: "बंद करें",
+            alreadyDone: "\u2705 आज के लिए पहले ही पूरा हो चुका है!",
+            congratsTitle: "शानदार प्रगति!",
+            continueBtn: "दिनचर्या जारी रखें \u2714",
+            morningBrain: {
+                badge: "स्मृति वार्मअप जांच",
+                title: "सुबह का दिमागी व्यायाम",
+                desc: "<strong>सक्रिय स्मरण अभ्यास:</strong> 10 सेकंड सोचें: आज कौन सा दिन है और आपका आज का एक मुख्य लक्ष्य क्या है? यह आपके मस्तिष्क को सक्रिय करता है।",
+                btn: "स्मृति खेल खेलें \u25B6",
+                doneToast: "दिमागी वार्मअप पूर्ण! कार्यशील स्मृति का सक्रिय अभ्यास याददाश्त को बनाए रखता है।",
+                offlineToast: "स्मृति चेक-इन दर्ज! दैनिक स्मरण न्यूरल पाथवे को सक्रिय रखता है।"
+            },
+            hydration: {
+                badge: "सक्रिय स्मरण जांच",
+                title: "जलपान व स्मृति",
+                desc: "<strong>अपनी हाल की स्मृति परखें:</strong> क्या आपको याद है कि आज आपने आखिरी बार पानी कब पिया था?",
+                btn: "जलपान दर्ज करें और कार्य पूरा करें",
+                recentBtn: "\u{2600}\u{FE0F} अभी हाल ही में (पिछले 1-2 घंटों में)",
+                earlierBtn: "\u{1F374} कुछ समय पहले भोजन के समय",
+                forgotBtn: "\u{1F914} पक्का याद नहीं / अभी ताज़ा पानी चाहिए!",
+                glassesTracked: "आज ट्रैक किए गए गिलास:",
+                feedback: "<strong>\u{1F9E0} मस्तिष्क सक्रिय हुआ!</strong> हाल की घटनाओं पर विचार करने से आपकी स्मृति व स्मरण शक्ति मजबूत होती है।",
+                toast: "स्मरण व जलपान दर्ज! पानी और आत्म-स्मरण दोनों मस्तिष्क को स्वस्थ रखते हैं।"
+            },
+            walk: {
+                badge: "मानसिक दिशा-ज्ञान व गतिविधि",
+                title: "हल्की सैर व चहलकदमी",
+                desc: "<strong>स्थानिक स्मरण अभ्यास:</strong> क्या आप अपने टहलने के रास्ते की कल्पना मन में कर सकते हैं? यह मस्तिष्क के स्मृति केंद्रों को सक्रिय करता है।",
+                btn: "वॉक ट्रैकर शुरू करें \u25B6",
+                toast: "शारीरिक गतिविधि दर्ज! हल्की सैर से स्मृति केंद्रों में रक्त संचार बढ़ता है।"
+            },
+            afternoonPuzzle: {
+                badge: "कार्यशील स्मृति ताज़गी",
+                title: "दोपहर की मानसिक ताज़गी",
+                desc: "<strong>दृश्य पहचान जांच:</strong> दोपहर की थकान दूर करने और एकाग्रता बढ़ाने के लिए एक त्वरित व सुखद मिलान खेल।",
+                btn: "त्वरित मिलान खेलें \u25B6",
+                doneToast: "दोपहर की ताज़गी पूर्ण! सक्रिय दृश्य पहचान याददाश्त को मजबूत करती है।",
+                offlineToast: "दर्ज हुआ! मानसिक सक्रियता से दिन संतुलित रहता है।"
+            },
+            eveningAudio: {
+                badge: "शाम की शांति",
+                title: "संध्या ऑडियो थेरेपी",
+                desc: "शाम की शांति और गहरी नींद के लिए सुखदायक ध्वनियाँ व प्राणायाम।",
+                breatheIn: "सांस अंदर लें...",
+                breatheHold: "सांस रोकें...",
+                breatheOut: "धीरे से सांस छोड़ें...",
+                breatheRest: "विश्राम...",
+                rain: "\u{1F327}\u{FE0F} बारिश",
+                bowl: "\u{1F9D8} सिंगिंग बाउल",
+                flute: "\u{1FA84} बांसुरी",
+                startBtn: "शांत ध्वनियाँ शुरू करें",
+                pauseBtn: "ध्वनियाँ रोकें",
+                completeBtn: "\u2714 सत्र समाप्त करें और पूरा चिह्नित करें",
+                exitBtn: "बाहर जाएं",
+                toast: "शाम का विश्राम पूर्ण! आपकी रात शांत और आरामदायक हो।"
+            }
+        },
+        walkScreen: {
+            header: "गतिशीलता ट्रैकर",
+            goalReached: "लक्ष्य पूरा हुआ!",
+            goalDesc: "सैर पूरी करने पर बहुत-बहुत बधाई।",
+            steps: "कदम",
+            time: "सक्रिय समय",
+            distance: "दूरी",
+            dailyGoal: "दैनिक लक्ष्य",
+            start: "सैर शुरू करें",
+            pause: "रोकें",
+            resume: "सैर जारी रखें",
+            pausedStatus: "सैर रुकी हुई है",
+            hint: "सक्रिय पेडोमीटर: चलते समय ही समय गिना जाता है"
+        },
+        sosScreen: {
+            title: "आपातकालीन",
+            alerting: "परिवार को अलर्ट भेजा जा रहा है: ",
+            seconds: " सेकंड",
+            cancel: "रद्द करें"
+        },
+        sideDrawer: {
+            menuTitle: "प्रोफ़ाइल मेनू",
+            clinical: "वेलनेस प्रोफ़ाइल",
+            cognitive: "संज्ञानात्मक प्रोफ़ाइल",
+            functional: "दैनिक सहायता",
+            preferences: "उपयोगकर्ता प्राथमिकताएं",
+            context: "व्यक्तिगत संदर्भ"
         }
     },
     bn: {
@@ -336,7 +596,16 @@ const PAGE_SEGMENTS_I18N = {
             aiSummaryLabel: "AI সারাংশ:",
             aiSummaryDefault: "পরবর্তী মূল্যায়ন বা গেম সেশনের পরে AI অন্তর্দৃষ্টি এখানে উপস্থিত হবে।",
             cognitiveTitle: "জ্ঞানীয় সুস্থতা",
-            typical: "সাধারণ"
+            typical: "সাধারণ",
+            domains: {
+                memory: "স্মৃতি ও স্মরণ",
+                attention: "মনোযোগ ও সতর্কতা",
+                executive: "যুক্তি ও পরিকল্পনা",
+                visuospatial: "ভিজ্যুয়াল স্বীকৃতি",
+                speed: "প্রতিক্রিয়া গতি",
+                family: "পারিবারিক ও মুখ চেনা",
+                audio: "শান্ত অডিও ও শ্বাসক্রিয়া"
+            }
         },
         nav: {
             home: "হোম",
@@ -357,6 +626,7 @@ const PAGE_SEGMENTS_I18N = {
             desc: "দৈনন্দিন অভ্যাস যা স্মৃতি প্রতিস্থাপন নয়, সক্রিয় রাখে।",
             progressLabel: "দৈনিক অগ্রগতি",
             completed: "সম্পন্ন",
+            tasks: "কাজ",
             morningTitle: "\u{1F305} সকাল",
             morningSub: "দিনের শুরু",
             taskMorningTitle: "সকালের ব্রেন ওয়ার্মআপ",
@@ -377,17 +647,358 @@ const PAGE_SEGMENTS_I18N = {
         },
         gameMenu: {
             title: "টার্গেটেড থেরাপি",
-            desc: "জ্ঞানীয় দক্ষতা বাড়াতে নির্দিষ্ট গেম খেলুন। আপনার সাম্প্রতিক মূল্যায়নের ভিত্তিতে গেমগুলি প্রস্তাবিত।"
+            desc: "জ্ঞানীয় দক্ষতা বাড়াতে নির্দিষ্ট গেম খেলুন। আপনার সাম্প্রতিক মূল্যায়নের ভিত্তিতে গেমগুলি প্রস্তাবিত।",
+            aiPrescribed: "AI নির্ধারিত",
+            mustPlay: "অবশ্যই খেলুন",
+            recommended: "সুপারিশকৃত",
+            good: "ভালো",
+            gameDescs: {
+                0: "আকৃতির ক্রম মনে রাখুন",
+                1: "সবুজ বাক্সগুলি মনে রাখুন",
+                2: "নীল বৃত্তে দ্রুত ট্যাপ করুন",
+                3: "পরিবর্তিত নিয়ম অনুসরণ করুন",
+                4: "একই প্রাণী খুঁজুন",
+                5: "অনুপস্থিত সংখ্যা খুঁজুন",
+                6: "ভিজ্যুয়াল যুক্তি সম্পূর্ণ করুন",
+                7: "আগের সাথে বর্তমান মেলান",
+                8: "ভুল প্রতিক্রিয়া নিয়ন্ত্রণ করুন",
+                9: "নিয়ম শিখুন এবং উল্টান",
+                10: "দেখা চিহ্নগুলি চিহ্নিত করুন",
+                11: "প্রথম আকৃতি মনে রাখুন",
+                12: "সংখ্যাগুলি ক্রমানুসারে সাজান"
+            }
         },
         family: {
             title: "পারিবারিক সংযোগ",
-            desc: "স্মৃতিশক্তি শক্তিশালী করতে প্রিয়জনদের চিনুন।"
+            desc: "স্মৃতিশক্তি শক্তিশালী করতে প্রিয়জনদের চিনুন।",
+            albumTitle: "পারিবারিক স্মৃতি অ্যালবাম",
+            albumDesc: "আপনার পারিবারিক ছবি দেখুন। প্রতিটি সদস্যকে চিনে নিজের স্মৃতিশক্তি পরীক্ষা করুন!",
+            startBtn: "শনাক্তকরণ খেলা শুরু করুন",
+            cluePrefix: "সূত্র:",
+            question: "পরিবারে ইনি কে?",
+            backToAlbum: "পারিবারিক অ্যালবামে ফিরে যান",
+            wonderful: "চমৎকার!",
+            remembered: "আপনি একদম ঠিক চিনেছেন!",
+            nextMember: "পরবর্তী সদস্য \u27A1",
+            keepGoing: "চেষ্টা চালিয়ে যান!",
+            reminder: "এখানে একটি সহজ অনুস্মারক দেওয়া হলো:",
+            tryNext: "পরবর্তী চেষ্টা করুন \u27A1",
+            takesPractice: "কোনো ব্যাপার নয়, অভ্যাসে স্মৃতিশক্তি বাড়ে।",
+            tryAnother: "অন্য সদস্য দেখুন \u27A1"
+        },
+        routineModal: {
+            offlineBtn: "\u2714 সম্পন্ন হিসেবে চিহ্নিত করুন (অফলাইন অনুশীলন)",
+            closeBtn: "বন্ধ করুন",
+            alreadyDone: "\u2705 আজকের জন্য আগেই সম্পন্ন হয়েছে!",
+            congratsTitle: "চমৎকার অগ্রগতি!",
+            continueBtn: "রুটিন চালিয়ে যান \u2714",
+            morningBrain: {
+                badge: "স্মৃতি ওয়ার্মআপ পরীক্ষা",
+                title: "সকালের ব্রেন ওয়ার্মআপ",
+                desc: "<strong>সক্রিয় স্মরণ অনুশীলন:</strong> ১০ সেকেন্ড ভাবুন: আজ কী বার এবং আপনার আজকের একটি লক্ষ্য কী? এটি মস্তিষ্কের কর্মক্ষমতা বাড়ায়।",
+                btn: "স্মৃতি গেম খেলুন \u25B6",
+                doneToast: "ব্রেন ওয়ার্মআপ সম্পন্ন! চমৎকারভাবে মেমরি সক্রিয় রেখেছেন।",
+                offlineToast: "স্মৃতি চেক-ইন সংরক্ষিত! দৈনিক স্মরণ নিউরাল পথ সক্রিয় রাখে।"
+            },
+            hydration: {
+                badge: "সক্রিয় স্মরণ পরীক্ষা",
+                title: "জলপান ও স্মৃতি",
+                desc: "<strong>আপনার সাম্প্রতিক স্মৃতি পরীক্ষা করুন:</strong> আজ আপনি শেষ কখন এক গ্লাস জল খেয়েছেন মনে করতে পারেন?",
+                btn: "জলপান রেকর্ড করুন ও সম্পন্ন করুন",
+                recentBtn: "\u{2600}\u{FE0F} সম্প্রতি (গত ১-২ ঘণ্টার মধ্যে)",
+                earlierBtn: "\u{1F374} খাবারের সময়ে আগে",
+                forgotBtn: "\u{1F914} স্পষ্ট মনে নেই / এখন এক গ্লাস জল প্রয়োজন!",
+                glassesTracked: "আজ ট্র্যাক করা গ্লাস:",
+                feedback: "<strong>\u{1F9E0} মস্তিষ্ক উদ্দীপিত!</strong> সাম্প্রতিক ঘটনা মনে করার চেষ্টা আপনার স্মৃতিশক্তি ও প্রত্যাহার ক্ষমতা বাড়ায়।",
+                toast: "জলপান ও স্মৃতি রেকর্ড হয়েছে! জল এবং আত্ম-স্মরণ উভয়ই মস্তিষ্ক ভালো রাখে।"
+            },
+            walk: {
+                badge: "মানসিক দিক-নির্ণয় ও হাঁটা",
+                title: "হালকা হাঁটাচলা",
+                desc: "<strong>স্থানিক স্মরণ অনুশীলন:</strong> আপনার হাঁটার পথের দৃশ্য কি মনে কল্পনা করতে পারেন? এটি স্মৃতি কেন্দ্রকে সক্রিয় করে।",
+                btn: "ওয়াক ট্র্যাকার শুরু করুন \u25B6",
+                toast: "শারীরিক গতিবিধি রেকর্ড হয়েছে! হালকা হাঁটা রক্ত সঞ্চালন বাড়ায়।"
+            },
+            afternoonPuzzle: {
+                badge: "স্মৃতি রিফ্রেশ",
+                title: "দুপুরের মানসিক সতেজতা",
+                desc: "<strong>ভিজ্যুয়াল স্বীকৃতি পরীক্ষা:</strong> ক্লান্তি দূর করতে ও মনোযোগ বাড়াতে একটি দ্রুত ও আরামদায়ক ম্যাচিং গেম।",
+                btn: "কুইক ম্যাচ খেলুন \u25B6",
+                doneToast: "দুপুরের রিফ্রেশ সম্পন্ন! সক্রিয় দৃষ্টিশক্তি স্মৃতি শক্তিশালী করে।",
+                offlineToast: "সংরক্ষিত হয়েছে! মানসিক উদ্দীপনা দিনকে ভারসাম্যপূর্ণ রাখে।"
+            },
+            eveningAudio: {
+                badge: "সন্ধ্যার প্রশান্তি",
+                title: "সন্ধ্যার শান্ত সাউন্ডস্কেপ",
+                desc: "সন্ধ্যার ক্লান্তি দূর করতে এবং গভীর ঘুমের জন্য প্রশান্তিদায়ক শব্দ ও শ্বাসক্রিয়া।",
+                breatheIn: "শ্বাস ভেতরে নিন...",
+                breatheHold: "ধরে রাখুন...",
+                breatheOut: "ধীরে ধীরে শ্বাস ছাড়ুন...",
+                breatheRest: "বিশ্রাম...",
+                rain: "\u{1F327}\u{FE0F} বৃষ্টি",
+                bowl: "\u{1F9D8} সিংগিং বোল",
+                flute: "\u{1FA84} বাঁশির সুর",
+                startBtn: "শান্ত সাউন্ডস্কেপ শুরু করুন",
+                pauseBtn: "শব্দ থামান",
+                completeBtn: "\u2714 সেশন সম্পন্ন ও চিহ্নিত করুন",
+                exitBtn: "বেরিয়ে যান",
+                toast: "সন্ধ্যার বিশ্রাম সম্পন্ন! আপনার রাত শান্তিপূর্ণ হোক।"
+            }
+        },
+        walkScreen: {
+            header: "গতিশীলতা ট্র্যাকার",
+            goalReached: "লক্ষ্য পূর্ণ হয়েছে!",
+            goalDesc: "হাঁটা সম্পন্ন করার জন্য অভিনন্দন।",
+            steps: "পদক্ষেপ",
+            time: "সক্রিয় সময়",
+            distance: "দূরত্ব",
+            dailyGoal: "দৈনিক লক্ষ্য",
+            start: "হাঁটা শুরু করুন",
+            pause: "বিরতি",
+            resume: "আবার শুরু করুন",
+            pausedStatus: "হাঁটা স্থগিত রয়েছে",
+            hint: "সক্রিয় পেডোমিটার: হাঁটার সময়ই সময় গণনা হয়"
+        },
+        sosScreen: {
+            title: "জরুরী",
+            alerting: "পরিবারকে সতর্কতা পাঠানো হচ্ছে: ",
+            seconds: " সেকেন্ড",
+            cancel: "বাতিল করুন"
+        },
+        sideDrawer: {
+            menuTitle: "প্রোফাইল মেনু",
+            clinical: "সুস্থতা প্রোফাইল",
+            cognitive: "জ্ঞানীয় প্রোফাইল",
+            functional: "দৈনিক সহায়তা",
+            preferences: "পছন্দসমূহ",
+            context: "ব্যক্তিগত প্রসঙ্গ"
+        }
+    },
+    as: {
+        progress: {
+            title: "দৈনিক সুস্থতাৰ অগ্ৰগতি",
+            adherence: "ধাৰাবাহিকতা",
+            physicalTitle: "শাৰীৰিক আৰু ৰুটিন",
+            hydLabel: "পানী খোৱা",
+            mobLabel: "গতিশীলতা",
+            glasses: "গিলাচ",
+            session: "অধিৱেশন",
+            aiCompTitle: "AI ফ'কাচ তুলনা",
+            aiModelBadge: "AI মডেল",
+            aiCompDesc: "আপোনাৰ বয়সৰ সাধাৰণ স্তৰৰ সৈতে শেহতীয়া কাৰ্যকলাপৰ তুলনা।",
+            aiSummaryLabel: "AI সাৰাংশ:",
+            aiSummaryDefault: "পৰৱৰ্তী মূল্যায়নৰ পিছত AI অন্তৰ্দৃষ্টি ইয়াত দেখা যাব।",
+            cognitiveTitle: "জ্ঞানীয় সুস্থতা",
+            typical: "সাধাৰণ",
+            domains: {
+                memory: "স্মৃতি আৰু সোঁৱৰণ",
+                attention: "মনোযোগ আৰু সতৰ্কতা",
+                executive: "যুক্তি আৰু পৰিকল্পনা",
+                visuospatial: "দৃষ্টিভিত্তিক চিনাক্তকৰণ",
+                speed: "প্ৰতিক্ৰিয়াৰ গতি",
+                family: "পৰিয়াল আৰু মুখ চিনাক্তকৰণ",
+                audio: "শান্ত অডিঅ' আৰু উশাহ-নিশাহ"
+            }
+        },
+        nav: {
+            home: "হোম",
+            progress: "অগ্ৰগতি"
+        },
+        home: {
+            routineHeading: "আপোনাৰ দৈনিক সুস্থতাৰ ৰুটিন",
+            subGame: "লক্ষ্যভিত্তিক অনুশীলন",
+            subFamily: "পৰিয়াল সংযোগ",
+            subRoutine: "দৈনিক ৰুটিন",
+            subSos: "জৰুৰীকালীন সতৰ্কবাৰ্তা"
+        },
+        routine: {
+            back: "হোম",
+            badge: "দৈনিক সুস্থতা",
+            title: "আজিৰ ৰুটিন",
+            scaffolding: "মগজুৰ সহায়ক মোড",
+            desc: "দৈনন্দিন অভ্যাস যিয়ে স্মৃতিক সক্ৰিয় ৰাখে।",
+            progressLabel: "দৈনিক অগ্ৰগতি",
+            completed: "সম্পূৰ্ণ",
+            tasks: "কাৰ্য",
+            morningTitle: "\u{1F305} ৰাতিপুৱা",
+            morningSub: "দিনৰ আৰম্ভণি",
+            taskMorningTitle: "ৰাতিপুৱাৰ মগজুৰ অনুশীলন",
+            taskMorningDesc: "৯:০০ AM \u2022 মৃদু স্মৃতিৰ ৱাৰ্মআপ",
+            afternoonTitle: "\u{2600}\u{FE0F} দুপৰীয়া",
+            afternoonSub: "দিনৰ মধ্যভাগ",
+            taskWaterTitle: "পানী খোৱাৰ বিৰতি",
+            taskWaterDesc: "১১:০০ AM \u2022 সতেজ পানীৰ গিলাচ",
+            taskWalkTitle: "মৃদু খোজকঢ়া",
+            taskWalkDesc: "২:০০ PM \u2022 ১০ মিনিটৰ খোজ",
+            taskPuzzleTitle: "দুপৰীয়াৰ মন সতেজ কৰক",
+            taskPuzzleDesc: "৪:০০ PM \u2022 মিলোৱা খেল",
+            eveningTitle: "\u{1F319} সন্ধিয়া",
+            eveningSub: "বিশ্ৰাম আৰু শান্তি",
+            taskAudioTitle: "সন্ধিয়াৰ শান্তিময় অডিঅ'",
+            taskAudioDesc: "৮:০০ PM \u2022 শান্ত শব্দ আৰু উশাহ",
+            resetBtn: "আজিৰ তালিকা ৰিচেট কৰক"
+        },
+        gameMenu: {
+            title: "লক্ষ্যভিত্তিক অনুশীলন",
+            desc: "আপোনাৰ জ্ঞানীয় দক্ষতা বৃদ্ধি কৰিবলৈ নিৰ্দিষ্ট খেল খেলক।",
+            aiPrescribed: "AI নিৰ্ধাৰিত",
+            mustPlay: "নিশ্চয় খেলক",
+            recommended: "পৰামৰ্শ দিয়া হৈছে",
+            good: "ভাল",
+            gameDescs: {
+                0: "আকৃতিৰ ক্ৰম মনত ৰাখক",
+                1: "সেউজীয়া বাকচবোৰ মনত পেলাওক",
+                2: "নীলা বৃত্তটোত ক্ষিপ্ৰভাৱে স্পৰ্শ কৰক",
+                3: "পৰিৱৰ্তিত নিয়ম অনুসৰণ কৰক",
+                4: "একে ধৰণৰ প্ৰাণী বিচাৰক",
+                5: "অনুপস্থিত সংখ্যাটো বিচাৰক",
+                6: "দৃশ্যগত যুক্তি সম্পূৰ্ণ কৰক",
+                7: "পূৰ্বৰ সৈতে বৰ্তমান মিল কৰক",
+                8: "ভুল প্ৰতিক্ৰিয়া নিয়ন্ত্ৰণ কৰক",
+                9: "নিয়ম শিকক আৰু ওলোটাওক",
+                10: "দেখা চিহ্নবোৰ চিনাক্ত কৰক",
+                11: "প্ৰথম আকৃতিটো মনত ৰাখক",
+                12: "সংখ্যাবোৰ ক্ৰমানুসাৰে সজাওক"
+            }
+        },
+        family: {
+            title: "পৰিয়াল সংযোগ",
+            desc: "আপোনাৰ প্ৰিয়জনসকলক চিনি পাই স্মৃতিশক্তি পৰীক্ষা কৰক।",
+            albumTitle: "পারিবারিক স্মৃতি এলবাম",
+            albumDesc: "আপোনাৰ পৰিয়ালৰ ফটো চাওক। প্ৰতিজন সদস্যক চিনি পাই স্মৃতিশক্তি পৰীক্ষা কৰক!",
+            startBtn: "চিনাক্তকৰণ খেল আৰম্ভ কৰক",
+            cluePrefix: "সূত্র:",
+            question: "পৰিয়ালত এইজন কোন?",
+            backToAlbum: "পৰিয়াল এলবামলৈ উভতি যাওক",
+            wonderful: "চমৎকার!",
+            remembered: "আপুনি সঠিককৈ মনত ৰাখিছে!",
+            nextMember: "পৰৱৰ্তী সদস্য \u27A1",
+            keepGoing: "চেষ্টা চলাই যাওক!",
+            reminder: "ইয়াত এটি মনত পেলোৱাৰ সংকেত দিয়া হ'ল:",
+            tryNext: "পিছৰটো চেষ্টা কৰক \u27A1",
+            takesPractice: "কোনো কথা নাই, অনুশীলনে স্মৃতিশক্তি শক্তিশালী কৰে।",
+            tryAnother: "আন এজন সদস্য চাওক \u27A1"
+        },
+        routineModal: {
+            offlineBtn: "\u2714 সম্পন্ন হিচাপে চিহ্নিত কৰক (অফলাইন অনুশীলন)",
+            closeBtn: "বন্ধ কৰক",
+            alreadyDone: "\u2705 আজিৰ বাবে ইতিমধ্যে সম্পন্ন কৰা হৈছে!",
+            congratsTitle: "চমৎকাৰ অগ্ৰগতি!",
+            continueBtn: "ৰুটিন অব্যাহত ৰাখক \u2714",
+            morningBrain: {
+                badge: "স্মৃতি ৱাৰ্মআপ পৰীক্ষা",
+                title: "ৰাতিপুৱাৰ মগজুৰ অনুশীলন",
+                desc: "<strong>সক্ৰিয় সোঁৱৰণ অনুশীলন:</strong> ১০ ছেকেণ্ড ভাবক: আজি কি বাৰ আৰু আজিৰ আপোনাৰ এটা লক্ষ্য কি? ই মগজুক সক্ৰিয় কৰে।",
+                btn: "স্মৃতি খেল খেলক \u25B6",
+                doneToast: "মগজুৰ ৱাৰ্মআপ সম্পূৰ্ণ! স্মৃতিক সক্ৰিয়ভাৱে প্ৰত্যাহ্বান জনোৱা হৈছে।",
+                offlineToast: "স্মৃতি চেক-ইন সংৰক্ষণ কৰা হ'ল! দৈনিক সোঁৱৰণে স্নায়বিক পথ সক্ৰিয় ৰাখে।"
+            },
+            hydration: {
+                badge: "সক্ৰিয় সোঁৱৰণ পৰীক্ষা",
+                title: "পানী খোৱা আৰু স্মৃতি",
+                desc: "<strong>আপোনাৰ শেহতীয়া স্মৃতি পৰীক্ষা কৰক:</strong> আজি শেষবাৰ কেতিয়া এক গিলাচ পানী খাইছিল মনত পেলাব পাৰিবনে?",
+                btn: "পানী খোৱা লিপিবদ্ধ কৰক",
+                recentBtn: "\u{2600}\u{FE0F} শেহতীয়াকৈ (যোৱা ১-২ ঘণ্টাত)",
+                earlierBtn: "\u{1F374} কিছু সময় আগতে খোৱাৰ সময়ত",
+                forgotBtn: "\u{1F914} সঠিককৈ মনত নাই / এতিয়াই পানী খাব লাগে!",
+                glassesTracked: "আজি ট্ৰেক কৰা গিলাচ:",
+                feedback: "<strong>\u{1F9E0} মগজু সক্ৰিয় হ'ল!</strong> শেহতীয়া ঘটনা মনত পেলোৱাৰ অভ্যাসে স্মৃতিশক্তি সবল কৰে।",
+                toast: "পানী খোৱা আৰু স্মৃতি লিপিবদ্ধ হ'ল! পানী আৰু আত্ম-সোঁৱৰণ উভয়ে মগজু সুস্থ ৰাখে।"
+            },
+            walk: {
+                badge: "মানসিক দিশ-নিৰ্ণয় আৰু খোজ",
+                title: "মৃদু খোজকঢ়া আৰু গতিবিধি",
+                desc: "<strong>স্থানিক সোঁৱৰণ অনুশীলন:</strong> আপোনাৰ খোজকঢ়া পথটো মনত কল্পনা কৰিব পাৰিবনে? ই মগজুৰ স্মৃতি কেন্দ্ৰ সক্ৰিয় কৰে।",
+                btn: "ৱাক ট্ৰেকাৰ আৰম্ভ কৰক \u25B6",
+                toast: "গতিবিধি সংৰক্ষণ কৰা হ'ল! খোজকঢ়াই স্মৃতি কেন্দ্ৰলৈ ৰক্ত সঞ্চালন বৃদ্ধি কৰে।"
+            },
+            afternoonPuzzle: {
+                badge: "স্মৃতি সতেজ কৰক",
+                title: "দুপৰীয়াৰ মানসিক সতেজতা",
+                desc: "<strong>দৃশ্যগত চিনাক্তকৰণ পৰীক্ষা:</strong> ক্লান্তি আঁতৰাবলৈ আৰু মনোযোগ বৃদ্ধিৰ বাবে এক ক্ষিপ্ৰ আৰু আৰামদায়ক খেল।",
+                btn: "কুইক মেচ খেলক \u25B6",
+                doneToast: "দুপৰীয়াৰ সতেজতা সম্পূৰ্ণ! সক্ৰিয় দৃষ্টি শক্তিয়ে স্মৃতিক শক্তিশালী কৰে।",
+                offlineToast: "লিপিবদ্ধ হ'ল! মানসিক উদ্দীপনাই দিনটোক সন্তুলিত কৰি ৰাখে।"
+            },
+            eveningAudio: {
+                badge: "সন্ধিয়াৰ শান্তি",
+                title: "সন্ধিয়াৰ শান্তিময় অডিঅ'",
+                desc: "সন্ধিয়াৰ ক্লান্তি দূৰ কৰিবলৈ আৰু গভীৰ টোপনিৰ বাবে শান্ত ধ্বনি আৰু উশাহ-নিশাহ।",
+                breatheIn: "উশাহ ভিতৰলৈ লওক...",
+                breatheHold: "ধৰি ৰাখক...",
+                breatheOut: "লাহে লাহে উশাহ এৰি দিয়ক...",
+                breatheRest: "বিশ্রাম...",
+                rain: "\u{1F327}\u{FE0F} বৰষুণ",
+                bowl: "\u{1F9D8} বাউলিং শব্দ",
+                flute: "\u{1FA84} বাঁহীৰ সুৰ",
+                startBtn: "শান্ত ধ্বনি আৰম্ভ কৰক",
+                pauseBtn: "ধ্বনি বন্ধ কৰক",
+                completeBtn: "\u2714 অধিৱেশন সম্পূৰ্ণ আৰু চিহ্নিত কৰক",
+                exitBtn: "প্ৰস্থান",
+                toast: "সন্ধিয়াৰ বিশ্ৰাম সম্পূৰ্ণ! আপোনাৰ ৰাতিটো শান্তিময় হওক।"
+            }
+        },
+        walkScreen: {
+            header: "গতিশীলতা ট্ৰেকাৰ",
+            goalReached: "লক্ষ্যত উপনীত হ'ল!",
+            goalDesc: "খোজকঢ়া সম্পূৰ্ণ কৰাৰ বাবে অভিনন্দন।",
+            steps: "পদক্ষেপ",
+            time: "সক্ৰিয় সময়",
+            distance: "দূৰত্ব",
+            dailyGoal: "দৈনিক লক্ষ্য",
+            start: "খোজ আৰম্ভ কৰক",
+            pause: "বিৰতি",
+            resume: "পুনৰ আৰম্ভ কৰক",
+            pausedStatus: "খোজ স্থগিত আছে",
+            hint: "সক্ৰিয় পেডোমিটাৰ: খোজকাঢ়ি থকাৰ সময়তহে গণনা হয়"
+        },
+        sosScreen: {
+            title: "জৰুৰীকালীন",
+            alerting: "পৰিয়ালক সতৰ্কবাৰ্তা প্ৰেৰণ কৰা হৈছে: ",
+            seconds: " ছেকেণ্ড",
+            cancel: "বাতিল কৰক"
+        },
+        sideDrawer: {
+            menuTitle: "প্ৰফাইল মেনু",
+            clinical: "সুস্থতা প্ৰফাইল",
+            cognitive: "জ্ঞানীয় প্ৰফাইল",
+            functional: "দৈনিক সাহায্য",
+            preferences: "পছন্দসমূহ",
+            context: "ব্যক্তিগত প্ৰসংগ"
         }
     }
 };
 
+function getPageSegmentLoc(langCode) {
+    const primary = PAGE_SEGMENTS_I18N[langCode] || {};
+    const fallback = PAGE_SEGMENTS_I18N['en'] || {};
+    return {
+        progress: Object.assign({}, fallback.progress, primary.progress, {
+            domains: Object.assign({}, (fallback.progress && fallback.progress.domains), (primary.progress && primary.progress.domains))
+        }),
+        nav: Object.assign({}, fallback.nav, primary.nav),
+        home: Object.assign({}, fallback.home, primary.home),
+        routine: Object.assign({}, fallback.routine, primary.routine),
+        gameMenu: Object.assign({}, fallback.gameMenu, primary.gameMenu, {
+            gameDescs: Object.assign({}, (fallback.gameMenu && fallback.gameMenu.gameDescs), (primary.gameMenu && primary.gameMenu.gameDescs))
+        }),
+        family: Object.assign({}, fallback.family, primary.family),
+        routineModal: Object.assign({}, fallback.routineModal, primary.routineModal, {
+            morningBrain: Object.assign({}, (fallback.routineModal && fallback.routineModal.morningBrain), (primary.routineModal && primary.routineModal.morningBrain)),
+            hydration: Object.assign({}, (fallback.routineModal && fallback.routineModal.hydration), (primary.routineModal && primary.routineModal.hydration)),
+            walk: Object.assign({}, (fallback.routineModal && fallback.routineModal.walk), (primary.routineModal && primary.routineModal.walk)),
+            afternoonPuzzle: Object.assign({}, (fallback.routineModal && fallback.routineModal.afternoonPuzzle), (primary.routineModal && primary.routineModal.afternoonPuzzle)),
+            eveningAudio: Object.assign({}, (fallback.routineModal && fallback.routineModal.eveningAudio), (primary.routineModal && primary.routineModal.eveningAudio))
+        }),
+        walkScreen: Object.assign({}, fallback.walkScreen, primary.walkScreen),
+        sosScreen: Object.assign({}, fallback.sosScreen, primary.sosScreen),
+        sideDrawer: Object.assign({}, fallback.sideDrawer, primary.sideDrawer)
+    };
+}
+
 function applyAllPageTranslations(langCode) {
-    const loc = PAGE_SEGMENTS_I18N[langCode] || PAGE_SEGMENTS_I18N['en'];
+    const loc = getPageSegmentLoc(langCode);
+    if (!loc) return;
     
     // Progress Screen
     if (document.getElementById('progress-title')) document.getElementById('progress-title').innerText = loc.progress.title;
@@ -446,10 +1057,45 @@ function applyAllPageTranslations(langCode) {
     if (document.getElementById('family-menu-title')) document.getElementById('family-menu-title').innerText = loc.family.title;
     if (document.getElementById('family-menu-desc')) document.getElementById('family-menu-desc').innerText = loc.family.desc;
 
+    // Side Drawer Profile Menu
+    if (loc.sideDrawer) {
+        if (document.getElementById('drawer-title')) document.getElementById('drawer-title').innerText = loc.sideDrawer.menuTitle;
+        if (document.getElementById('drawer-item-clinical')) document.getElementById('drawer-item-clinical').innerText = loc.sideDrawer.clinical;
+        if (document.getElementById('drawer-item-cognitive')) document.getElementById('drawer-item-cognitive').innerText = loc.sideDrawer.cognitive;
+        if (document.getElementById('drawer-item-functional')) document.getElementById('drawer-item-functional').innerText = loc.sideDrawer.functional;
+        if (document.getElementById('drawer-item-preferences')) document.getElementById('drawer-item-preferences').innerText = loc.sideDrawer.preferences;
+        if (document.getElementById('drawer-item-context')) document.getElementById('drawer-item-context').innerText = loc.sideDrawer.context;
+    }
+
+    // Walk Tracker Screen
+    if (loc.walkScreen) {
+        if (document.getElementById('walk-header-title')) document.getElementById('walk-header-title').innerText = loc.walkScreen.header;
+        if (document.getElementById('walk-goal-title')) document.getElementById('walk-goal-title').innerText = loc.walkScreen.goalReached;
+        if (document.getElementById('walk-goal-desc')) document.getElementById('walk-goal-desc').innerText = loc.walkScreen.goalDesc;
+        if (document.getElementById('walk-steps-label')) document.getElementById('walk-steps-label').innerText = loc.walkScreen.steps;
+        if (document.getElementById('walk-time-label')) document.getElementById('walk-time-label').innerText = loc.walkScreen.time;
+        if (document.getElementById('walk-dist-label')) document.getElementById('walk-dist-label').innerText = loc.walkScreen.distance;
+        if (document.getElementById('walk-goal-label')) document.getElementById('walk-goal-label').innerText = loc.walkScreen.dailyGoal;
+        if (document.getElementById('walk-status-hint')) document.getElementById('walk-status-hint').innerText = loc.walkScreen.hint;
+        const walkActionText = document.getElementById('text-walk-action');
+        if (walkActionText && !window.walkActive) walkActionText.innerText = loc.walkScreen.start;
+    }
+
+    // SOS Screen
+    if (loc.sosScreen) {
+        if (document.getElementById('sos-title')) document.getElementById('sos-title').innerText = loc.sosScreen.title;
+        if (document.getElementById('sos-cancel-btn')) document.getElementById('sos-cancel-btn').innerText = loc.sosScreen.cancel;
+    }
+
     // Refresh dynamic widgets safely
     try {
         if (typeof renderAiCareTrackBanner === 'function') renderAiCareTrackBanner();
         if (typeof renderAiComparisonCard === 'function') renderAiComparisonCard();
+        if (typeof renderFamilyMenu === 'function') renderFamilyMenu();
+        if (typeof renderGamesList === 'function') renderGamesList();
+        if (typeof updateProgressUI === 'function') updateProgressUI();
+        if (typeof renderProgressTab === 'function') renderProgressTab();
+        if (typeof initRoutineScreen === 'function') initRoutineScreen();
     } catch (e) {
         console.warn("Dynamic widget refresh warning:", e);
     }
@@ -2696,7 +3342,10 @@ function verifyPendingGame() {
         window.pendingRoutineTask.classList.add('done');
         completedTasks++;
         const progText = document.getElementById('routine-progress-text');
-        if(progText) progText.innerText = completedTasks + ' / 5 Completed';
+        const curL = (typeof currentLang !== 'undefined' && currentLang) ? currentLang : 'en';
+        const rLoc = (typeof getPageSegmentLoc === 'function') ? getPageSegmentLoc(curL).routine : null;
+        const completedWord = (rLoc && rLoc.completed) ? rLoc.completed : 'Completed';
+        if(progText) progText.innerText = `${completedTasks} / 5 ${completedWord}`;
         
         // Update Stats
         const taskText = window.pendingRoutineTask.innerText.toLowerCase();
@@ -2997,13 +3646,19 @@ async function toggleWalk() {
     const btn  = document.getElementById('btn-walk-action');
     const icon = document.getElementById('icon-walk-action');
     const text = document.getElementById('text-walk-action');
+    const curL = (typeof currentLang !== 'undefined' && currentLang) ? currentLang : 'en';
+    const wkLoc = (typeof getPageSegmentLoc === 'function') ? getPageSegmentLoc(curL).walkScreen : null;
+    const resumeText = wkLoc && wkLoc.resume ? wkLoc.resume : 'Resume Walk';
+    const pauseText = wkLoc && wkLoc.pause ? wkLoc.pause : 'Pause';
+    const pausedStatusText = wkLoc && wkLoc.pausedStatus ? wkLoc.pausedStatus : 'Walk paused';
+    const hintText = wkLoc && wkLoc.hint ? wkLoc.hint : 'Start walking \u2014 timer counts only while moving';
 
     if (walkActive) {
         pauseWalk();
         if (btn)  btn.style.background = '#4CAF50';
         if (icon) icon.innerText = 'play_arrow';
-        if (text) text.innerText = 'Resume Walk';
-        setWalkStatus('Walk paused', '#93C5FD');
+        if (text) text.innerText = resumeText;
+        setWalkStatus(pausedStatusText, '#93C5FD');
     } else {
         await requestMotionPermissionIfNeeded();
 
@@ -3026,8 +3681,8 @@ async function toggleWalk() {
         walkMoving  = false;
         if (btn)  btn.style.background = '#F44336';
         if (icon) icon.innerText = 'pause';
-        if (text) text.innerText = 'Pause';
-        setWalkStatus('Start walking \u2014 timer counts only while moving', '#93C5FD');
+        if (text) text.innerText = pauseText;
+        setWalkStatus(hintText, '#93C5FD');
         updateWalkUI();
     }
 }
@@ -3190,15 +3845,20 @@ function updateProgressUI() {
         homeFill.style.width = `${metrics.overallPct}%`;
         homeFill.style.background = metrics.overallPct >= 80 ? '#4CAF50' : (metrics.overallPct >= 40 ? '#FFC107' : '#FF8A65');
     }
+    const curL = (typeof currentLang !== 'undefined' && currentLang) ? currentLang : 'en';
+    const rLoc = (typeof getPageSegmentLoc === 'function') ? getPageSegmentLoc(curL).routine : null;
+    const completedWord = (rLoc && rLoc.completed) ? rLoc.completed : 'Completed';
+    const tasksWord = (rLoc && rLoc.tasks) ? rLoc.tasks : 'Tasks';
+
     if (homePct) {
-        homePct.innerText = `${metrics.overallPct}% (${metrics.routineCompleted} / ${metrics.routineTotal} Tasks)`;
+        homePct.innerText = `${metrics.overallPct}% (${metrics.routineCompleted} / ${metrics.routineTotal} ${tasksWord})`;
     }
 
     // 2. Routine Screen Progress Widget
     const rBar = document.getElementById('routine-progress-bar');
     const rText = document.getElementById('routine-progress-text');
     if (rBar) rBar.style.width = `${metrics.overallPct}%`;
-    if (rText) rText.innerText = `${metrics.routineCompleted} / ${metrics.routineTotal} Completed`;
+    if (rText) rText.innerText = `${metrics.routineCompleted} / ${metrics.routineTotal} ${completedWord}`;
 }
 
 function renderProgressTab() {
@@ -3261,7 +3921,9 @@ function renderProgressTab() {
     }
 
     // 3. Cognitive Domain Breakdown
+    const segLoc = (typeof getPageSegmentLoc === 'function') ? getPageSegmentLoc(activeLang) : null;
     const bannerLoc = (typeof AI_BANNER_I18N !== 'undefined' && AI_BANNER_I18N[activeLang]) ? AI_BANNER_I18N[activeLang] : null;
+    const domLoc = (segLoc && segLoc.progress && segLoc.progress.domains) ? segLoc.progress.domains : ((bannerLoc && bannerLoc.domains) ? bannerLoc.domains : null);
     const cogContainer = document.getElementById('cognitive-progress-list');
     if (cogContainer) {
         cogContainer.innerHTML = '';
@@ -3271,12 +3933,14 @@ function renderProgressTab() {
             
             let catName = cat;
             const catLower = cat.toLowerCase();
-            if (bannerLoc && bannerLoc.domains) {
-                if (catLower.includes('memory') && bannerLoc.domains.memory) catName = bannerLoc.domains.memory;
-                else if (catLower.includes('attention') && bannerLoc.domains.attention) catName = bannerLoc.domains.attention;
-                else if (catLower.includes('reason') && bannerLoc.domains.executive) catName = bannerLoc.domains.executive;
-                else if (catLower.includes('visual') && bannerLoc.domains.visuospatial) catName = bannerLoc.domains.visuospatial;
-                else if (catLower.includes('speed') && bannerLoc.domains.speed) catName = bannerLoc.domains.speed;
+            if (domLoc) {
+                if (catLower.includes('memory') && domLoc.memory) catName = domLoc.memory;
+                else if (catLower.includes('attention') && domLoc.attention) catName = domLoc.attention;
+                else if (catLower.includes('reason') && domLoc.executive) catName = domLoc.executive;
+                else if (catLower.includes('visual') && domLoc.visuospatial) catName = domLoc.visuospatial;
+                else if (catLower.includes('speed') && domLoc.speed) catName = domLoc.speed;
+                else if (catLower.includes('family') && domLoc.family) catName = domLoc.family;
+                else if (catLower.includes('audio') && domLoc.audio) catName = domLoc.audio;
             }
 
             const card = document.createElement('div');
@@ -3329,6 +3993,13 @@ function renderGamesList() {
     let prescribedIds = (aiProfile && aiProfile.primaryDeficit && typeof AI_DOMAIN_GAMES !== 'undefined' && AI_DOMAIN_GAMES[aiProfile.primaryDeficit])
         ? AI_DOMAIN_GAMES[aiProfile.primaryDeficit] : [];
 
+    const curL = (typeof currentLang !== 'undefined' && currentLang) ? currentLang : 'en';
+    const gmLoc = (typeof getPageSegmentLoc === 'function') ? getPageSegmentLoc(curL).gameMenu : null;
+    const aiPrescribedText = gmLoc && gmLoc.aiPrescribed ? gmLoc.aiPrescribed : 'AI Prescribed';
+    const mustPlayText = gmLoc && gmLoc.mustPlay ? gmLoc.mustPlay : 'Must Play';
+    const recText = gmLoc && gmLoc.recommended ? gmLoc.recommended : 'Recommended';
+    const goodText = gmLoc && gmLoc.good ? gmLoc.good : 'Good';
+
     let sortedGames = GAME_NAMES.slice().sort((a, b) => {
         let scoreA = scores[a.id] !== undefined ? scores[a.id] : 100;
         let scoreB = scores[b.id] !== undefined ? scores[b.id] : 100;
@@ -3342,12 +4013,12 @@ function renderGamesList() {
         let score = scores[game.id];
         let tag = '';
         if (score !== undefined) {
-            if (score <= 40) tag = '<span style="background: #F44336; color: white; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-left: 10px; display: inline-block;">Must Play</span>';
-            else if (score <= 70) tag = '<span style="background: #FF9800; color: white; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-left: 10px; display: inline-block;">Recommended</span>';
-            else tag = '<span style="background: #4CAF50; color: white; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-left: 10px; display: inline-block;">Good</span>';
+            if (score <= 40) tag = `<span style="background: #F44336; color: white; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-left: 10px; display: inline-block;">${mustPlayText}</span>`;
+            else if (score <= 70) tag = `<span style="background: #FF9800; color: white; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-left: 10px; display: inline-block;">${recText}</span>`;
+            else tag = `<span style="background: #4CAF50; color: white; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-left: 10px; display: inline-block;">${goodText}</span>`;
         }
         let aiTag = prescribedIds.includes(game.id)
-            ? '<span style="background: linear-gradient(135deg,#FF8A65,#FF7043); color: white; padding: 3px 9px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-left: 8px; display: inline-block; box-shadow: 0 0 8px rgba(255,138,101,0.55);">&#x1F3AF; AI Prescribed</span>'
+            ? `<span style="background: linear-gradient(135deg,#FF8A65,#FF7043); color: white; padding: 3px 9px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-left: 8px; display: inline-block; box-shadow: 0 0 8px rgba(255,138,101,0.55);">&#x1F3AF; ${aiPrescribedText.replace(/^[^\w\u0900-\u097F\u0980-\u09FF]+\s*/, '')}</span>`
             : '';
 
         const card = document.createElement('div');
@@ -3362,13 +4033,14 @@ function renderGamesList() {
 
         const glGames = (langData[currentLang] && langData[currentLang].gauntlet) || langData['en'].gauntlet;
         let localizedName = (glGames && glGames['g' + game.id + '_title']) ? glGames['g' + game.id + '_title'].replace(/^[^:]+:\s*/, '') : game.name;
+        const localizedDesc = (gmLoc && gmLoc.gameDescs && gmLoc.gameDescs[game.id]) ? gmLoc.gameDescs[game.id] : game.desc;
         card.innerHTML = `
             <div class="icon-box" style="background: #E0F2F1; color: #00796B; font-size: 24px; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">
                 ${game.icon}
             </div>
             <div style="flex: 1; margin-left: 15px; text-align: left;">
                 <h3 style="color: #37474F; font-size: 16px; margin: 0 0 4px 0; display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">${localizedName} ${aiTag}${tag}</h3>
-                <p style="color: #78909C; font-size: 13px; margin: 0;">${game.desc}</p>
+                <p style="color: #78909C; font-size: 13px; margin: 0;">${localizedDesc}</p>
             </div>
             <span style="color: #B0BEC5;">&#x25B6;</span>
         `;
@@ -3433,20 +4105,31 @@ const familyMembers = [
 function renderFamilyMenu() {
     const area = document.getElementById('family-game-area');
     if(!area) return;
+    const curL = (typeof currentLang !== 'undefined' && currentLang) ? currentLang : 'en';
+    const famLoc = (typeof getPageSegmentLoc === 'function') ? getPageSegmentLoc(curL).family : null;
+    const albumTitle = famLoc && famLoc.albumTitle ? famLoc.albumTitle : 'Family Memory Album';
+    const albumDesc = famLoc && famLoc.albumDesc ? famLoc.albumDesc : 'Look at your family picture. Test your memory by identifying each family member!';
+    const startBtn = famLoc && famLoc.startBtn ? famLoc.startBtn : 'Start Recognition Game';
+
     area.innerHTML = `
         <div style="background: white; border-radius: 16px; padding: 20px; width: 100%; max-width: 420px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center;">
             <div style="width: 100%; height: 210px; border-radius: 12px; overflow: hidden; margin-bottom: 15px; border: 3px solid #FF8A65; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
                 <img src="family_group.jpg" style="width: 100%; height: 100%; object-fit: cover; object-position: center;">
             </div>
-            <h3 style="color: #37474F; margin-bottom: 8px; font-size: 22px;">Family Memory Album</h3>
-            <p style="color: #78909C; margin-bottom: 20px; font-size: 14px;">Look at your family picture. Test your memory by identifying each family member!</p>
-            <button onclick="startFamilyQuiz()" style="background: #FF8A65; color: white; border: none; padding: 15px 30px; font-size: 20px; border-radius: 30px; font-weight: bold; cursor: pointer; width: 100%; box-shadow: 0 4px 6px rgba(255, 138, 101, 0.3);">Start Recognition Game</button>
+            <h3 style="color: #37474F; margin-bottom: 8px; font-size: 22px;">${albumTitle}</h3>
+            <p style="color: #78909C; margin-bottom: 20px; font-size: 14px;">${albumDesc}</p>
+            <button onclick="startFamilyQuiz()" style="background: #FF8A65; color: white; border: none; padding: 15px 30px; font-size: 20px; border-radius: 30px; font-weight: bold; cursor: pointer; width: 100%; box-shadow: 0 4px 6px rgba(255, 138, 101, 0.3);">${startBtn}</button>
         </div>
     `;
 }
 
 function startFamilyQuiz() {
     const area = document.getElementById('family-game-area');
+    const curL = (typeof currentLang !== 'undefined' && currentLang) ? currentLang : 'en';
+    const famLoc = (typeof getPageSegmentLoc === 'function') ? getPageSegmentLoc(curL).family : null;
+    const cluePrefix = famLoc && famLoc.cluePrefix ? famLoc.cluePrefix : 'Clue:';
+    const questionText = famLoc && famLoc.question ? famLoc.question : 'Who is this person in the family?';
+    const backText = famLoc && famLoc.backToAlbum ? famLoc.backToAlbum : 'Back to Family Album';
     
     // Random target
     let target = familyMembers[Math.floor(Math.random() * familyMembers.length)];
@@ -3463,10 +4146,10 @@ function startFamilyQuiz() {
             </div>
             
             <div style="background: #FFF3E0; border: 1px solid #FFE0B2; border-radius: 12px; padding: 6px 16px; margin-bottom: 20px;">
-                <span style="color: #E65100; font-size: 13px; font-weight: 600;">&#x1F50D; Clue: ${target.desc}</span>
+                <span style="color: #E65100; font-size: 13px; font-weight: 600;">&#x1F50D; ${cluePrefix} ${target.desc}</span>
             </div>
 
-            <h2 style="color: #37474F; font-size: 24px; margin: 0 0 20px 0; font-weight: 700;">Who is this person in the family?</h2>
+            <h2 style="color: #37474F; font-size: 24px; margin: 0 0 20px 0; font-weight: 700;">${questionText}</h2>
             
             <div style="display: flex; flex-direction: column; gap: 14px; width: 100%;">
     `;
@@ -3482,7 +4165,7 @@ function startFamilyQuiz() {
             </div>
             
             <button onclick="renderFamilyMenu()" style="margin-top: 25px; background: none; border: none; color: #90A4AE; font-size: 14px; cursor: pointer; text-decoration: underline;">
-                &#x21A9; Back to Family Album
+                &#x21A9; ${backText}
             </button>
         </div>
     `;
@@ -3527,6 +4210,15 @@ function showFamilyCongratsPopup(member, isCorrect) {
     const existing = document.getElementById('family-congrats-modal');
     if (existing) existing.remove();
 
+    const curL = (typeof currentLang !== 'undefined' && currentLang) ? currentLang : 'en';
+    const famLoc = (typeof getPageSegmentLoc === 'function') ? getPageSegmentLoc(curL).family : null;
+    const wonderfulText = famLoc && famLoc.wonderful ? famLoc.wonderful : 'Wonderful!';
+    const rememberedText = famLoc && famLoc.remembered ? famLoc.remembered : 'You remembered correctly!';
+    const nextMemberText = famLoc && famLoc.nextMember ? famLoc.nextMember : 'Next Family Member \u27A1';
+    const keepGoingText = famLoc && famLoc.keepGoing ? famLoc.keepGoing : 'Good Try!';
+    const reminderText = famLoc && famLoc.reminder ? famLoc.reminder : 'Here is a gentle reminder:';
+    const tryNextText = famLoc && famLoc.tryNext ? famLoc.tryNext : 'Try Next \u27A1';
+
     const modal = document.createElement('div');
     modal.id = 'family-congrats-modal';
     modal.style.position = 'fixed';
@@ -3556,8 +4248,8 @@ function showFamilyCongratsPopup(member, isCorrect) {
     if (isCorrect) {
         card.innerHTML = `
             <div style="font-size: 60px; line-height: 1; margin-bottom: 12px; animation: bounce 0.6s ease;">&#x1F389;</div>
-            <h2 style="color: #2E7D32; font-size: 26px; margin: 0 0 6px 0; font-weight: 800;">Wonderful!</h2>
-            <p style="color: #666; font-size: 15px; margin: 0 0 18px 0;">You remembered correctly!</p>
+            <h2 style="color: #2E7D32; font-size: 26px; margin: 0 0 6px 0; font-weight: 800;">${wonderfulText}</h2>
+            <p style="color: #666; font-size: 15px; margin: 0 0 18px 0;">${rememberedText}</p>
             
             <div style="position: relative; width: 120px; height: 120px; margin: 0 auto 16px; border-radius: 50%; overflow: hidden; border: 4px solid #4CAF50; box-shadow: 0 6px 14px rgba(76, 175, 80, 0.3);">
                 <img src="${member.image}" style="width: 100%; height: 100%; object-fit: cover;">
@@ -3567,14 +4259,14 @@ function showFamilyCongratsPopup(member, isCorrect) {
             <p style="color: #FF8A65; font-weight: 700; font-size: 14px; text-transform: uppercase; margin: 0 0 20px 0;">${member.relation}</p>
             
             <button id="next-family-btn" style="background: linear-gradient(135deg, #4CAF50, #2E7D32); color: white; border: none; padding: 14px 28px; font-size: 17px; font-weight: 700; border-radius: 30px; cursor: pointer; width: 100%; box-shadow: 0 4px 12px rgba(46, 125, 50, 0.35);">
-                Next Family Member &#x27A1;
+                ${nextMemberText}
             </button>
         `;
     } else {
         card.innerHTML = `
             <div style="font-size: 55px; line-height: 1; margin-bottom: 12px;">&#x1F49B;</div>
-            <h2 style="color: #E65100; font-size: 24px; margin: 0 0 6px 0; font-weight: 800;">Good Try!</h2>
-            <p style="color: #666; font-size: 14px; margin: 0 0 16px 0;">Here is a gentle reminder:</p>
+            <h2 style="color: #E65100; font-size: 24px; margin: 0 0 6px 0; font-weight: 800;">${keepGoingText}</h2>
+            <p style="color: #666; font-size: 14px; margin: 0 0 16px 0;">${reminderText}</p>
             
             <div style="position: relative; width: 110px; height: 110px; margin: 0 auto 14px; border-radius: 50%; overflow: hidden; border: 4px solid #FF9800; box-shadow: 0 6px 14px rgba(255, 152, 0, 0.3);">
                 <img src="${member.image}" style="width: 100%; height: 100%; object-fit: cover;">
@@ -3584,7 +4276,7 @@ function showFamilyCongratsPopup(member, isCorrect) {
             <p style="color: #E65100; font-weight: 700; font-size: 14px; text-transform: uppercase; margin: 0 0 18px 0;">${member.relation}</p>
             
             <button id="next-family-btn" style="background: linear-gradient(135deg, #FF9800, #F57C00); color: white; border: none; padding: 14px 28px; font-size: 17px; font-weight: 700; border-radius: 30px; cursor: pointer; width: 100%; box-shadow: 0 4px 12px rgba(245, 124, 0, 0.35);">
-                Try Next &#x27A1;
+                ${tryNextText}
             </button>
         `;
     }
@@ -3659,14 +4351,19 @@ function initRoutineScreen() {
 
     // Hydration glass text
     const waterDesc = document.getElementById('routine-water-desc');
+    const curL = (typeof currentLang !== 'undefined' && currentLang) ? currentLang : 'en';
+    const rLocModal = (typeof getPageSegmentLoc === 'function') ? getPageSegmentLoc(curL).routineModal : null;
+    const rLocRoutine = (typeof getPageSegmentLoc === 'function') ? getPageSegmentLoc(curL).routine : null;
     if (waterDesc) {
-        waterDesc.innerHTML = `11:00 AM &bull; ${data.water_count} / 6 Glasses Tracked Today`;
+        const trackedSuffix = (rLocModal && rLocModal.hydration && rLocModal.hydration.glassesTracked) ? rLocModal.hydration.glassesTracked : 'Glasses Tracked Today:';
+        waterDesc.innerHTML = `11:00 AM &bull; ${data.water_count} / 6 ${trackedSuffix.replace(/:$/, '')}`;
     }
 
     // Progress counter and bar
     const progText = document.getElementById('routine-progress-text');
     if (progText) {
-        progText.innerText = `${completedCount} / 5 `;
+        const completedWord = (rLocRoutine && rLocRoutine.completed) ? rLocRoutine.completed : 'Completed';
+        progText.innerText = `${completedCount} / 5 ${completedWord}`;
     }
 
     const progBar = document.getElementById('routine-progress-bar');
@@ -3694,40 +4391,44 @@ function resetRoutineTasks() {
 
 function handleRoutineClick(taskKey) {
     const data = getRoutineData();
+    const curL = (typeof currentLang !== 'undefined' && currentLang) ? currentLang : 'en';
+    const rLoc = (typeof getPageSegmentLoc === 'function') ? getPageSegmentLoc(curL).routineModal : null;
     
     if (taskKey === 'morning_brain') {
+        const mb = (rLoc && rLoc.morningBrain) ? rLoc.morningBrain : {};
         showRoutineActionModal({
             icon: '&#x1F9E0;',
-            badge: 'Prospective Memory Check',
-            title: 'Morning Brain Warmup',
-            desc: '<strong>Active Retrieval Practice:</strong> Take 10 seconds to recall: What day is today, and what is one goal you have? Actively retrieving memories primes your prefrontal cortex before playing your warmup game.',
+            badge: mb.badge || 'Prospective Memory Check',
+            title: mb.title || 'Morning Brain Warmup',
+            desc: mb.desc || '<strong>Active Retrieval Practice:</strong> Take 10 seconds to recall: What day is today, and what is one goal you have? Actively retrieving memories primes your prefrontal cortex before playing your warmup game.',
             isDone: data.morning_brain,
-            primaryBtnText: 'Play Quick Memory Game &#x25B6;',
+            primaryBtnText: mb.btn || 'Play Quick Memory Game &#x25B6;',
             onPrimary: () => {
                 closeRoutineModal();
                 window.routineTaskCallback = () => {
                     markRoutineTaskDone('morning_brain');
                     showScreen('routine-screen');
-                    showRoutineCongrats('Brain Warmup Complete! Great job actively challenging your working memory.');
+                    showRoutineCongrats(mb.doneToast || 'Brain Warmup Complete! Great job actively challenging your working memory.');
                 };
                 startSingleGame(0); // Sequence Memory
             },
             onOffline: () => {
                 closeRoutineModal();
                 markRoutineTaskDone('morning_brain');
-                showRoutineCongrats('Memory check-in logged! Daily self-recall keeps neural pathways active.');
+                showRoutineCongrats(mb.offlineToast || 'Memory check-in logged! Daily self-recall keeps neural pathways active.');
             }
         });
     } else if (taskKey === 'hydration') {
         showHydrationModal();
     } else if (taskKey === 'walk') {
+        const wk = (rLoc && rLoc.walk) ? rLoc.walk : {};
         showRoutineActionModal({
             icon: '&#x1F6B6;',
-            badge: 'Mental Navigation & Movement',
-            title: 'Gentle Walk & Movement',
-            desc: '<strong>Spatial Recall Exercise:</strong> Can you mentally picture the route of your walk or garden stroll? Mental navigation exercises the parietal and hippocampal regions of the brain.',
+            badge: wk.badge || 'Mental Navigation & Movement',
+            title: wk.title || 'Gentle Walk & Movement',
+            desc: wk.desc || '<strong>Spatial Recall Exercise:</strong> Can you mentally picture the route of your walk or garden stroll? Mental navigation exercises the parietal and hippocampal regions of the brain.',
             isDone: data.walk,
-            primaryBtnText: 'Start Walk Tracker &#x25B6;',
+            primaryBtnText: wk.btn || 'Start Walk Tracker &#x25B6;',
             onPrimary: () => {
                 closeRoutineModal();
                 showScreen('walk-screen');
@@ -3735,30 +4436,31 @@ function handleRoutineClick(taskKey) {
             onOffline: () => {
                 closeRoutineModal();
                 markRoutineTaskDone('walk');
-                showRoutineCongrats('Movement logged! Light movement increases oxygen and blood flow to memory centers.');
+                showRoutineCongrats(wk.toast || 'Movement logged! Light movement increases oxygen and blood flow to memory centers.');
             }
         });
     } else if (taskKey === 'afternoon_puzzle') {
+        const ap = (rLoc && rLoc.afternoonPuzzle) ? rLoc.afternoonPuzzle : {};
         showRoutineActionModal({
             icon: '&#x1F9E9;',
-            badge: 'Working Memory Refresh',
-            title: 'Afternoon Mind Refresh',
-            desc: '<strong>Visual Recognition Check:</strong> A quick, relaxing matching game to counteract afternoon fatigue and train visual attention.',
+            badge: ap.badge || 'Working Memory Refresh',
+            title: ap.title || 'Afternoon Mind Refresh',
+            desc: ap.desc || '<strong>Visual Recognition Check:</strong> A quick, relaxing matching game to counteract afternoon fatigue and train visual attention.',
             isDone: data.afternoon_puzzle,
-            primaryBtnText: 'Play Quick Match &#x25B6;',
+            primaryBtnText: ap.btn || 'Play Quick Match &#x25B6;',
             onPrimary: () => {
                 closeRoutineModal();
                 window.routineTaskCallback = () => {
                     markRoutineTaskDone('afternoon_puzzle');
                     showScreen('routine-screen');
-                    showRoutineCongrats('Afternoon Refresh Complete! Active visual discrimination strengthens memory.');
+                    showRoutineCongrats(ap.doneToast || 'Afternoon Refresh Complete! Active visual discrimination strengthens memory.');
                 };
                 startSingleGame(4); // Animal Quick Match
             },
             onOffline: () => {
                 closeRoutineModal();
                 markRoutineTaskDone('afternoon_puzzle');
-                showRoutineCongrats('Logged! Taking time for mental stimulation keeps the day balanced.');
+                showRoutineCongrats(ap.offlineToast || 'Logged! Taking time for mental stimulation keeps the day balanced.');
             }
         });
     } else if (taskKey === 'evening_audio') {
@@ -3773,6 +4475,11 @@ function closeRoutineModal() {
 
 function showRoutineActionModal(config) {
     closeRoutineModal();
+    const curL = (typeof currentLang !== 'undefined' && currentLang) ? currentLang : 'en';
+    const rLoc = (typeof getPageSegmentLoc === 'function') ? getPageSegmentLoc(curL).routineModal : null;
+    const offlineBtnText = (rLoc && rLoc.offlineBtn) ? rLoc.offlineBtn : '&#x2714; Mark as Done (Self-Reflected Offline)';
+    const closeBtnText = (rLoc && rLoc.closeBtn) ? rLoc.closeBtn : 'Close';
+    const alreadyDoneText = (rLoc && rLoc.alreadyDone) ? rLoc.alreadyDone : '&#x2705; Already completed for today!';
 
     const modal = document.createElement('div');
     modal.id = 'routine-action-modal';
@@ -3799,7 +4506,7 @@ function showRoutineActionModal(config) {
             
             ${config.isDone ? `
                 <div style="background: #E8F5E9; color: #2E7D32; padding: 10px; border-radius: 14px; font-weight: bold; margin-bottom: 16px; font-size: 14px;">
-                    &#x2705; Already completed for today!
+                    ${alreadyDoneText}
                 </div>
             ` : ''}
 
@@ -3809,11 +4516,11 @@ function showRoutineActionModal(config) {
                 </button>
                 
                 <button id="routine-modal-offline" style="background: #F1F8E9; border: 2px solid #81C784; color: #2E7D32; padding: 13px; font-size: 14px; font-weight: 700; border-radius: 16px; cursor: pointer;">
-                    &#x2714; Mark as Done (Self-Reflected Offline)
+                    ${offlineBtnText}
                 </button>
                 
                 <button onclick="closeRoutineModal()" style="background: none; border: none; color: #90A4AE; padding: 8px; font-size: 13px; cursor: pointer;">
-                    Close
+                    ${closeBtnText}
                 </button>
             </div>
         </div>
@@ -3830,6 +4537,10 @@ function showRoutineActionModal(config) {
 function showHydrationModal() {
     closeRoutineModal();
     const data = getRoutineData();
+    const curL = (typeof currentLang !== 'undefined' && currentLang) ? currentLang : 'en';
+    const rLoc = (typeof getPageSegmentLoc === 'function') ? getPageSegmentLoc(curL).routineModal : null;
+    const hyd = (rLoc && rLoc.hydration) ? rLoc.hydration : {};
+    const closeBtnText = (rLoc && rLoc.closeBtn) ? rLoc.closeBtn : 'Close';
 
     const modal = document.createElement('div');
     modal.id = 'routine-action-modal';
@@ -3846,45 +4557,45 @@ function showHydrationModal() {
     modal.innerHTML = `
         <div style="background: white; border-radius: 24px; padding: 26px 20px; width: 90%; max-width: 380px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.25);">
             <div style="display: inline-flex; align-items: center; gap: 6px; background: #E0F2F1; color: #00796B; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; margin-bottom: 10px;">
-                <span class="material-symbols-rounded" style="font-size: 15px;">psychology</span> Active Recall Check
+                <span class="material-symbols-rounded" style="font-size: 15px;">psychology</span> ${hyd.badge || 'Active Recall Check'}
             </div>
             
             <div style="font-size: 44px; margin-bottom: 4px;">&#x1F4A7;</div>
-            <h2 style="color: #0277BD; font-size: 21px; margin: 0 0 6px 0; font-weight: 800;">Hydration & Memory</h2>
+            <h2 style="color: #0277BD; font-size: 21px; margin: 0 0 6px 0; font-weight: 800;">${hyd.title || 'Hydration & Memory'}</h2>
             <p style="color: #555; font-size: 13.5px; margin: 0 0 16px 0; line-height: 1.4;">
-                <strong>Test your recent memory:</strong> Can you recall when you last drank a glass of water today?
+                ${hyd.desc || '<strong>Test your recent memory:</strong> Can you recall when you last drank a glass of water today?'}
             </p>
 
             <!-- Active Retrieval Buttons -->
             <div id="recall-options-box" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px;">
                 <button class="recall-btn" onclick="submitHydrationRecall('recent', this)" style="background: #F1F8E9; border: 2px solid #AED581; color: #33691E; padding: 11px 14px; border-radius: 12px; font-size: 13.5px; font-weight: 600; cursor: pointer; text-align: left; transition: 0.2s;">
-                    &#x2600;&#xFE0F; Recently (Past 1-2 hours)
+                    ${hyd.recentBtn || '&#x2600;&#xFE0F; Recently (Past 1-2 hours)'}
                 </button>
                 <button class="recall-btn" onclick="submitHydrationRecall('meal', this)" style="background: #FFF8E1; border: 2px solid #FFE082; color: #F57F17; padding: 11px 14px; border-radius: 12px; font-size: 13.5px; font-weight: 600; cursor: pointer; text-align: left; transition: 0.2s;">
-                    &#x1F374; Around mealtime earlier
+                    ${hyd.earlierBtn || '&#x1F374; Around mealtime earlier'}
                 </button>
                 <button class="recall-btn" onclick="submitHydrationRecall('not_sure', this)" style="background: #E3F2FD; border: 2px solid #90CAF9; color: #0D47A1; padding: 11px 14px; border-radius: 12px; font-size: 13.5px; font-weight: 600; cursor: pointer; text-align: left; transition: 0.2s;">
-                    &#x1F914; Not sure / Need a fresh glass now!
+                    ${hyd.forgotBtn || '&#x1F914; Not sure / Need a fresh glass now!'}
                 </button>
             </div>
 
             <!-- Recall Feedback Box -->
             <div id="recall-feedback-box" style="display: none; background: #E8F5E9; border: 1px solid #A5D6A7; border-radius: 12px; padding: 10px 12px; margin-bottom: 14px; font-size: 12.5px; color: #2E7D32; line-height: 1.4; text-align: left;">
-                <strong>&#x1F9E0; Brain Stimulated!</strong> Actively reflecting on recent events exercises your episodic memory and strengthens hippocampal recall.
+                ${hyd.feedback || '<strong>&#x1F9E0; Brain Stimulated!</strong> Actively reflecting on recent events exercises your episodic memory and strengthens hippocampal recall.'}
             </div>
             
             <div style="background: #F1F8E9; border-radius: 14px; padding: 10px 14px; margin-bottom: 14px; border: 1px solid #C5E1A5; display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-size: 13px; color: #33691E; font-weight: 700;">Glasses Tracked Today:</span>
+                <span style="font-size: 13px; color: #33691E; font-weight: 700;">${hyd.glassesTracked || 'Glasses Tracked Today:'}</span>
                 <span id="modal-water-count" style="font-size: 20px; font-weight: 800; color: #0277BD;">${data.water_count} / 6</span>
             </div>
 
             <div style="display: flex; flex-direction: column; gap: 10px;">
                 <button id="btn-drink-water" style="background: linear-gradient(135deg, #0288D1, #01579B); color: white; border: none; padding: 14px; font-size: 16px; font-weight: bold; border-radius: 16px; cursor: pointer; box-shadow: 0 4px 10px rgba(2,136,209,0.3);">
-                    &#x1F4A7; Log Glass & Check Off Task
+                    ${hyd.btn || '&#x1F4A7; Log Glass & Check Off Task'}
                 </button>
                 
                 <button onclick="closeRoutineModal()" style="background: none; border: none; color: #90A4AE; padding: 6px; font-size: 13px; cursor: pointer;">
-                    Close
+                    ${closeBtnText}
                 </button>
             </div>
         </div>
@@ -3900,7 +4611,7 @@ function showHydrationModal() {
         initRoutineScreen();
         playGentleWaterDropSound();
         closeRoutineModal();
-        showRoutineCongrats('Recall & Hydration Tracked! Self-reflection and hydration both keep your brain resilient.');
+        showRoutineCongrats(hyd.toast || 'Recall & Hydration Tracked! Self-reflection and hydration both keep your brain resilient.');
     };
 }
 
@@ -3928,6 +4639,18 @@ let breathingInterval = null;
 function showAudioTherapyModal() {
     closeRoutineModal();
     const data = getRoutineData();
+    const curL = (typeof currentLang !== 'undefined' && currentLang) ? currentLang : 'en';
+    const rLoc = (typeof getPageSegmentLoc === 'function') ? getPageSegmentLoc(curL).routineModal : null;
+    const ea = (rLoc && rLoc.eveningAudio) ? rLoc.eveningAudio : {};
+    const titleText = ea.title || 'Evening Audio Therapy';
+    const descText = ea.desc || 'Soothing soundscapes & guided breathing to ease evening restlessness and support deep sleep.';
+    const breatheInInitial = ea.breatheIn || 'Breathe In';
+    const rainText = ea.rain || '&#x1F327;&#xFE0F; Rain';
+    const bowlText = ea.bowl || '&#x1F9D8; Singing Bowl';
+    const fluteText = ea.flute || '&#x1FA84; Flute Drone';
+    const startAudioText = ea.startBtn || 'Start Calming Soundscape';
+    const completeBtnText = ea.completeBtn || '&#x2714; Complete Session & Mark Done';
+    const exitBtnText = ea.exitBtn || 'Exit';
 
     const modal = document.createElement('div');
     modal.id = 'routine-action-modal';
@@ -3944,40 +4667,40 @@ function showAudioTherapyModal() {
     modal.innerHTML = `
         <div style="background: #1A2B42; color: white; border-radius: 28px; padding: 30px 22px; width: 92%; max-width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);">
             <div style="font-size: 40px; margin-bottom: 6px;">&#x1F3A7;</div>
-            <h2 style="color: #90CAF9; font-size: 22px; margin: 0 0 6px 0; font-weight: 800;">Evening Audio Therapy</h2>
-            <p style="color: #B0BEC5; font-size: 13px; margin: 0 0 20px 0;">Soothing soundscapes & guided breathing to ease evening restlessness and support deep sleep.</p>
+            <h2 style="color: #90CAF9; font-size: 22px; margin: 0 0 6px 0; font-weight: 800;">${titleText}</h2>
+            <p style="color: #B0BEC5; font-size: 13px; margin: 0 0 20px 0;">${descText}</p>
 
             <!-- Breathing Circle -->
             <div style="position: relative; width: 170px; height: 170px; margin: 0 auto 24px; display: flex; align-items: center; justify-content: center;">
                 <div id="breathing-ring" style="position: absolute; width: 120px; height: 120px; border-radius: 50%; background: radial-gradient(circle, rgba(100,181,246,0.35) 0%, rgba(30,136,229,0.1) 70%); border: 3px solid #64B5F6; transition: 4s ease-in-out;"></div>
-                <div id="breathing-text" style="position: relative; z-index: 2; font-size: 17px; font-weight: 700; color: white;">Breathe In</div>
+                <div id="breathing-text" style="position: relative; z-index: 2; font-size: 17px; font-weight: 700; color: white;">${breatheInInitial}</div>
             </div>
 
             <!-- Sound Selection -->
             <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 22px;">
                 <button class="sound-chip active-chip" onclick="switchSoundscape('rain', this)" style="background: #283E58; color: #90CAF9; border: 1px solid #64B5F6; padding: 8px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer;">
-                    &#x1F327;&#xFE0F; Rain
+                    ${rainText}
                 </button>
                 <button class="sound-chip" onclick="switchSoundscape('bowl', this)" style="background: #283E58; color: #B0BEC5; border: 1px solid rgba(255,255,255,0.15); padding: 8px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer;">
-                    &#x1F9D8; Singing Bowl
+                    ${bowlText}
                 </button>
                 <button class="sound-chip" onclick="switchSoundscape('flute', this)" style="background: #283E58; color: #B0BEC5; border: 1px solid rgba(255,255,255,0.15); padding: 8px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer;">
-                    &#x1FA84; Flute Drone
+                    ${fluteText}
                 </button>
             </div>
 
             <!-- Audio Toggle & Complete -->
             <div style="display: flex; flex-direction: column; gap: 12px;">
                 <button id="btn-toggle-sound" onclick="toggleSoundscapePlay()" style="background: #0288D1; color: white; border: none; padding: 15px; font-size: 16px; font-weight: bold; border-radius: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                    <span id="sound-play-icon">&#x25B6;</span> <span id="sound-play-text">Start Calming Soundscape</span>
+                    <span id="sound-play-icon">&#x25B6;</span> <span id="sound-play-text">${startAudioText}</span>
                 </button>
 
                 <button onclick="finishAudioTherapySession()" style="background: linear-gradient(135deg, #4CAF50, #2E7D32); color: white; border: none; padding: 15px; font-size: 16px; font-weight: bold; border-radius: 16px; cursor: pointer; box-shadow: 0 4px 10px rgba(76,175,80,0.3);">
-                    &#x2714; Complete Session & Mark Done
+                    ${completeBtnText}
                 </button>
 
                 <button onclick="closeAudioTherapyModal()" style="background: none; border: none; color: #90A4AE; padding: 8px; font-size: 13px; cursor: pointer;">
-                    Exit
+                    ${exitBtnText}
                 </button>
             </div>
         </div>
@@ -3998,7 +4721,10 @@ function finishAudioTherapySession() {
     if (breathingInterval) clearInterval(breathingInterval);
     closeRoutineModal();
     markRoutineTaskDone('evening_audio');
-    showRoutineCongrats('Evening Relaxation Complete! May you have a peaceful, deep, and restful night.');
+    const curL = (typeof currentLang !== 'undefined' && currentLang) ? currentLang : 'en';
+    const rLoc = (typeof getPageSegmentLoc === 'function') ? getPageSegmentLoc(curL).routineModal : null;
+    const ea = (rLoc && rLoc.eveningAudio) ? rLoc.eveningAudio : {};
+    showRoutineCongrats(ea.toast || 'Evening Relaxation Complete! May you have a peaceful, deep, and restful night.');
 }
 
 function startBreathingAnimation() {
@@ -4007,6 +4733,14 @@ function startBreathingAnimation() {
     const text = document.getElementById('breathing-text');
     if (!ring || !text) return;
 
+    const curL = (typeof currentLang !== 'undefined' && currentLang) ? currentLang : 'en';
+    const rLoc = (typeof getPageSegmentLoc === 'function') ? getPageSegmentLoc(curL).routineModal : null;
+    const ea = (rLoc && rLoc.eveningAudio) ? rLoc.eveningAudio : {};
+    const inText = ea.breatheIn || 'Breathe In...';
+    const holdText = ea.breatheHold || 'Hold Gently...';
+    const outText = ea.breatheOut || 'Slowly Breathe Out...';
+    const restText = ea.breatheRest || 'Rest...';
+
     let state = 0; // 0: inhale (4s), 1: hold (2s), 2: exhale (4s), 3: rest (2s)
     function cycle() {
         if (!document.getElementById('breathing-ring')) {
@@ -4014,23 +4748,23 @@ function startBreathingAnimation() {
             return;
         }
         if (state === 0) {
-            text.innerText = 'Breathe In...';
+            text.innerText = inText;
             ring.style.transform = 'scale(1.4)';
             ring.style.opacity = '1';
             setTimeout(cycle, 4000);
             state = 1;
         } else if (state === 1) {
-            text.innerText = 'Hold Gently...';
+            text.innerText = holdText;
             setTimeout(cycle, 2000);
             state = 2;
         } else if (state === 2) {
-            text.innerText = 'Slowly Breathe Out...';
+            text.innerText = outText;
             ring.style.transform = 'scale(1.0)';
             ring.style.opacity = '0.6';
             setTimeout(cycle, 4000);
             state = 3;
         } else {
-            text.innerText = 'Rest...';
+            text.innerText = restText;
             setTimeout(cycle, 2000);
             state = 0;
         }
@@ -4238,6 +4972,11 @@ function showRoutineCongrats(message) {
     const existing = document.getElementById('routine-congrats-modal');
     if (existing) existing.remove();
 
+    const curL = (typeof currentLang !== 'undefined' && currentLang) ? currentLang : 'en';
+    const rLoc = (typeof getPageSegmentLoc === 'function') ? getPageSegmentLoc(curL).routineModal : null;
+    const congratsTitle = (rLoc && rLoc.congratsTitle) ? rLoc.congratsTitle : 'Wonderful Progress!';
+    const continueBtnText = (rLoc && rLoc.continueBtn) ? rLoc.continueBtn : 'Continue Routine \u2714';
+
     const modal = document.createElement('div');
     modal.id = 'routine-congrats-modal';
     modal.style.position = 'fixed';
@@ -4254,11 +4993,11 @@ function showRoutineCongrats(message) {
     modal.innerHTML = `
         <div style="background: white; border-radius: 24px; padding: 28px 24px; width: 90%; max-width: 380px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.25);">
             <div style="font-size: 55px; margin-bottom: 12px;">&#x1F31F;</div>
-            <h2 style="color: #00796B; font-size: 22px; margin: 0 0 8px 0; font-weight: 800;">Wonderful Progress!</h2>
+            <h2 style="color: #00796B; font-size: 22px; margin: 0 0 8px 0; font-weight: 800;">${congratsTitle}</h2>
             <p style="color: #555; font-size: 15px; margin: 0 0 22px 0; line-height: 1.5;">${message}</p>
             
             <button onclick="document.getElementById('routine-congrats-modal').remove()" style="background: #00796B; color: white; border: none; padding: 14px 28px; font-size: 16px; font-weight: bold; border-radius: 24px; cursor: pointer; width: 100%; box-shadow: 0 4px 10px rgba(0,121,107,0.3);">
-                Continue Routine &#x2714;
+                ${continueBtnText}
             </button>
         </div>
     `;
