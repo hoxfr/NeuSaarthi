@@ -130,6 +130,37 @@
             </main>
         </section>
 
+        <!-- --- 4b. Onboarding: Age & Education Profile --- -->
+        <section id="onboarding-profile-screen" class="screen">
+            <header class="app-header" style="text-align: center;">
+                <h1>Tell us about yourself</h1>
+                <p>This helps us set up games that are fair for you</p>
+            </header>
+            <main class="content-pad" style="display: flex; flex-direction: column; gap: 24px; padding-bottom: 40px;">
+                <div>
+                    <label style="font-weight: 700; color: #37474F; font-size: 16px;">Your Age</label>
+                    <div id="onboarding-age-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px;">
+                        <button class="onboarding-age-btn" onclick="selectOnboardingAge(this,'50-59')" style="min-height: 55px; font-size: 17px; font-weight: 700; border-radius: 14px; border: 2px solid #ccc; background: white; color: #37474F; cursor: pointer;">50-59</button>
+                        <button class="onboarding-age-btn" onclick="selectOnboardingAge(this,'60-69')" style="min-height: 55px; font-size: 17px; font-weight: 700; border-radius: 14px; border: 2px solid #ccc; background: white; color: #37474F; cursor: pointer;">60-69</button>
+                        <button class="onboarding-age-btn" onclick="selectOnboardingAge(this,'70-79')" style="min-height: 55px; font-size: 17px; font-weight: 700; border-radius: 14px; border: 2px solid #ccc; background: white; color: #37474F; cursor: pointer;">70-79</button>
+                        <button class="onboarding-age-btn" onclick="selectOnboardingAge(this,'80-89')" style="min-height: 55px; font-size: 17px; font-weight: 700; border-radius: 14px; border: 2px solid #ccc; background: white; color: #37474F; cursor: pointer;">80-89</button>
+                        <button class="onboarding-age-btn" onclick="selectOnboardingAge(this,'90+')" style="min-height: 55px; font-size: 17px; font-weight: 700; border-radius: 14px; border: 2px solid #ccc; background: white; color: #37474F; cursor: pointer;">90+</button>
+                    </div>
+                </div>
+                <div>
+                    <label style="font-weight: 700; color: #37474F; font-size: 16px;">Education Level</label>
+                    <div id="onboarding-education-grid" style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+                        <button class="onboarding-edu-btn" onclick="selectOnboardingEducation(this,'none')" style="min-height: 55px; font-size: 16px; font-weight: 600; border-radius: 14px; border: 2px solid #ccc; background: white; color: #37474F; cursor: pointer; text-align: left; padding: 0 18px;">&#x1F518; No Formal Education</button>
+                        <button class="onboarding-edu-btn" onclick="selectOnboardingEducation(this,'8th')" style="min-height: 55px; font-size: 16px; font-weight: 600; border-radius: 14px; border: 2px solid #ccc; background: white; color: #37474F; cursor: pointer; text-align: left; padding: 0 18px;">&#x1F518; Till 8th Class</button>
+                        <button class="onboarding-edu-btn" onclick="selectOnboardingEducation(this,'10th')" style="min-height: 55px; font-size: 16px; font-weight: 600; border-radius: 14px; border: 2px solid #ccc; background: white; color: #37474F; cursor: pointer; text-align: left; padding: 0 18px;">&#x1F518; Till 10th Class (Matric)</button>
+                        <button class="onboarding-edu-btn" onclick="selectOnboardingEducation(this,'12th')" style="min-height: 55px; font-size: 16px; font-weight: 600; border-radius: 14px; border: 2px solid #ccc; background: white; color: #37474F; cursor: pointer; text-align: left; padding: 0 18px;">&#x1F518; Till 12th Class (Higher Secondary)</button>
+                        <button class="onboarding-edu-btn" onclick="selectOnboardingEducation(this,'higher')" style="min-height: 55px; font-size: 16px; font-weight: 600; border-radius: 14px; border: 2px solid #ccc; background: white; color: #37474F; cursor: pointer; text-align: left; padding: 0 18px;">&#x1F518; Higher Education (Graduate / Above)</button>
+                    </div>
+                </div>
+                <button id="onboarding-continue-btn" onclick="finishOnboarding()" disabled style="margin-top: auto; min-height: 55px; background: #00897B; color: white; border: none; border-radius: 20px; font-size: 18px; font-weight: bold; cursor: pointer; opacity: 0.5;">Continue</button>
+            </main>
+        </section>
+
         <!-- --- 5. Welcome Screen (FTUX) --- -->
         <section id="welcome-screen" class="screen">
             <main class="content-pad" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100%;">

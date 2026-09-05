@@ -1280,7 +1280,15 @@ async function verifyOTP() {
 
 function selectRole(role) {
     localStorage.setItem('userRole', role);
-    
+
+    if (needsOnboarding()) {
+        showScreen('onboarding-profile-screen');
+        return;
+    }
+    continueAfterRoleSelection(role);
+}
+
+function continueAfterRoleSelection(role) {
     if(role === 'self') {
         // User sets it up themselves -> run the light warm-up assessment
         showScreen('welcome-screen');
@@ -1289,6 +1297,63 @@ function selectRole(role) {
         localStorage.setItem('hasCompletedAssessment', 'true');
         showScreen('screen-clinical');
     }
+}
+
+// --- Onboarding: Age & Education Profile ---
+// Collected once (persisted to localStorage, never asked again) so game content
+// can be adapted fairly by education level - see getEducationTier().
+window.onboardingSelection = { age: null, education: null };
+
+function needsOnboarding() {
+    return !localStorage.getItem('userAge') || !localStorage.getItem('userEducation');
+}
+
+function selectOnboardingAge(btn, age) {
+    document.querySelectorAll('.onboarding-age-btn').forEach(function (b) {
+        b.style.background = 'white'; b.style.color = '#37474F'; b.style.borderColor = '#ccc';
+    });
+    btn.style.background = '#00897B'; btn.style.color = 'white'; btn.style.borderColor = '#00897B';
+    window.onboardingSelection.age = age;
+    updateOnboardingContinueState();
+}
+
+function selectOnboardingEducation(btn, edu) {
+    document.querySelectorAll('.onboarding-edu-btn').forEach(function (b) {
+        b.style.background = 'white'; b.style.color = '#37474F'; b.style.borderColor = '#ccc';
+    });
+    btn.style.background = '#00897B'; btn.style.color = 'white'; btn.style.borderColor = '#00897B';
+    window.onboardingSelection.education = edu;
+    updateOnboardingContinueState();
+}
+
+function updateOnboardingContinueState() {
+    const btn = document.getElementById('onboarding-continue-btn');
+    if (!btn) return;
+    const ready = window.onboardingSelection.age && window.onboardingSelection.education;
+    btn.disabled = !ready;
+    btn.style.opacity = ready ? '1' : '0.5';
+}
+
+function finishOnboarding() {
+    if (!window.onboardingSelection.age || !window.onboardingSelection.education) return;
+    localStorage.setItem('userAge', window.onboardingSelection.age);
+    localStorage.setItem('userEducation', window.onboardingSelection.education);
+    const role = localStorage.getItem('userRole') || 'self';
+    continueAfterRoleSelection(role);
+}
+
+// Maps the raw userEducation value to a content-difficulty tier used by the
+// education-adaptive game generators:
+//   1 = no formal / till 8th   -> no math/numbers at all, pure visual tasks
+//   2 = till 10th              -> simple positive math only, never negative numbers
+//   3 = till 12th / higher     -> standard full difficulty (also the default if unset,
+//                                 so caregiver-setup or pre-onboarding users aren't
+//                                 accidentally simplified)
+function getEducationTier() {
+    const edu = localStorage.getItem('userEducation');
+    if (edu === 'none' || edu === '8th') return 1;
+    if (edu === '10th') return 2;
+    return 3;
 }
 
 
@@ -1375,7 +1440,11 @@ window.onload = () => {
         
         // Strict Flow Routing based on offline state
         if(isAuth && hasRole) {
-            if (hasRole === 'self' && !hasAssessed) {
+            if (needsOnboarding()) {
+                // Verified + picked a role but closed before finishing the age/
+                // education step - pick up exactly where they left off.
+                showScreen('onboarding-profile-screen');
+            } else if (hasRole === 'self' && !hasAssessed) {
                 // Intercept them if they closed app before finishing assessment.
                 // If they specifically refreshed/reopened mid-gauntlet, offer to resume
                 // instead of silently losing their progress.
@@ -1770,8 +1839,9 @@ function runAICognitiveProfiler() {
             strengthDomain = measuredDomains.reduce(function (a, b) { return gap[a] >= gap[b] ? a : b; });
         }
 
+        const educationTier = (typeof getEducationTier === 'function') ? getEducationTier() : 3;
         const summary = measuredDomains.length
-            ? buildAiCaregiverSummary(primaryDeficit, strengthDomain, gap)
+            ? buildAiCaregiverSummary(primaryDeficit, strengthDomain, gap, educationTier)
             : "Complete a wellness assessment or play a few games to unlock personalized AI insights. Results will appear here once there's enough activity to compare. In the meantime, all 13 activities are ready whenever you are.";
 
         const profile = {
@@ -1779,6 +1849,7 @@ function runAICognitiveProfiler() {
             primaryDeficit: primaryDeficit, strengthDomain: strengthDomain,
             primaryDeficitLabel: primaryDeficit ? AI_DOMAIN_LABEL[primaryDeficit] : null,
             strengthDomainLabel: strengthDomain ? AI_DOMAIN_LABEL[strengthDomain] : null,
+            educationTier: educationTier,
             summary: summary, generatedAt: Date.now()
         };
         localStorage.setItem('neosaarthi_ai_profile', JSON.stringify(profile));
@@ -1788,7 +1859,7 @@ function runAICognitiveProfiler() {
 
 // Automated 3-sentence caregiver-facing narrative. Deliberately avoids clinical/
 // diagnostic wording (Rule 1) in favor of the app's wellness vocabulary.
-function buildAiCaregiverSummary(deficitKey, strengthKey, gap) {
+function buildAiCaregiverSummary(deficitKey, strengthKey, gap, educationTier) {
     try {
         const d = AI_DOMAIN_LABEL[deficitKey], s = AI_DOMAIN_LABEL[strengthKey];
         const dGap = Math.abs(gap[deficitKey]).toFixed(0);
@@ -1798,7 +1869,15 @@ function buildAiCaregiverSummary(deficitKey, strengthKey, gap) {
             ? (d + " is the most consistent area right now, tracking close to the typical range for this age group.")
             : (s + " is tracking " + sGap + " points above the typical range, while " + d + " is " + dGap + " points below it and would benefit from a little extra practice.");
         const s3 = "We've prioritized " + d + "-focused activities in the Games menu to help build that skill through gentle, regular practice.";
-        return s1 + ' ' + s2 + ' ' + s3;
+        // Fair-evaluation note (Module 1.3): the Reasoning & Planning games are
+        // content-adapted for education level (visual tasks instead of arithmetic
+        // for tier 1, simple positive-only math for tier 2) - if that's the flagged
+        // domain, make the comparison basis explicit rather than implying a deficit
+        // measured on unadapted, education-biased content.
+        const s4 = (deficitKey === 'executive' && educationTier && educationTier < 3)
+            ? ' Reasoning & Planning activities were adapted to this education level for a fair comparison.'
+            : '';
+        return s1 + ' ' + s2 + ' ' + s3 + s4;
     } catch (e) { return 'AI insights are being calibrated based on recent activity.'; }
 }
 
@@ -2963,10 +3042,11 @@ function startAssessment(resumeSnap) {
 // Procedurally generates a distinct-integer array for Order Planning, preserving the
 // per-level difficulty shape (count/range) that used to be 3 hardcoded arrays - so
 // replaying the game doesn't show the exact same puzzle every time.
-function generateOrderPlanningArray(level) {
+function generateOrderPlanningArray(level, eduTier) {
     let count, min, max;
     if (level === 1) { count = 4; min = 1; max = 99; }
-    else if (level === 2) { count = 5; min = -20; max = 40; }
+    // Education tier 2 (till 10th) must never see negative numbers in ordering games.
+    else if (level === 2) { count = 5; min = (eduTier === 2 ? 1 : -20); max = 40; }
     else { count = 5; min = 10; max = 199; }
 
     const nums = new Set();
@@ -2995,6 +3075,29 @@ function generateNumberPattern(level) {
     return { seq: [start, start*2, start*4, start*8], ans: start*16 };
 }
 
+// --- Education tier 1 (no formal education / till 8th class) content ---
+// No numbers, no calculations - purely visual pattern/size recognition instead,
+// per the education-adaptive design (fair evaluation without penalizing a lack of
+// formal schooling - see getEducationTier()).
+const VISUAL_PATTERN_POOL = [
+    { seq: ['&#x1F34E;', '&#x1F34C;', '&#x1F34E;', '&#x1F34C;', '&#x1F34E;'], ans: '&#x1F34C;', distractors: ['&#x1F347;', '&#x1F353;', '&#x1F34A;'] }, // apple/banana repeat
+    { seq: ['&#x1F436;', '&#x1F431;', '&#x1F436;', '&#x1F431;', '&#x1F436;'], ans: '&#x1F431;', distractors: ['&#x1F42D;', '&#x1F430;', '&#x1F43B;'] }, // dog/cat repeat
+    { seq: ['&#x2600;&#xFE0F;', '&#x1F327;&#xFE0F;', '&#x2600;&#xFE0F;', '&#x1F327;&#xFE0F;', '&#x2600;&#xFE0F;'], ans: '&#x1F327;&#xFE0F;', distractors: ['&#x26C4;', '&#x1F308;', '&#x26A1;'] } // sun/rain repeat
+];
+function generateVisualPattern() {
+    return VISUAL_PATTERN_POOL[Math.floor(Math.random() * VISUAL_PATTERN_POOL.length)];
+}
+
+// Real-world, unambiguous size ordering (ant < mouse < cat < dog < elephant) for the
+// visual "Small to Big" replacement in Order Planning.
+const VISUAL_SIZE_ITEMS = [
+    { e: '&#x1F41C;', size: 1 }, // ant
+    { e: '&#x1F42D;', size: 2 }, // mouse
+    { e: '&#x1F431;', size: 3 }, // cat
+    { e: '&#x1F436;', size: 4 }, // dog
+    { e: '&#x1F418;', size: 5 }  // elephant
+];
+
 // A small, deliberately conservative pool of visual analogy puzzles for Matrix
 // Reasoning, replacing the single fixed puzzle that used to be identical every
 // playthrough. Kept small and hand-picked (unlike the two generators above) since
@@ -3008,11 +3111,24 @@ function getMatrixReasoningPuzzle() {
     return MATRIX_REASONING_POOL[Math.floor(Math.random() * MATRIX_REASONING_POOL.length)];
 }
 
+// Brief encouragement between practice levels (standalone 3-level x 3-round
+// progression - see startSingleGame/loadNextGauntletTask).
+function showPracticeLevelTransition(newLevel) {
+    const area = document.getElementById('gauntlet-area');
+    if (!area) { loadNextGauntletTask(); return; }
+    area.innerHTML =
+        '<div style="text-align:center;padding-top:60px;">' +
+            '<div style="font-size:50px;">&#x1F389;</div>' +
+            '<h2 style="color:#37474F;margin:10px 0 4px;">Level Complete!</h2>' +
+            '<p style="color:#78909C;">Moving to Level ' + newLevel + '...</p>' +
+        '</div>';
+    setTimeout(loadNextGauntletTask, 1500);
+}
+
 function loadNextGauntletTask() {
     if (gauntletTimeLeft <= 0) return;
     const area = document.getElementById('gauntlet-area');
-    area.innerHTML = ''; 
-    
+
     if (window.gauntletTasksQueue.length === 0) {
         // The 13 games alone only take ~30-40s for a fast player - far short of the
         // intended 5-minute session. Rather than end early, start another adaptive
@@ -3027,19 +3143,47 @@ function loadNextGauntletTask() {
                 window.gauntletTasksQueue[recallIdx] = swap;
             }
         } else {
+            area.innerHTML = '';
             finishAssessment();
             return;
         }
     }
 
-    let taskType = window.gauntletTasksQueue.shift();
+    // Standalone practice, 3-level x 3-round progression (7 named games only - see
+    // startSingleGame). Peek without consuming: if the level is about to change,
+    // show a "Level Complete!" transition instead of rendering a question this call.
+    let taskType = window.gauntletTasksQueue[0];
+    if (window.practiceRoundLevels && window.practiceRoundLevels.length) {
+        const nextLevel = window.practiceRoundLevels[0];
+        if (nextLevel !== window.practiceLevelOverride) {
+            window.practiceLevelOverride = nextLevel;
+            showPracticeLevelTransition(nextLevel);
+            return;
+        }
+    }
+
+    window.gauntletTasksQueue.shift();
+    area.innerHTML = '';
     currentPhase++;
-    GauntletScore.begin(taskType);
+    if (window.practiceRoundLevels && window.practiceRoundLevels.length) {
+        window.practiceRoundLevels.shift();
+        if (window.practiceRoundIndex === 0) {
+            GauntletScore.begin(taskType); // only round 1 truly resets - rounds 2-9 accumulate into the same tally
+        } else {
+            GauntletScore.prompted(); // fresh latency baseline for this round's new question
+        }
+        window.practiceRoundIndex++;
+    } else {
+        GauntletScore.begin(taskType);
+    }
     saveAssessmentSnapshot(taskType);
 
     const gl = (langData[currentLang] && langData[currentLang].gauntlet) || langData['en'].gauntlet;
     let level = 1; let levelText = gl.level_easy;
-    if (currentPhase > 4 && currentPhase <= 9) {
+    if (window.practiceLevelOverride) {
+        level = window.practiceLevelOverride;
+        levelText = level === 1 ? gl.level_easy : (level === 2 ? gl.level_med : gl.level_hard);
+    } else if (currentPhase > 4 && currentPhase <= 9) {
         level = 2; levelText = gl.level_med;
     } else if (currentPhase > 9) {
         level = 3; levelText = gl.level_hard;
@@ -3220,13 +3364,23 @@ function loadNextGauntletTask() {
     }
     else if (taskType === 5) {
         titleEl.innerText = gl.g5_title;
-        makeInst(gl.g5_inst);
-        let genPat = generateNumberPattern(level);
-        let pat = genPat.seq, ans = genPat.ans;
-        let pText = document.createElement('h2'); pText.innerText = pat.join(', ') + ', ?'; pText.style.margin = '30px 0'; pText.style.letterSpacing = '2px'; pText.style.color = '#00897B'; area.appendChild(pText);
+        const eduTier5 = getEducationTier();
+        if (eduTier5 === 1) {
+            // No formal education / till 8th - no numbers at all, pure visual pattern.
+            makeInst('What comes next in the pattern?');
+            const vp = generateVisualPattern();
+            let pText = document.createElement('div'); pText.innerHTML = vp.seq.join(' &nbsp; ') + ' &nbsp; &#x2753;'; pText.style.margin = '30px 0'; pText.style.fontSize = '40px'; area.appendChild(pText);
+            let opts = [vp.ans].concat(vp.distractors).sort(() => Math.random()-0.5);
+            makeGrid(opts, (val) => { GauntletScore[val === vp.ans ? 'hit' : 'miss'](); loadNextGauntletTask(); });
+        } else {
+            makeInst(gl.g5_inst);
+            let genPat = generateNumberPattern(level);
+            let pat = genPat.seq, ans = genPat.ans;
+            let pText = document.createElement('h2'); pText.innerText = pat.join(', ') + ', ?'; pText.style.margin = '30px 0'; pText.style.letterSpacing = '2px'; pText.style.color = '#00897B'; area.appendChild(pText);
 
-        let opts = [ans, ans+1, ans-1, ans+2].sort(() => Math.random()-0.5);
-        makeGrid(opts, (val) => { GauntletScore[val === ans ? 'hit' : 'miss'](); loadNextGauntletTask(); });
+            let opts = [ans, ans+1, ans-1, ans+2].sort(() => Math.random()-0.5);
+            makeGrid(opts, (val) => { GauntletScore[val === ans ? 'hit' : 'miss'](); loadNextGauntletTask(); });
+        }
     }
     else if (taskType === 6) {
         titleEl.innerText = gl.g6_title;
@@ -3338,20 +3492,31 @@ function loadNextGauntletTask() {
     }
     else if (taskType === 12) {
         titleEl.innerText = gl.g12_title;
-        makeInst(gl.g12_inst);
-        let arr = generateOrderPlanningArray(level);
-        let sorted = arr.slice().sort((a,b) => a-b);
+        const eduTier12 = getEducationTier();
+        let sortedItems, shuffledDisplay, correctIsAscendingBy;
+        if (eduTier12 === 1) {
+            // No formal education / till 8th - no numbers at all, real-world size
+            // ordering instead (ant < mouse < cat < dog < elephant).
+            makeInst('Tap the animals from Smallest to Biggest');
+            const chosenCount = level === 1 ? 4 : 5;
+            const chosen = VISUAL_SIZE_ITEMS.slice().sort(() => Math.random()-0.5).slice(0, chosenCount);
+            sortedItems = chosen.slice().sort((a,b) => a.size - b.size).map(x => x.e);
+            shuffledDisplay = chosen.map(x => x.e).sort(() => Math.random() - 0.5);
+        } else {
+            makeInst(gl.g12_inst);
+            let arr = generateOrderPlanningArray(level, eduTier12);
+            sortedItems = arr.slice().sort((a,b) => a-b);
+            shuffledDisplay = arr.slice().sort(() => Math.random() - 0.5);
+        }
         let currentIdx = 0;
-
-        let shuffled = arr.slice().sort(() => Math.random() - 0.5);
-        makeGrid(shuffled, (val, btn) => {
+        makeGrid(shuffledDisplay, (val, btn) => {
             if (btn.disabled) return; // prevent a fast double-tap from double-scoring this button
-            if(val == sorted[currentIdx]) {
+            if(val == sortedItems[currentIdx]) {
                 btn.disabled = true;
                 GauntletScore.hit();
                 btn.style.background = '#4CAF50'; btn.style.color = 'white';
                 currentIdx++;
-                if(currentIdx === arr.length) setTimeout(loadNextGauntletTask, 500);
+                if(currentIdx === sortedItems.length) setTimeout(loadNextGauntletTask, 500);
             } else {
                 GauntletScore.miss();
                 btn.style.background = '#FFECB3'; btn.style.color = '#37474F'; // gentle amber, not red
@@ -3385,6 +3550,9 @@ function finishAssessment() {
     
     if (window.isSingleGame) {
         window.isSingleGame = false;
+        window.practiceRoundLevels = null;
+        window.practiceLevelOverride = null;
+        window.practiceRoundIndex = 0;
         document.getElementById('gauntlet-timer').style.display = 'inline-block';
         document.getElementById('gauntlet-progress').parentElement.style.display = 'block';
         saveGauntletScores(); // record this one game's real result too
@@ -4242,22 +4410,42 @@ function renderGamesList() {
 }
 
 window.isSingleGame = false;
+// These 7 games used to end the whole practice encounter after a single question -
+// standardized to a real 3-level x 3-round progression (9 total rounds) instead.
+const PRACTICE_MULTI_LEVEL_GAMES = [2, 3, 4, 5, 6, 8, 9];
+
 function startSingleGame(taskType) {
     showScreen('assessment-screen');
     window.savedRecallItems = ['&#x1F7E2;']; // Mock for memory game
     gauntletTimeLeft = 9999;
     document.getElementById('gauntlet-timer').style.display = 'none';
     document.getElementById('gauntlet-progress').parentElement.style.display = 'none';
-    
-    window.gauntletTasksQueue = [taskType];
+
     window.isSingleGame = true;
-    currentPhase = 8; // Force medium/hard level randomly for standalone
+    // Always reset practice-progression state first so a previous session can never
+    // leak into an unrelated one.
+    window.practiceRoundLevels = null;
+    window.practiceLevelOverride = null;
+    window.practiceRoundIndex = 0;
+
+    if (PRACTICE_MULTI_LEVEL_GAMES.includes(taskType)) {
+        window.gauntletTasksQueue = [taskType, taskType, taskType, taskType, taskType, taskType, taskType, taskType, taskType];
+        window.practiceRoundLevels = [1, 1, 1, 2, 2, 2, 3, 3, 3];
+        window.practiceLevelOverride = 1; // matches the first entry so round 1 doesn't trigger a false "transition"
+        currentPhase = 0;
+    } else {
+        window.gauntletTasksQueue = [taskType];
+        currentPhase = 8; // fixed medium level for the games not in scope for this fix
+    }
     loadNextGauntletTask();
 }
 
 function quitAssessment() {
     window.isQuitting = true;
     clearAssessmentSnapshot(); // deliberate quit, not an accidental refresh - don't offer to resume this one
+    window.practiceRoundLevels = null;
+    window.practiceLevelOverride = null;
+    window.practiceRoundIndex = 0;
     if (typeof gauntletInterval !== 'undefined') clearInterval(gauntletInterval);
     gauntletTimeLeft = 0; // Signals local game intervals to terminate
     
