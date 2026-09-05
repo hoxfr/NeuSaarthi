@@ -1101,6 +1101,25 @@ function applyAllPageTranslations(langCode) {
     }
 }
 
+// --- High Contrast Mode ---
+// Same body-class-toggle pattern already used for font-manipuri. Persisted so it
+// survives reload, applied on window.onload.
+function applyHighContrastMode(on) {
+    try {
+        if (on) document.body.classList.add('high-contrast');
+        else document.body.classList.remove('high-contrast');
+        const label = document.getElementById('high-contrast-toggle-label');
+        if (label) label.innerText = on ? 'Turn Off High Contrast Mode' : 'Turn On High Contrast Mode';
+    } catch (e) {}
+}
+
+function toggleHighContrastMode() {
+    const isOn = document.body.classList.contains('high-contrast');
+    const next = !isOn;
+    try { localStorage.setItem('highContrastMode', next ? 'true' : 'false'); } catch (e) {}
+    applyHighContrastMode(next);
+}
+
 function changeLanguage(langCode, btnElement = null) {
     currentLang = langCode;
     try { localStorage.setItem('appLang', currentLang); } catch (e) {}
@@ -1430,6 +1449,7 @@ function showScreen(screenId) {
 }
 
 window.onload = () => {
+    applyHighContrastMode(localStorage.getItem('highContrastMode') === 'true');
     const savedLang = localStorage.getItem('appLang');
     const isAuth = localStorage.getItem('isAuthenticated');
     const hasRole = localStorage.getItem('userRole');

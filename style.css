@@ -693,3 +693,96 @@ p { font-size: 16px; font-weight: 400; color: #546E7A; }
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
+
+/* ============================================================
+   HIGH CONTRAST MODE
+   Toggled via body.high-contrast (see toggleHighContrastMode() /
+   applyHighContrastMode() in script.js, persisted to localStorage).
+   Most of this app's styling is inline (style="...") rather than via
+   classes, which normally wins over external stylesheet rules - every
+   selector below that needs to beat an inline style uses !important
+   and/or an attribute selector targeting that inline style directly.
+   ============================================================ */
+
+/* Base: dark background, bright text everywhere by default. */
+body.high-contrast,
+body.high-contrast .screen,
+body.high-contrast #app-frame {
+    background: #000000 !important;
+    color: #FFFFFF !important;
+}
+body.high-contrast h1, body.high-contrast h2, body.high-contrast h3,
+body.high-contrast p, body.high-contrast span, body.high-contrast label,
+body.high-contrast .section-title {
+    color: #FFFFFF !important;
+}
+
+/* White/light CARDS (Play Game / Family / Routine, and any similar card) must
+   force their own contents to stark black - they do NOT inherit the page's
+   white-on-black scheme, since the card itself stays a light surface. */
+body.high-contrast .quest-card,
+body.high-contrast .card,
+body.high-contrast .action-card,
+body.high-contrast [style*="background: white"],
+body.high-contrast [style*="background:#fff"],
+body.high-contrast [style*="background: #fff"],
+body.high-contrast [style*="background:#FDFCF0"],
+body.high-contrast [style*="background: #FDFCF0"] {
+    background: #FFFFFF !important;
+    border: 2px solid #000000 !important;
+}
+body.high-contrast .quest-card h2, body.high-contrast .quest-card p,
+body.high-contrast .quest-text h2, body.high-contrast .quest-text p,
+body.high-contrast #btn-game, body.high-contrast #sub-btn-game,
+body.high-contrast #btn-family, body.high-contrast #sub-btn-family,
+body.high-contrast #btn-routine, body.high-contrast #sub-btn-routine,
+body.high-contrast .card h3, body.high-contrast .card p,
+body.high-contrast .card-title,
+body.high-contrast .routine-item .title,
+body.high-contrast .wellness-card h3,
+body.high-contrast .action-card span,
+body.high-contrast [class*="card"] h3,
+body.high-contrast [class*="card"] .title,
+body.high-contrast [class*="card"] p,
+body.high-contrast [style*="background: white"] h2,
+body.high-contrast [style*="background: white"] p,
+body.high-contrast [style*="background: white"] span,
+body.high-contrast [style*="background: white"] label {
+    color: #000000 !important;
+    font-weight: 800 !important;
+}
+
+/* The specific reported bug: amber headings (e.g. "Daily Support") sitting on a
+   white header bar - unreadable at ~1.6:1 contrast. Force solid black instead. */
+body.high-contrast [style*="color: #FFC107"],
+body.high-contrast [style*="color:#FFC107"],
+body.high-contrast [style*="color: #FFB300"],
+body.high-contrast [style*="color:#FFB300"] {
+    color: #000000 !important;
+}
+
+/* Chevrons and faint container boundaries need real contrast, not pale grey. */
+body.high-contrast [style*="color: #ccc"],
+body.high-contrast [style*="color:#ccc"],
+body.high-contrast .material-symbols-rounded {
+    color: #000000 !important;
+}
+body.high-contrast .quest-icon,
+body.high-contrast .icon-box {
+    background: #FFFFFF !important;
+    border: 2px solid #000000 !important;
+}
+body.high-contrast .quest-icon .material-symbols-rounded,
+body.high-contrast .icon-box .material-symbols-rounded {
+    color: #000000 !important;
+}
+
+/* Section titles that sit directly on the dark page background (not inside a
+   card) must stay bright, not dim grey. */
+body.high-contrast #home-routine-heading,
+body.high-contrast [style*="color: #666"],
+body.high-contrast [style*="color:#666"],
+body.high-contrast [style*="color: #78909C"],
+body.high-contrast [style*="color:#78909C"] {
+    color: #FFFFFF !important;
+}
